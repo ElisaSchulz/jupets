@@ -43,6 +43,7 @@
     font-size: 17px; line-height: 1.65; -webkit-font-smoothing: antialiased;
   }
   img, image-slot { max-width: 100%; }
+  image-slot { display: block; }
   h1,h2,h3,h4 { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 700; line-height: 1.06; letter-spacing: -0.02em; margin: 0; }
   a { color: inherit; }
 
@@ -109,7 +110,7 @@
   /* ====== Sobre ====== */
   .about { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .about-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 50px; align-items: center; }
-  .about-photo image-slot { width: 100%; height: 440px; box-shadow: var(--shadow); }
+  .about-photo image-slot { width: 100%; height: 440px; border-radius: 26px; box-shadow: 0 16px 40px -24px rgba(62,45,42,0.35); }
   .about p { color: var(--ink-soft); margin: 18px 0 0; font-size: 17.5px; }
   .about p strong { color: var(--ink); }
   .sign { font-family: "Bricolage Grotesque"; font-weight: 700; font-size: 26px; color: var(--rose); margin-top: 22px; }
@@ -130,9 +131,29 @@
   .price .val { font-family: "Bricolage Grotesque"; font-weight: 800; font-size: 46px; margin: 10px 0 2px; }
   .price .val small { font-family: "Nunito Sans"; font-size: 16px; font-weight: 700; color: var(--ink-soft); }
   .price .desc { color: var(--ink-soft); font-size: 15px; margin-top: 8px; }
+  .price .save { display: inline-flex; align-items: center; gap: 7px; margin-top: 16px; background: var(--sage-soft); color: var(--sage-ink); font-weight: 800; font-size: 13px; padding: 8px 14px; border-radius: 999px; }
+  .price.featured { border-color: var(--rose); box-shadow: 0 18px 40px -24px rgba(215,95,106,0.55); position: relative; }
+  .price.featured .ribbon { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: var(--rose); color: #fff; font-weight: 800; font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 14px; border-radius: 999px; white-space: nowrap; }
   .price-note { margin-top: 26px; background: var(--honey-soft); border-radius: var(--r-md); padding: 18px 22px; max-width: 760px; }
   .price-note h4 { font-size: 16px; margin-bottom: 6px; color: var(--honey-ink); }
   .price-note p { margin: 0; font-size: 14.5px; color: var(--ink-soft); }
+
+  /* ====== Serviços (overview) ====== */
+  .svc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 44px; }
+  .svc-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 32px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
+  .svc-card .ic { width: 54px; height: 54px; border-radius: 16px; display: grid; place-items: center; font-size: 26px; margin-bottom: 18px; }
+  .svc-card.hosp .ic { background: var(--rose-soft); }
+  .svc-card.crec .ic { background: var(--sage-soft); }
+  .svc-card h3 { font-size: 24px; margin-bottom: 4px; }
+  .svc-card .tagline { font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+  .svc-card.hosp .tagline { color: var(--rose); }
+  .svc-card.crec .tagline { color: var(--sage-ink); }
+  .svc-card p { color: var(--ink-soft); font-size: 16px; margin: 0 0 20px; }
+  .svc-card .price-from { font-family: "Bricolage Grotesque"; font-weight: 700; font-size: 17px; margin-bottom: 18px; }
+  .svc-card .price-from span { color: var(--ink-soft); font-weight: 600; font-size: 14px; }
+  .svc-card .go { margin-top: auto; align-self: flex-start; font-weight: 800; text-decoration: none; color: var(--rose-deep); display: inline-flex; align-items: center; gap: 7px; transition: gap .15s ease; }
+  .svc-card.crec .go { color: var(--sage-ink); }
+  .svc-card .go:hover { gap: 11px; }
 
   /* ====== Galeria ====== */
   .gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 44px; }
@@ -164,10 +185,11 @@
   .legend .li { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--ink-soft); font-weight: 700; }
   .legend .li b { width: 15px; height: 15px; border-radius: 5px; display: inline-block; }
 
-  .adapt-box { margin-top: 32px; background: var(--cream); border: 2px dashed var(--rose); border-radius: var(--r-lg); padding: 30px; text-align: center; }
+  .adapt-box { margin-top: 32px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 36px; text-align: center; box-shadow: var(--shadow-sm); }
   .adapt-box h3 { font-size: 23px; }
   .adapt-box p { color: var(--ink-soft); max-width: 560px; margin: 12px auto 22px; }
   /* O embed do Cal.com entra aqui. Espaço reservado abaixo. */
+  #cal-embed { min-height: 0; border-radius: var(--r-md); overflow: hidden; background: var(--surface); }
   #cal-embed:empty::before {
     content: "📅 Espaço reservado para o agendamento (Cal.com) — cole o link aqui depois";
     display: grid; place-items: center; min-height: 120px;
@@ -203,6 +225,10 @@
   .contact { background: var(--ink); color: var(--cream); border-radius: var(--r-xl); padding: 56px; text-align: center; margin: 0 auto; max-width: var(--maxw); }
   .contact h2 { color: #fff; font-size: clamp(28px, 4vw, 40px); }
   .contact p { color: rgba(255,255,255,0.78); max-width: 520px; margin: 16px auto 30px; font-size: 17.5px; }
+  .contact .ask-list { list-style: none; margin: 0 auto 30px; padding: 0; max-width: 440px; text-align: left; display: grid; gap: 12px; }
+  .contact .ask-list li { display: flex; align-items: flex-start; gap: 12px; color: rgba(255,255,255,0.9); font-size: 16px; line-height: 1.45; }
+  .contact .ask-list li::before { content: ""; flex: 0 0 auto; width: 20px; height: 20px; margin-top: 2px; border-radius: 50%; background: var(--rose) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/12px no-repeat; }
+  .contact .ask-list li b { color: #fff; }
   .contact .row { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
   .contact .meta { margin-top: 28px; color: rgba(255,255,255,0.6); font-size: 14px; }
 
@@ -211,6 +237,9 @@
   footer.foot .fl { display: inline-flex; align-items: center; gap: 9px; font-family: "Bricolage Grotesque"; font-weight: 800; font-size: 18px; color: var(--ink); margin-bottom: 10px; }
   footer.foot .fl .mk { width: 30px; height: 30px; border-radius: 50%; background: var(--rose); color: #fff; display: grid; place-items: center; }
   footer.foot .fl .mk svg { width: 17px; height: 17px; }
+  footer.foot .ig { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; text-decoration: none; font-weight: 700; color: var(--rose-deep); transition: color .15s; }
+  footer.foot .ig:hover { color: var(--rose); }
+  footer.foot .ig svg { width: 20px; height: 20px; }
 
   /* ====== Floating WhatsApp ====== */
   .wa-float { position: fixed; right: 22px; bottom: 22px; z-index: 60; width: 60px; height: 60px; border-radius: 50%;
@@ -222,11 +251,11 @@
   .mobile-menu { display: none; }
 
   @media (max-width: 940px) {
-    .hero-grid, .about-grid, .cal-wrap { grid-template-columns: 1fr; gap: 34px; }
+    .hero-grid, .about-grid, .cal-wrap, .svc-grid { grid-template-columns: minmax(0, 1fr); gap: 34px; }
     .steps { grid-template-columns: 1fr 1fr; }
     .quotes { grid-template-columns: 1fr; }
     .gallery { grid-template-columns: 1fr 1fr; }
-    .about-photo image-slot, .hero-photo image-slot { height: 360px; }
+    .about-photo image-slot, .hero-photo image-slot { height: 300px; }
     .nav-links { display: none; }
     .nav-toggle { display: inline-flex; }
     .mobile-menu.open { display: flex; flex-direction: column; gap: 4px; padding: 12px 28px 20px; border-bottom: 1px solid var(--line); background: var(--cream); }
@@ -238,6 +267,9 @@
     .steps { grid-template-columns: 1fr; }
     .gallery { grid-template-columns: 1fr 1fr; }
     .section { padding: 56px 0; }
+    .hero { padding: 32px 0 48px; }
+    .about-photo image-slot, .hero-photo image-slot { height: 64vw; max-height: 300px; }
+    .hero-photo .float { left: 50%; transform: translateX(-50%); bottom: -16px; white-space: nowrap; }
   }
 </style>
 </head>
@@ -252,8 +284,9 @@
     </a>
     <nav class="nav-links">
       <a class="lnk" href="#sobre">Sobre</a>
-      <a class="lnk" href="#como-funciona">Como funciona</a>
-      <a class="lnk" href="#valores">Valores</a>
+      <a class="lnk" href="#servicos">Serviços</a>
+      <a class="lnk" href="#valores">Hospedagem</a>
+      <a class="lnk" href="#creche">Creche</a>
       <a class="lnk" href="#galeria">Galeria</a>
       <a class="lnk" href="#disponibilidade">Vagas</a>
       <a class="lnk" href="#faq">Dúvidas</a>
@@ -263,8 +296,9 @@
   </div>
   <div class="mobile-menu" id="mobileMenu">
     <a href="#sobre">Sobre</a>
-    <a href="#como-funciona">Como funciona</a>
-    <a href="#valores">Valores</a>
+    <a href="#servicos">Serviços</a>
+    <a href="#valores">Hospedagem</a>
+    <a href="#creche">Creche</a>
     <a href="#galeria">Galeria</a>
     <a href="#disponibilidade">Vagas</a>
     <a href="#faq">Dúvidas</a>
@@ -276,9 +310,9 @@
 <section class="hero" id="topo">
   <div class="wrap hero-grid">
     <div>
-      <div class="eyebrow">Hospedagem domiciliar · Limeira-SP</div>
+      <div class="eyebrow">Hospedagem &amp; creche de cães · Limeira-SP</div>
       <h1>Seu cão hospedado num <span class="accent">lar de verdade</span></h1>
-      <p class="lead">Oi! Eu sou a Júlia. Recebo poucos cães por vez, aqui na minha casa — sem gaiolas, com muito carinho e atenção o dia todo. E você acompanha tudo com fotos todos os dias. 🐾</p>
+      <p class="lead">Oi, sou a Júlia! Faço <strong>hospedagem</strong> e <strong>creche</strong> de cães aqui em casa, em Limeira — sem gaiolas, com atenção de verdade e fotos todos os dias. Vagas limitadas. 🐾</p>
       <div class="hero-cta">
         <a class="btn btn-primary" href="#contato">Reservar uma vaga</a>
         <a class="btn btn-ghost" href="#como-funciona">Como funciona</a>
@@ -290,7 +324,7 @@
       </div>
     </div>
     <div class="hero-photo">
-      <image-slot id="hero" shape="rounded" radius="26" placeholder="Arraste a foto principal (cão aconchegado em casa)"></image-slot>
+      <image-slot id="hero" shape="rounded" radius="26" src="images/hero-colo.jpeg" placeholder="Arraste a foto principal (cão aconchegado em casa)" style="width: 480px"></image-slot>
       <div class="float">
         <span class="ic">📸</span>
         <span><b>Fotos todo dia</b><span>direto no seu WhatsApp</span></span>
@@ -303,7 +337,7 @@
 <section class="section about" id="sobre">
   <div class="wrap about-grid">
     <div class="about-photo">
-      <image-slot id="julia" shape="rounded" radius="26" placeholder="Arraste uma foto sua com um cão"></image-slot>
+      <image-slot id="julia" shape="rounded" radius="26" src="images/julia-retrato.jpeg" placeholder="Arraste uma foto sua com um cão"></image-slot>
     </div>
     <div>
       <div class="eyebrow">Prazer, sou a Júlia</div>
@@ -315,11 +349,40 @@
   </div>
 </section>
 
-<!-- ============ COMO FUNCIONA ============ -->
+<!-- ============ SERVIÇOS (overview) ============ -->
+<section class="section" id="servicos" style="background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="center">
+      <div class="eyebrow">Meus serviços</div>
+      <h2 class="sec-title">Dois jeitos de cuidar do seu cão</h2>
+      <p class="sec-intro">Escolha o que faz mais sentido pra sua rotina — em ambos, o seu cão é tratado com todo o carinho de um lar de verdade.</p>
+    </div>
+    <div class="svc-grid">
+      <div class="svc-card hosp">
+        <div class="ic">🏡</div>
+        <div class="tagline">Hospedagem</div>
+        <h3>Seu cão hospedado em casa</h3>
+        <p>Para viagens e dias fora: seu cão fica comigo por diárias, com rotina, conforto e companhia o tempo todo — e você recebe um boletim diário com fotos.</p>
+        <div class="price-from">A partir de R$ 90 <span>/ diária</span></div>
+        <a class="go" href="#valores">Ver como funciona →</a>
+      </div>
+      <div class="svc-card crec">
+        <div class="ic">🦴</div>
+        <div class="tagline">Creche</div>
+        <h3>Diversão às terças e quintas</h3>
+        <p>Para o dia a dia: seu cão passa o dia socializando e gastando energia enquanto você trabalha. Em pacote mensal, 1x ou 2x por semana.</p>
+        <div class="price-from">Pacote mensal <span>· terças e quintas</span></div>
+        <a class="go" href="#creche">Conhecer a creche →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOSPEDAGEM · COMO FUNCIONA ============ -->
 <section class="section" id="como-funciona">
   <div class="wrap">
     <div class="center">
-      <div class="eyebrow">Como funciona</div>
+      <div class="eyebrow">Hospedagem · como funciona</div>
       <h2 class="sec-title">Simples, transparente e seguro</h2>
       <p class="sec-intro">Da primeira conversa até a hospedagem, cada passo é pensado pro conforto e a segurança do seu cão.</p>
     </div>
@@ -353,7 +416,7 @@
 <!-- ============ VALORES ============ -->
 <section class="section" id="valores" style="background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
   <div class="wrap">
-    <div class="eyebrow">Valores</div>
+    <div class="eyebrow">Hospedagem · valores</div>
     <h2 class="sec-title">Diárias por porte</h2>
     <p class="sec-intro">O valor é por diária e varia conforme o porte do seu cão. As datas e horários combinamos juntos na reserva.</p>
     <div class="prices">
@@ -375,6 +438,36 @@
   </div>
 </section>
 
+<!-- ============ CRECHE ============ -->
+<section class="section" id="creche">
+  <div class="wrap">
+    <div class="eyebrow">Creche</div>
+    <h2 class="sec-title">Creche às terças e quintas</h2>
+    <p class="sec-intro">Para o seu cão gastar energia, socializar e fazer amigos enquanto você trabalha. Funciona em <strong>pacote mensal</strong>, nos dias fixos de <strong>terça e quinta</strong>, com <strong>entrada às 7h e saída às 17h</strong>.</p>
+    <div class="prices">
+      <div class="price">
+        <span class="badge sage" style="margin-bottom:14px;">📅 1x por semana</span>
+        <div class="label">Pacote mensal</div>
+        <div class="val">R$ 300<small> / mês</small></div>
+        <div class="desc">Um dia por semana — terça <em>ou</em> quinta, combinado com antecedência.</div>
+        <span class="save">💚 Equivale a ~R$ 75/dia</span>
+      </div>
+      <div class="price featured">
+        <span class="ribbon">Melhor custo-benefício</span>
+        <span class="badge sage" style="margin-bottom:14px;">📅 2x por semana</span>
+        <div class="label">Pacote mensal</div>
+        <div class="val">R$ 500<small> / mês</small></div>
+        <div class="desc">Os dois dias — terça <strong>e</strong> quinta, a semana inteira de diversão.</div>
+        <span class="save">💚 Equivale a ~R$ 62,50/dia</span>
+      </div>
+    </div>
+    <div class="price-note">
+      <h4>Como funciona a creche</h4>
+      <p>A creche acontece sempre às terças e quintas, com <strong>entrada às 7h e saída às 17h</strong>, em formato de pacote mensal. Prefere experimentar antes? A <strong>diária avulsa custa R$ 80</strong> — os pacotes mensais saem mais em conta. Assim como na hospedagem, o primeiro passo é o dia de adaptação, pra garantir que o seu cão se sinta à vontade com o ambiente e com os outros cães. 💛</p>
+    </div>
+  </div>
+</section>
+
 <!-- ============ GALERIA ============ -->
 <section class="section" id="galeria">
   <div class="wrap">
@@ -384,14 +477,14 @@
       <p class="sec-intro">Cãezinhos que já passaram por aqui e fizeram parte da família por uns dias. Arraste suas fotos pra cá. 🐶</p>
     </div>
     <div class="gallery">
-      <image-slot id="g1" radius="18" placeholder="foto 1"></image-slot>
-      <image-slot id="g2" radius="18" placeholder="foto 2"></image-slot>
-      <image-slot id="g3" radius="18" placeholder="foto 3"></image-slot>
-      <image-slot id="g4" radius="18" placeholder="foto 4"></image-slot>
-      <image-slot id="g5" radius="18" placeholder="foto 5"></image-slot>
-      <image-slot id="g6" radius="18" placeholder="foto 6"></image-slot>
-      <image-slot id="g7" radius="18" placeholder="foto 7"></image-slot>
-      <image-slot id="g8" radius="18" placeholder="foto 8"></image-slot>
+      <image-slot id="g1" radius="18" src="images/g-quarteto-porta.jpeg" placeholder="foto 1"></image-slot>
+      <image-slot id="g2" radius="18" src="images/g-trio-lacos.jpeg" placeholder="foto 2"></image-slot>
+      <image-slot id="g3" radius="18" src="images/g-camas.jpeg" placeholder="foto 3"></image-slot>
+      <image-slot id="g4" radius="18" src="images/g-turma-chao.jpeg" placeholder="foto 4"></image-slot>
+      <image-slot id="g5" radius="18" src="images/g-pug-shihtzu.jpeg" placeholder="foto 5"></image-slot>
+      <image-slot id="g6" radius="18" src="images/g-porta-olhando.jpeg" placeholder="foto 6"></image-slot>
+      <image-slot id="g7" radius="18" src="images/g-coleiras.jpeg" placeholder="foto 7"></image-slot>
+      <image-slot id="g8" radius="18" src="images/g-quintal.jpeg" placeholder="foto 8"></image-slot>
     </div>
   </div>
 </section>
@@ -402,23 +495,28 @@
     <div class="center">
       <div class="eyebrow">Disponibilidade</div>
       <h2 class="sec-title">Vagas abertas</h2>
-      <p class="sec-intro">Veja os períodos com vaga para hospedagem. Para garantir a sua, agende a adaptação e fale comigo no WhatsApp.</p>
+      <p class="sec-intro">Recebo um número limitado de cães por vez. Agende a adaptação abaixo e me chame no WhatsApp pra confirmar as datas disponíveis.</p>
     </div>
 
-    <!-- STATUS ATUAL — a Júlia pode editar este texto -->
+    <!-- STATUS ATUAL — edite este texto para avisar a situação das vagas -->
     <div class="status-banner">
       <span class="dot"></span>
       <strong>Status atual:</strong>
-      <span id="statusText">Recebendo reservas — confira os dias livres no calendário abaixo.</span>
+      <span id="statusText">Recebendo reservas — me chame no WhatsApp pra ver as datas disponíveis. 🐾</span>
     </div>
 
-    <div class="cal-wrap" id="calWrap"><!-- calendário gerado via JS --></div>
-
+    <!-- ====================================================================
+         CALENDÁRIO DE VAGAS (vaga / poucas / sem vaga) — DESATIVADO POR ORA.
+         Será reativado junto do painel de edição (Supabase). Para religar,
+         basta descomentar este bloco e a legenda abaixo. O código que gera
+         os meses continua no <script> ao final.
+    <div class="cal-wrap" id="calWrap"></div>
     <div class="legend">
       <div class="li"><b style="background:var(--sage);"></b> Vaga disponível</div>
       <div class="li"><b style="background:var(--honey);"></b> Poucas vagas</div>
       <div class="li"><b style="background:var(--shell);"></b> Sem vaga</div>
     </div>
+    ==================================================================== -->
 
     <div class="adapt-box">
       <h3>Agende a adaptação</h3>
@@ -431,7 +529,7 @@
   </div>
 </section>
 
-<!-- ============ DEPOIMENTOS ============ -->
+<!-- ============ DEPOIMENTOS — oculto por ora; reativar quando houver depoimentos reais ============
 <section class="section" id="depoimentos">
   <div class="wrap">
     <div class="center">
@@ -439,7 +537,6 @@
       <h2 class="sec-title">O que os tutores dizem</h2>
       <p class="sec-intro">Substitua pelos depoimentos reais dos seus clientes (pode ser print do WhatsApp ou texto).</p>
     </div>
-    <!-- TODO: trocar pelos depoimentos verdadeiros -->
     <div class="quotes">
       <div class="quote">
         <div class="stars">★★★★★</div>
@@ -468,6 +565,7 @@
     </div>
   </div>
 </section>
+============================================================================= -->
 
 <!-- ============ FAQ ============ -->
 <section class="section" id="faq" style="background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
@@ -499,7 +597,7 @@
       </details>
       <details class="acc">
         <summary>Quais são os requisitos? <span class="pl">+</span></summary>
-        <div class="body">Para a segurança de todos os cães, peço que o seu esteja com a <strong>vacinação em dia</strong> (V8/V10 e antirrábica) e a <strong>vermifugação</strong> atualizada. <em>(Júlia, me confirme se há outros requisitos — castração, idade mínima etc. — pra eu incluir aqui.)</em></div>
+        <div class="body">Para a segurança de todos os cães, peço que o seu esteja com a <strong>vacinação em dia</strong> (V8/V10 e antirrábica) e a <strong>vermifugação</strong> atualizada.</div>
       </details>
       <details class="acc">
         <summary>Quais portes e valores? <span class="pl">+</span></summary>
@@ -514,15 +612,20 @@
   <div class="contact">
     <div class="eyebrow" style="color:var(--honey);">Vamos conversar</div>
     <h2>Pronto pra reservar uma vaga?</h2>
-    <p>Me chama no WhatsApp com as datas e o porte do seu cão. Respondo rapidinho e a gente combina a adaptação. 🐾</p>
+    <p>Me chama no WhatsApp e já manda essas informações pra eu agilizar:</p>
+    <ul class="ask-list">
+      <li><b>Qual serviço:</b> hospedagem ou creche?</li>
+      <li><b>Sobre o cão:</b> nome, porte e idade</li>
+      <li><b>Quando:</b> as datas (hospedagem) ou os dias da semana (creche)</li>
+      <li><b>Vacinação</b> em dia? (V8/V10 e antirrábica)</li>
+    </ul>
     <div class="row">
       <a class="btn btn-wa" id="waBtn" href="#" target="_blank" rel="noopener">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.1 14.9l-.3-.2-2.8.8.8-2.7-.2-.3A8 8 0 0 1 12 4zm-2.5 4c-.2 0-.5.1-.7.4-.3.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.7 2.8 4.3 3.8 2.1.8 2.6.7 3 .6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.6-.3c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1-.7-.3-1.4-.6-2.1-1.5-.3-.4-.6-.9-.1-1.3.2-.2.4-.5.5-.7.1-.2 0-.4 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5z"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.967-.94 1.165-.173.198-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0 0 20.885 3.488"/></svg>
         Chamar no WhatsApp
       </a>
-      <a class="btn btn-ghost" style="color:#fff;border-color:rgba(255,255,255,0.5);" href="#disponibilidade">Ver vagas</a>
     </div>
-    <div class="meta">📍 Limeira-SP · Atendimento com hora marcada</div>
+    <div class="meta">📍 Limeira-SP</div>
   </div>
 </section>
 
@@ -530,11 +633,15 @@
 <footer class="foot">
   <div class="fl"><span class="mk"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6.5" cy="9" r="2.1"/><circle cx="12" cy="6.4" r="2.3"/><circle cx="17.5" cy="9" r="2.1"/><path d="M12 11.4c-3 0-5.4 2.3-5.4 4.7 0 1.7 1.5 2.6 3.1 2.6 1 0 1.6-.4 2.3-.4s1.3.4 2.3.4c1.6 0 3.1-.9 3.1-2.6 0-2.4-2.4-4.7-5.4-4.7z"/></svg></span> Ju Petsitter</div>
   <div>Hospedagem domiciliar com carinho · Limeira-SP 🐾</div>
+  <a class="ig" href="https://www.instagram.com/jupetslimeira" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>
+    @jupetslimeira
+  </a>
 </footer>
 
 <!-- ============ Floating WhatsApp ============ -->
 <a class="wa-float" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
-  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.1 14.9l-.3-.2-2.8.8.8-2.7-.2-.3A8 8 0 0 1 12 4zm-2.5 4c-.2 0-.5.1-.7.4-.3.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.7 2.8 4.3 3.8 2.1.8 2.6.7 3 .6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.6-.3c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1-.7-.3-1.4-.6-2.1-1.5-.3-.4-.6-.9-.1-1.3.2-.2.4-.5.5-.7.1-.2 0-.4 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5z"/></svg>
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.967-.94 1.165-.173.198-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0 0 20.885 3.488"/></svg>
 </a>
 
 <script>
@@ -543,8 +650,8 @@
    ============================================================ */
 
 /* 1) WhatsApp — troque pelo número real (formato: 55 + DDD + número, só dígitos) */
-const WHATSAPP = "5519999999999";          // <-- COLOQUE O NÚMERO AQUI
-const WHATSAPP_MSG = "Oi Júlia! Vim pelo site e quero saber sobre a hospedagem do meu cão. 🐾";
+const WHATSAPP = "5519981583108";          // <-- COLOQUE O NÚMERO AQUI
+const WHATSAPP_MSG = "Oi Júlia! Vim pelo site 🐾\n\n• Serviço: (hospedagem ou creche)\n• Cão: (nome, porte e idade)\n• Quando: (datas ou dias da semana)\n• Vacinação em dia: (sim/não)";
 
 /* 2) Disponibilidade — marque os dias.
       Use o formato "AAAA-MM-DD". Tudo que não estiver listado fica como "vaga".
@@ -562,6 +669,9 @@ const DISPONIBILIDADE = {
 
 /* 3) Quantos meses mostrar a partir do mês atual (2 = este mês + o próximo) */
 const MESES_VISIVEIS = 2;
+
+/* 4) Cal.com — link do agendamento da adaptação (formato: usuario/evento) */
+const CAL_LINK = "jupets/adaptacao";
 
 /* ============================================================
    (daqui pra baixo é o funcionamento — não precisa mexer)
@@ -630,6 +740,25 @@ const MESES_VISIVEIS = 2;
     m++; if (m>11){ m=0; y++; }
   }
   wrap.innerHTML = out;
+})();
+</script>
+
+<!-- ============ Cal.com — agendamento da adaptação (embed oficial) ============ -->
+<script>
+(function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+(function () {
+  if (typeof CAL_LINK === "undefined" || !CAL_LINK) return;
+  Cal("init", "adaptacao", { origin: "https://cal.com" });
+  Cal.ns.adaptacao("inline", {
+    elementOrSelector: "#cal-embed",
+    config: { layout: "month_view" },
+    calLink: CAL_LINK,
+  });
+  Cal.ns.adaptacao("ui", {
+    hideEventTypeDetails: false,
+    layout: "month_view",
+    cssVarsPerTheme: { light: { "cal-brand": "#D75F6A" } },
+  });
 })();
 </script>
 
