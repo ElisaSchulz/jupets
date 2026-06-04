@@ -114,6 +114,18 @@
   .about p { color: var(--ink-soft); margin: 18px 0 0; font-size: 17.5px; }
   .about p strong { color: var(--ink); }
   .sign { font-family: "Bricolage Grotesque"; font-weight: 700; font-size: 26px; color: var(--rose); margin-top: 22px; }
+  /* credencial — adestradora */
+  .cred { display: grid; grid-template-columns: 190px 1fr; gap: 30px; align-items: center;
+        background: var(--cream); border: 1px solid var(--line); border-radius: var(--r-lg);
+        padding: 26px; box-shadow: var(--shadow-sm); margin-top: 44px; }
+  .cred .cred-media { display: block; text-decoration: none; }
+  .cred image-slot { width: 100%; aspect-ratio: 3 / 4; height: auto; box-shadow: var(--shadow-sm); }
+  .cred h3 { font-size: 23px; margin: 12px 0 0; }
+  .cred p { margin: 10px 0 0; color: var(--ink-soft); font-size: 16.5px; }
+  .cred .cert-link { display: inline-flex; align-items: center; gap: 7px; margin-top: 16px;
+        font-weight: 800; text-decoration: none; color: var(--honey-ink); transition: gap .15s ease; }
+  .cred .cert-link:hover { gap: 11px; }
+  @media (max-width: 560px) { .cred { grid-template-columns: 1fr; text-align: center; } .cred image-slot { max-width: 220px; margin: 0 auto; } }
 
   /* ====== Como funciona ====== */
   .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 48px; }
@@ -139,26 +151,60 @@
   .price-note p { margin: 0; font-size: 14.5px; color: var(--ink-soft); }
 
   /* ====== Serviços (overview) ====== */
-  .svc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 44px; }
-  .svc-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 32px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
+  .svc-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 22px; margin-top: 44px; align-items: start; }
+  .svc-card { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 32px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
   .svc-card .ic { width: 54px; height: 54px; border-radius: 16px; display: grid; place-items: center; font-size: 26px; margin-bottom: 18px; }
   .svc-card.hosp .ic { background: var(--rose-soft); }
   .svc-card.crec .ic { background: var(--sage-soft); }
+  .svc-card.dom .ic { background: var(--honey-soft); }
   .svc-card h3 { font-size: 24px; margin-bottom: 4px; }
   .svc-card .tagline { font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
   .svc-card.hosp .tagline { color: var(--rose); }
   .svc-card.crec .tagline { color: var(--sage-ink); }
+  .svc-card.dom .tagline { color: var(--honey-ink); }
   .svc-card p { color: var(--ink-soft); font-size: 16px; margin: 0 0 20px; }
   .svc-card .price-from { font-family: "Bricolage Grotesque"; font-weight: 700; font-size: 17px; margin-bottom: 18px; }
   .svc-card .price-from span { color: var(--ink-soft); font-weight: 600; font-size: 14px; }
   .svc-card .go { margin-top: auto; align-self: flex-start; font-weight: 800; text-decoration: none; color: var(--rose-deep); display: inline-flex; align-items: center; gap: 7px; transition: gap .15s ease; }
   .svc-card.crec .go { color: var(--sage-ink); }
+  .svc-card.dom .go { color: var(--honey-ink); }
   .svc-card .go:hover { gap: 11px; }
+  /* card carro-chefe / premium */
+  .svc-card.featured { border-color: var(--rose); padding-top: 40px; box-shadow: 0 26px 54px -28px rgba(215,95,106,0.6); background: linear-gradient(180deg, #fff 0%, var(--surface) 60%); }
+  .svc-card.featured::before { content: "✨ Serviço premium"; position: absolute; top: -13px; left: 50%; transform: translateX(-50%); white-space: nowrap; background: var(--rose); color: #fff; font-family: "Nunito Sans"; font-weight: 800; font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 15px; border-radius: 999px; box-shadow: 0 8px 18px -8px rgba(181,67,79,0.8); }
+  .svc-card.featured h3 { font-size: 27px; }
+  .svc-card.featured .feat-list { list-style: none; margin: 0 0 22px; padding: 0; display: grid; gap: 9px; }
+  .svc-card.featured .feat-list li { display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--ink); font-weight: 600; }
+  .svc-card.featured .feat-list li::before { content: ""; flex: 0 0 auto; width: 18px; height: 18px; border-radius: 50%; background: var(--rose) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/11px no-repeat; }
+  .svc-card.featured .go { background: var(--rose); color: #fff; padding: 13px 22px; border-radius: 999px; box-shadow: 0 10px 22px -12px rgba(181,67,79,0.8); }
+  .svc-card.featured .go:hover { background: var(--rose-deep); gap: 7px; }
 
-  /* ====== Galeria ====== */
-  .gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 44px; }
-  .gallery image-slot { width: 100%; height: 230px; }
-  .gallery .tall { grid-row: span 1; }
+  /* ====== Visitas domiciliares ====== */
+  .stay-incl { max-width: 880px; margin: 52px auto 0; }
+  .stay-incl > h3 { font-size: 23px; text-align: center; margin-bottom: 26px; }
+  .stay-incl .incl-list { grid-template-columns: 1fr 1fr; gap: 18px 34px; }
+  @media (max-width: 700px) { .stay-incl .incl-list { grid-template-columns: 1fr; } }
+  .visit-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 50px; align-items: start; margin-top: 44px; }
+  .incl-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+  .incl-list li { display: flex; align-items: flex-start; gap: 14px; }
+  .incl-list li .ck { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 10px; background: var(--rose-soft); color: var(--rose-deep); display: grid; place-items: center; font-size: 16px; margin-top: 1px; }
+  .incl-list li b { display: block; font-size: 16.5px; }
+  .incl-list li span { color: var(--ink-soft); font-size: 15px; line-height: 1.5; }
+  .visit-prices { display: grid; gap: 18px; }
+  .visit-prices .price { display: flex; align-items: center; gap: 20px; padding: 26px 28px; }
+  .visit-prices .price .emo { flex: 0 0 auto; width: 56px; height: 56px; border-radius: 16px; display: grid; place-items: center; font-size: 28px; }
+  .visit-prices .price.gato .emo { background: var(--sage-soft); }
+  .visit-prices .price.cao .emo { background: var(--honey-soft); }
+  .visit-prices .price .val { font-size: 38px; margin: 4px 0 0; }
+  @media (max-width: 940px) { .visit-grid { grid-template-columns: minmax(0,1fr); gap: 34px; } }
+
+  /* ====== Galeria (faixa rolando + arrastável) ====== */
+  .marquee { margin-top: 44px; overflow-x: auto; overflow-y: hidden; cursor: grab; scrollbar-width: none; -ms-overflow-style: none; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+  .marquee::-webkit-scrollbar { display: none; }
+  .marquee.dragging { cursor: grabbing; }
+  .marquee-track { display: flex; gap: 16px; width: max-content; }
+  .marquee.dragging .marquee-track image-slot { pointer-events: none; }
+  .marquee image-slot { flex: 0 0 auto; width: 300px; height: 260px; user-select: none; -webkit-user-drag: none; }
 
   /* ====== Disponibilidade ====== */
   .avail { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
@@ -254,7 +300,6 @@
     .hero-grid, .about-grid, .cal-wrap, .svc-grid { grid-template-columns: minmax(0, 1fr); gap: 34px; }
     .steps { grid-template-columns: 1fr 1fr; }
     .quotes { grid-template-columns: 1fr; }
-    .gallery { grid-template-columns: 1fr 1fr; }
     .about-photo image-slot { height: auto; }
     .hero-photo image-slot { height: 420px; }
     .nav-links { display: none; }
@@ -266,7 +311,6 @@
   @media (max-width: 560px) {
     .prices { grid-template-columns: 1fr; }
     .steps { grid-template-columns: 1fr; }
-    .gallery { grid-template-columns: 1fr 1fr; }
     .section { padding: 56px 0; }
     .hero { padding: 32px 0 48px; }
     .about-photo image-slot { height: auto; }
@@ -288,7 +332,7 @@
       <a class="lnk" href="#sobre">Sobre</a>
       <a class="lnk" href="#servicos">Serviços</a>
       <a class="lnk" href="#valores">Hospedagem</a>
-      <a class="lnk" href="#creche">Creche</a>
+      <a class="lnk" href="#visitas">Visitas</a>
       <a class="lnk" href="#galeria">Galeria</a>
       <a class="lnk" href="#disponibilidade">Vagas</a>
       <a class="lnk" href="#faq">Dúvidas</a>
@@ -300,7 +344,7 @@
     <a href="#sobre">Sobre</a>
     <a href="#servicos">Serviços</a>
     <a href="#valores">Hospedagem</a>
-    <a href="#creche">Creche</a>
+    <a href="#visitas">Visitas</a>
     <a href="#galeria">Galeria</a>
     <a href="#disponibilidade">Vagas</a>
     <a href="#faq">Dúvidas</a>
@@ -312,24 +356,25 @@
 <section class="hero" id="topo">
   <div class="wrap hero-grid">
     <div>
-      <div class="eyebrow">Hospedagem &amp; creche de cães · Limeira-SP</div>
+      <div class="eyebrow">Hospedagem · visitas domiciliares · Limeira-SP</div>
       <h1>Seu cão hospedado num <span class="accent">lar de verdade</span></h1>
-      <p class="lead">Oi, sou a Júlia! Faço <strong>hospedagem</strong> e <strong>creche</strong> de cães aqui em casa, em Limeira — sem gaiolas, com atenção de verdade e fotos todos os dias. Vagas limitadas. 🐾</p>
+      <p class="lead">Oi, sou a Júlia! Faço <strong>hospedagem</strong> de cães na minha casa e <strong>visitas domiciliares</strong> pra cães e gatos na casa do tutor — sempre com atenção de verdade e fotos e vídeos várias vezes ao dia. Serviços oferecidos em Limeira-SP. 🐾</p>
       <div class="hero-cta">
         <a class="btn btn-primary" href="#contato">Reservar uma vaga</a>
         <a class="btn btn-ghost" href="#como-funciona">Como funciona</a>
       </div>
       <div class="hero-badges">
+        <span class="badge honey">🎓 Adestradora formada</span>
         <span class="badge sage">🌿 Sem gaiolas</span>
-        <span class="badge honey">📸 Fotos diárias</span>
-        <span class="badge rose">❤️ Cuidado individual</span>
+        <span class="badge rose">📸 Fotos e vídeos</span>
+        <span class="badge honey">❤️ Cuidado individual</span>
       </div>
     </div>
     <div class="hero-photo">
       <image-slot id="hero" shape="rounded" radius="26" src="images/hero-colo.jpeg" placeholder="Arraste a foto principal (cão aconchegado em casa)" style="width: 480px"></image-slot>
       <div class="float">
         <span class="ic">📸</span>
-        <span><b>Fotos todo dia</b><span>direto no seu WhatsApp</span></span>
+        <span><b>Fotos e vídeos</b><span>várias vezes ao dia</span></span>
       </div>
     </div>
   </div>
@@ -345,8 +390,21 @@
       <div class="eyebrow">Prazer, sou a Júlia</div>
       <h2 class="sec-title">Cuido do seu cão como se fosse meu</h2>
       <p>Sou apaixonada por cachorros desde sempre e, aqui em <strong>Limeira</strong>, transformei minha casa num lugar seguro e acolhedor pra eles. Não trabalho com gaiolas: seu cão fica solto, com rotina, conforto e companhia o tempo todo.</p>
-      <p>Recebo <strong>poucos hóspedes por vez</strong> justamente pra dar atenção de verdade a cada um. Sou cuidadosa e atenciosa em cada detalhe — e mando fotos todos os dias pra você matar a saudade e ficar tranquilo(a).</p>
+      <p>Recebo <strong>poucos hóspedes por vez</strong> justamente pra dar atenção de verdade a cada um. Sou cuidadosa e atenciosa em cada detalhe — e mando fotos e vídeos várias vezes ao dia pra você matar a saudade e ficar tranquilo(a). Como <strong>adestradora formada</strong>, ainda trago um olhar a mais pro comportamento e pra rotina de cada cão.</p>
       <div class="sign">— Júlia 🐾</div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="cred">
+      <a class="cred-media" href="https://www.instagram.com/p/DCZMNqHOMPM/" target="_blank" rel="noopener" aria-label="Ver certificado no Instagram">
+        <image-slot id="cert" shape="rounded" radius="16" src="images/julia-certificado.jpeg" placeholder="Arraste a foto do certificado"></image-slot>
+      </a>
+      <div class="cred-body">
+        <span class="badge honey">🎓 Formação em adestramento</span>
+        <h3>Adestradora formada</h3>
+        <p>Concluí o curso de adestramento no <strong>Adestramento Millennium</strong>, em Limeira. Mais do que um diferencial, isso é segurança pra você: sei ler o comportamento de cada cão e cuidar bem da rotina do grupo.</p>
+        <a class="cert-link" href="https://www.instagram.com/p/DCZMNqHOMPM/" target="_blank" rel="noopener">Ver o certificado no Instagram →</a>
+      </div>
     </div>
   </div>
 </section>
@@ -356,25 +414,31 @@
   <div class="wrap">
     <div class="center">
       <div class="eyebrow">Meus serviços</div>
-      <h2 class="sec-title">Dois jeitos de cuidar do seu cão</h2>
-      <p class="sec-intro">Escolha o que faz mais sentido pra sua rotina — em ambos, o seu cão é tratado com todo o carinho de um lar de verdade.</p>
+      <h2 class="sec-title">Dois jeitos de cuidar do seu pet</h2>
+      <p class="sec-intro">A <strong>hospedagem</strong> é a nossa experiência premium — uma estadia em ambiente familiar, com poucas vagas e atenção individualizada. E, pro dia a dia, as <strong>visitas domiciliares</strong> cuidam do seu pet na casa dele. Os dois serviços são em <strong>Limeira-SP</strong> — escolha o que faz mais sentido pra sua rotina.</p>
     </div>
     <div class="svc-grid">
-      <div class="svc-card hosp">
+      <div class="svc-card hosp featured">
         <div class="ic">🏡</div>
         <div class="tagline">Hospedagem</div>
-        <h3>Seu cão hospedado em casa</h3>
-        <p>Para viagens e dias fora: seu cão fica comigo por diárias, com rotina, conforto e companhia o tempo todo — e você recebe um boletim diário com fotos.</p>
+        <h3>Hospedagem familiar pro seu cão</h3>
+        <p>Nosso serviço premium: uma estadia em ambiente familiar, com <strong>poucas vagas</strong> e atenção realmente individualizada pra cada hóspede.</p>
+        <ul class="feat-list">
+          <li>Poucas vagas, atenção individual</li>
+          <li>Passeios diários e enriquecimento</li>
+          <li>Fotos e vídeos várias vezes ao dia</li>
+          <li>Rotina preservada, sem estresse</li>
+        </ul>
         <div class="price-from">A partir de R$ 90 <span>/ diária</span></div>
-        <a class="go" href="#valores">Ver como funciona →</a>
+        <a class="go" href="#como-funciona">Ver como funciona →</a>
       </div>
-      <div class="svc-card crec">
-        <div class="ic">🦴</div>
-        <div class="tagline">Creche</div>
-        <h3>Diversão às terças e quintas</h3>
-        <p>Para o dia a dia: seu cão passa o dia socializando e gastando energia enquanto você trabalha. Em pacote mensal, 1x ou 2x por semana.</p>
-        <div class="price-from">Pacote mensal <span>· terças e quintas</span></div>
-        <a class="go" href="#creche">Conhecer a creche →</a>
+      <div class="svc-card dom">
+        <div class="ic">🏠</div>
+        <div class="tagline">Visitas domiciliares</div>
+        <h3>Cuido do seu pet na sua casa</h3>
+        <p>Para gatos e cães, em <strong>Limeira</strong>: enquanto você está fora, eu vou até a sua casa cuidar do seu pet — alimentação, cuidados e muito carinho, mantendo a rotina dele de sempre.</p>
+        <div class="price-from">A partir de R$ 50 <span>/ visita</span></div>
+        <a class="go" href="#visitas">Ver como funciona →</a>
       </div>
     </div>
   </div>
@@ -408,9 +472,47 @@
       <div class="step">
         <div class="n">4</div>
         <h3>Hospedagem</h3>
-        <p>Seu cão aproveita um lar de verdade, com todo o carinho — e você recebe um boletim diário, com fotos e novidades de como ele está.</p>
-        <span class="badge honey tag">📸 Fotos diárias</span>
+        <p>Seu cão aproveita um lar de verdade, com todo o carinho — e você recebe fotos e vídeos várias vezes ao dia, com novidades de como ele está.</p>
+        <span class="badge honey tag">📸 Fotos e vídeos</span>
       </div>
+    </div>
+
+    <div class="stay-incl">
+      <h3>Durante a estadia, seu pet conta com</h3>
+      <ul class="incl-list">
+        <li>
+          <span class="ck">🏠</span>
+          <span><b>Ambiente como um lar</b><span>Acolhedor, supervisionado, limpo, seguro e confortável — como um lar deve ser.</span></span>
+        </li>
+        <li>
+          <span class="ck">🦮</span>
+          <span><b>Passeios diários</b><span>Saídas todos os dias pra gastar energia e explorar com segurança.</span></span>
+        </li>
+        <li>
+          <span class="ck">🎾</span>
+          <span><b>Brincadeiras sob medida</b><span>Atividades adequadas ao perfil e ao ritmo de cada pet.</span></span>
+        </li>
+        <li>
+          <span class="ck">🧩</span>
+          <span><b>Enriquecimento ambiental</b><span>Estímulos que cuidam do bem-estar físico e mental do seu cão.</span></span>
+        </li>
+        <li>
+          <span class="ck">🐾</span>
+          <span><b>Socialização cuidadosa</b><span>Convívio com outros cães acompanhado de perto, no tempo de cada um.</span></span>
+        </li>
+        <li>
+          <span class="ck">❤️</span>
+          <span><b>Carinho e companhia</b><span>Muita atenção e companhia ao longo de todo o dia.</span></span>
+        </li>
+        <li>
+          <span class="ck">📸</span>
+          <span><b>Fotos e vídeos várias vezes ao dia</b><span>Atualizações frequentes pra você acompanhar tudo e matar a saudade.</span></span>
+        </li>
+        <li>
+          <span class="ck">💛</span>
+          <span><b>Rotina preservada</b><span>Mantenho a rotina do seu pet pra reduzir o estresse da separação.</span></span>
+        </li>
+      </ul>
     </div>
   </div>
 </section>
@@ -418,9 +520,9 @@
 <!-- ============ VALORES ============ -->
 <section class="section" id="valores" style="background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
   <div class="wrap">
-    <div class="eyebrow">Hospedagem · valores</div>
+    <div class="eyebrow">Hospedagem · serviço premium</div>
     <h2 class="sec-title">Diárias por porte</h2>
-    <p class="sec-intro">O valor é por diária e varia conforme o porte do seu cão. As datas e horários combinamos juntos na reserva.</p>
+    <p class="sec-intro">Uma estadia premium, com poucas vagas e atenção individualizada. O valor é por diária e varia conforme o porte do seu cão — as datas e horários combinamos juntos na reserva.</p>
     <div class="prices">
       <div class="price">
         <div class="label">Porte pequeno</div>
@@ -440,12 +542,12 @@
   </div>
 </section>
 
-<!-- ============ CRECHE ============ -->
+<!-- ============ CRECHE — DESATIVADA por ora; reativar quando a Júlia iniciar a creche ============
 <section class="section" id="creche">
   <div class="wrap">
     <div class="eyebrow">Creche</div>
     <h2 class="sec-title">Creche às terças e quintas</h2>
-    <p class="sec-intro">Para o seu cão gastar energia, socializar e fazer amigos enquanto você trabalha. Funciona em <strong>pacote mensal</strong>, nos dias fixos de <strong>terça e quinta</strong>, com <strong>entrada às 7h e saída às 17h</strong>.</p>
+    <p class="sec-intro">Para o seu cão gastar energia, socializar e fazer amigos enquanto você trabalha. Funciona em <strong>pacote mensal</strong>, nos dias fixos de <strong>terça e quinta</strong>, com <strong>entrada às 7h e saída às 18h</strong>.</p>
     <div class="prices">
       <div class="price">
         <span class="badge sage" style="margin-bottom:14px;">📅 1x por semana</span>
@@ -465,7 +567,70 @@
     </div>
     <div class="price-note">
       <h4>Como funciona a creche</h4>
-      <p>A creche acontece sempre às terças e quintas, com <strong>entrada às 7h e saída às 17h</strong>, em formato de pacote mensal. Prefere experimentar antes? A <strong>diária avulsa custa R$ 80</strong> — os pacotes mensais saem mais em conta. Assim como na hospedagem, o primeiro passo é o dia de adaptação, pra garantir que o seu cão se sinta à vontade com o ambiente e com os outros cães. 💛</p>
+      <p>A creche acontece sempre às terças e quintas, com <strong>entrada às 7h e saída às 18h</strong>, em formato de pacote mensal. Prefere experimentar antes? A <strong>diária avulsa custa R$ 80</strong> — os pacotes mensais saem mais em conta. Assim como na hospedagem, o primeiro passo é o dia de adaptação, pra garantir que o seu cão se sinta à vontade com o ambiente e com os outros cães. 💛</p>
+    </div>
+  </div>
+</section>
+============================================================================= -->
+
+<!-- ============ VISITAS DOMICILIARES ============ -->
+<section class="section" id="visitas" style="background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="eyebrow">Visitas domiciliares · Limeira-SP</div>
+    <h2 class="sec-title">Cuido do seu pet na sua casa</h2>
+    <p class="sec-intro">Atendimento domiciliar personalizado <strong>em Limeira</strong> pra garantir o bem-estar, o conforto e a rotina do seu pet enquanto você está ausente. Eu vou até a sua casa, e cada visita dura em média <strong>40 minutos a 1 hora</strong>.</p>
+    <div class="visit-grid">
+      <div>
+        <h3 style="font-size:22px;margin-bottom:20px;">O que está incluso em cada visita</h3>
+        <ul class="incl-list">
+          <li>
+            <span class="ck">🍽️</span>
+            <span><b>Alimentação e água fresca</b><span>Troca de água, alimentação e limpeza de comedouros e bebedouros.</span></span>
+          </li>
+          <li>
+            <span class="ck">🧹</span>
+            <span><b>Higienização do local</b><span>Limpeza da área das necessidades — e, para os gatos, da caixa de areia.</span></span>
+          </li>
+          <li>
+            <span class="ck">💊</span>
+            <span><b>Administração de medicamentos</b><span>Quando o seu pet faz uso de remédios, eu cuido das doses no horário certo.</span></span>
+          </li>
+          <li>
+            <span class="ck">🦮</span>
+            <span><b>Passeio e atividades (cães)</b><span>Para os cães, a visita inclui passeio e atividades que ajudam a gastar energia e manter o bem-estar físico e emocional.</span></span>
+          </li>
+          <li>
+            <span class="ck">❤️</span>
+            <span><b>Atenção, brincadeira e companhia</b><span>Mais do que cuidados básicos, cada visita é repleta de carinho e companhia, respeitando a rotina de cada lar.</span></span>
+          </li>
+          <li>
+            <span class="ck">📸</span>
+            <span><b>Fotos e vídeos a cada visita</b><span>A cada visita você recebe fotos e vídeos do seu pet, pra acompanhar tudo de pertinho e ficar tranquilo(a).</span></span>
+          </li>
+        </ul>
+      </div>
+      <div class="visit-prices">
+        <div class="price gato">
+          <div class="emo">🐱</div>
+          <div>
+            <div class="label">Gato</div>
+            <div class="val">R$ 50<small> / visita</small></div>
+            <div class="desc">Inclui a limpeza da caixa de areia.</div>
+          </div>
+        </div>
+        <div class="price cao">
+          <div class="emo">🐶</div>
+          <div>
+            <div class="label">Cachorro</div>
+            <div class="val">R$ 60<small> / visita</small></div>
+            <div class="desc">Inclui passeio e atividades pra gastar energia.</div>
+          </div>
+        </div>
+        <div class="price-note" style="margin-top:6px;">
+          <h4>Visita de 40 min a 1 hora</h4>
+          <p>Combinamos os dias, os horários e a frequência das visitas conforme a necessidade do seu pet. Me chame no WhatsApp pra montarmos a rotina ideal. 💛</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -476,9 +641,11 @@
     <div class="center">
       <div class="eyebrow">Galeria</div>
       <h2 class="sec-title">Alguns dos meus hóspedes</h2>
-      <p class="sec-intro">Alguns da creche, outros que voltam sempre pra hospedagem, todos já viraram parte da família. 🐶</p>
+      <p class="sec-intro">Hóspedes que voltam sempre e já viraram parte da casa. 🐶</p>
     </div>
-    <div class="gallery">
+  </div>
+  <div class="marquee">
+    <div class="marquee-track">
       <image-slot id="g1" radius="18" src="images/g-quarteto-porta.jpeg" placeholder="foto 1"></image-slot>
       <image-slot id="g2" radius="18" src="images/g-trio-lacos.jpeg" placeholder="foto 2"></image-slot>
       <image-slot id="g3" radius="18" src="images/g-camas.jpeg" placeholder="foto 3"></image-slot>
@@ -487,6 +654,22 @@
       <image-slot id="g6" radius="18" src="images/g-porta-olhando.jpeg" placeholder="foto 6"></image-slot>
       <image-slot id="g7" radius="18" src="images/g-coleiras.jpeg" placeholder="foto 7"></image-slot>
       <image-slot id="g8" radius="18" src="images/g-quintal.jpeg" placeholder="foto 8"></image-slot>
+      <image-slot id="g9" radius="18" src="images/g-julia-passeio.jpeg" placeholder="foto 9"></image-slot>
+      <image-slot id="g10" radius="18" src="images/g-trio-sol.jpeg" placeholder="foto 10"></image-slot>
+      <image-slot id="g11" radius="18" src="images/g-julia-turma.jpeg" placeholder="foto 11"></image-slot>
+      <image-slot id="g12" radius="18" src="images/g-cama-trio.jpeg" placeholder="foto 12"></image-slot>
+      <image-slot radius="18" src="images/g-quarteto-porta.jpeg" aria-hidden="true" tabindex="-1"></image-slot>
+      <image-slot radius="18" src="images/g-trio-lacos.jpeg" aria-hidden="true" tabindex="-1"></image-slot>
+      <image-slot radius="18" src="images/g-camas.jpeg" aria-hidden="true" tabindex="-1"></image-slot>
+      <image-slot radius="18" src="images/g-turma-chao.jpeg" aria-hidden="true" tabindex="-1"></image-slot>
+      <image-slot radius="18" src="images/g-pug-shihtzu.jpeg" aria-hidden="true" tabindex="-1"></image-slot>
+      <image-slot radius="18" src="images/g-porta-olhando.jpeg" aria-hidden="true" tabindex="-1"></image-slot>
+      <image-slot radius="18" src="images/g-coleiras.jpeg" aria-hidden="true" tabindex="-1"></image-slot>
+      <image-slot radius="18" src="images/g-quintal.jpeg" aria-hidden="true" tabindex="-1"></image-slot>
+      <image-slot radius="18" src="images/g-julia-passeio.jpeg" aria-hidden="true" tabindex="-1"></image-slot>
+      <image-slot radius="18" src="images/g-trio-sol.jpeg" aria-hidden="true" tabindex="-1"></image-slot>
+      <image-slot radius="18" src="images/g-julia-turma.jpeg" aria-hidden="true" tabindex="-1"></image-slot>
+      <image-slot radius="18" src="images/g-cama-trio.jpeg" aria-hidden="true" tabindex="-1"></image-slot>
     </div>
   </div>
 </section>
@@ -497,7 +680,7 @@
     <div class="center">
       <div class="eyebrow">Disponibilidade</div>
       <h2 class="sec-title">Vagas abertas</h2>
-      <p class="sec-intro">Recebo um número limitado de cães por vez. Agende a adaptação abaixo e me chame no WhatsApp pra confirmar as datas disponíveis para hospedagem.</p>
+      <p class="sec-intro">Recebo um número limitado de cães por vez. Agende a adaptação abaixo e me chame no WhatsApp pra confirmar as datas disponíveis.</p>
     </div>
 
     <!-- STATUS ATUAL — edite este texto para avisar a situação das vagas -->
@@ -616,9 +799,9 @@
     <h2>Pronto pra reservar uma vaga?</h2>
     <p>Me chama no WhatsApp e já manda essas informações pra eu agilizar:</p>
     <ul class="ask-list">
-      <li><b>Qual serviço:</b> hospedagem ou creche?</li>
+      <li><b>Qual serviço:</b> hospedagem ou visita domiciliar?</li>
       <li><b>Sobre o cão:</b> nome, porte e idade</li>
-      <li><b>Quando:</b> as datas (hospedagem) ou os dias da semana (creche)</li>
+      <li><b>Quando:</b> as datas (hospedagem) ou os horários das visitas</li>
       <li><b>Vacinação</b> em dia? (V8/V10 e antirrábica)</li>
     </ul>
     <div class="row">
@@ -653,7 +836,7 @@
 
 /* 1) WhatsApp — troque pelo número real (formato: 55 + DDD + número, só dígitos) */
 const WHATSAPP = "5519981583108";          // <-- COLOQUE O NÚMERO AQUI
-const WHATSAPP_MSG = "Oi Júlia! Vim pelo site 🐾\n\n• Serviço: (hospedagem ou creche)\n• Cão: (nome, porte e idade)\n• Quando: (datas ou dias da semana)\n• Vacinação em dia: (sim/não)";
+const WHATSAPP_MSG = "Oi Júlia! Vim pelo site 🐾\n\n• Serviço: (hospedagem ou visita domiciliar)\n• Pet: (nome, espécie/porte e idade)\n• Quando: (datas ou horários das visitas)\n• Vacinação em dia: (sim/não)";
 
 /* 2) Disponibilidade — marque os dias.
       Use o formato "AAAA-MM-DD". Tudo que não estiver listado fica como "vaga".
@@ -761,6 +944,73 @@ const CAL_LINK = "jupets/adaptacao";
     layout: "month_view",
     cssVarsPerTheme: { light: { "cal-brand": "#D75F6A" } },
   });
+})();
+</script>
+
+<!-- ============ Galeria — auto-scroll + arrastar ============ -->
+<script>
+(function () {
+  var marquee = document.querySelector(".marquee");
+  if (!marquee) return;
+  var track = marquee.querySelector(".marquee-track");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // half = largura de um conjunto completo (há 2 cópias) + metade do gap
+  function half() { return track.scrollWidth / 2; }
+
+  var speed = 0.9;          // px por frame (~54px/s)
+  var paused = false;       // hover/foco
+  var dragging = false;
+  var startX = 0, startScroll = 0, moved = 0;
+  var pos = 0;              // posição acumulada (float) — scrollLeft arredonda, então acumulamos aqui
+
+  function loop() {
+    var h = half();
+    if (!paused && !dragging && !reduce) {
+      pos += speed;
+    } else {
+      pos = marquee.scrollLeft; // sincroniza após arraste/hover
+    }
+    if (h > 0) {
+      if (pos >= h) pos -= h;
+      else if (pos < 0) pos += h;
+    }
+    if (!dragging) marquee.scrollLeft = pos;
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  // pausa ao passar o mouse / focar
+  marquee.addEventListener("mouseenter", function () { paused = true; });
+  marquee.addEventListener("mouseleave", function () { paused = false; });
+  marquee.addEventListener("focusin", function () { paused = true; });
+  marquee.addEventListener("focusout", function () { paused = false; });
+
+  // arrastar pra navegar
+  marquee.addEventListener("pointerdown", function (e) {
+    dragging = true; moved = 0;
+    startX = e.clientX; startScroll = marquee.scrollLeft;
+    marquee.classList.add("dragging");
+    marquee.setPointerCapture(e.pointerId);
+  });
+  marquee.addEventListener("pointermove", function (e) {
+    if (!dragging) return;
+    var dx = e.clientX - startX;
+    moved = Math.max(moved, Math.abs(dx));
+    marquee.scrollLeft = startScroll - dx;
+  });
+  function endDrag(e) {
+    if (!dragging) return;
+    dragging = false;
+    marquee.classList.remove("dragging");
+    try { marquee.releasePointerCapture(e.pointerId); } catch (err) {}
+  }
+  marquee.addEventListener("pointerup", endDrag);
+  marquee.addEventListener("pointercancel", endDrag);
+  // impede que o arraste dispare cliques nas fotos
+  marquee.addEventListener("click", function (e) {
+    if (moved > 6) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
 })();
 </script>
 
