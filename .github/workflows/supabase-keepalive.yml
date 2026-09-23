@@ -4,7 +4,7 @@
 # Precisa de dois "secrets" no repositório (Settings → Secrets and variables → Actions):
 #   SUPABASE_URL       ex.: https://abcdefgh.supabase.co
 #   SUPABASE_ANON_KEY  a chave anon/publishable do projeto (NUNCA a service_role)
-# e da função criada por supabase/keepalive.sql.
+# e da função keepalive() criada por supabase/schema.sql.
 
 name: Manter Supabase ativo
 
