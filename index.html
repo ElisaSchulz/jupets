@@ -111,7 +111,7 @@
   .nav-links { display: flex; align-items: center; gap: 26px; }
   .nav-links a.lnk { font-weight: 700; font-size: 15px; text-decoration: none; color: var(--ink); opacity: 0.82; }
   .nav-links a.lnk:hover { opacity: 1; color: var(--rose-deep); }
-  .nav-toggle { display: none; background: none; border: 0; cursor: pointer; padding: 8px; }
+  .nav-toggle { display: none; background: none; border: 0; cursor: pointer; padding: 8px; color: var(--rose); }
   .nav-toggle svg { width: 28px; height: 28px; }
 
   /* ====== Hero ====== */
@@ -120,6 +120,7 @@
   .hero h1 { font-size: clamp(38px, 6vw, 64px); font-weight: 800; margin-top: 16px; }
   .hero h1 .accent { color: var(--rose); }
   .hero .lead { font-size: 19px; color: var(--ink-soft); margin: 22px 0 30px; max-width: 540px; }
+  .hero-cta-label { font-weight: 800; text-transform: uppercase; letter-spacing: 0.18em; font-size: 12px; color: var(--ink-soft); margin-bottom: 14px; }
   .hero-cta { display: flex; flex-wrap: wrap; gap: 14px; }
   .hero-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
   .hero-photo { position: relative; }
@@ -405,9 +406,10 @@
       <div class="eyebrow">Hospedagem · visitas domiciliares · Limeira-SP</div>
       <h1 id="tw-hero-title">O carinho que seu pet merece, <span class="accent">na sua casa ou na minha</span></h1>
       <p class="lead">Oi, sou a Júlia! Faço hospedagem de cães de pequeno e médio porte na minha casa e visitas domiciliares pra cães, gatos, pássaros e roedores na casa do tutor. Serviços oferecidos em Limeira-SP. 🐾</p>
+      <div class="hero-cta-label">Saiba mais</div>
       <div class="hero-cta">
-        <a class="btn btn-primary" href="#contato">Reservar uma vaga</a>
-        <a class="btn btn-ghost" href="#como-funciona">Como funciona</a>
+        <a class="btn btn-primary" href="#como-funciona">Hospedagem</a>
+        <a class="btn btn-ghost" href="#visitas">Atendimento Domiciliar</a>
       </div>
       <div class="hero-badges">
         <span class="badge honey">🎓 Adestradora</span>
