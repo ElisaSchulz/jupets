@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Cadastro do pet · Ju Pets</title>
+<title>Ficha cadastral do pet · Ju Pets</title>
 <meta name="description" content="Ficha de cadastro do seu pet para hospedagem e visitas domiciliares da Ju Pets, em Limeira-SP. 🐾" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -349,14 +349,138 @@
   }
 </style>
 <style>
+  /* ============ CADASTRO — formulário ============ */
   .cad-head { max-width: 680px; margin: 0 auto; }
-  .form-card { max-width: 720px; margin: 36px auto 0; background: #fff; border: 1px solid var(--line); border-radius: 26px; padding: 12px; box-shadow: 0 18px 40px -28px rgba(59,42,38,0.35); }
-  .form-card iframe { display: block; width: 100%; height: 6324px; border: 0; border-radius: 18px; }
-  .form-alt { margin-top: 18px; font-size: 15px; color: var(--ink-soft); }
-  .form-alt a { color: var(--rose); font-weight: 700; }
+  .cad-form { max-width: 760px; margin: 38px auto 0; display: grid; gap: 22px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 30px; box-shadow: var(--shadow-sm); }
+  .card-title { display: flex; align-items: center; gap: 12px; font-size: 22px; margin: 0 0 20px; }
+  .card-title .ic { width: 38px; height: 38px; border-radius: 50%; background: var(--rose-soft); color: var(--rose-deep); display: inline-grid; place-items: center; font-size: 18px; flex: none; }
+  .grp + .grp { margin-top: 26px; padding-top: 24px; border-top: 1px dashed var(--line); }
+  .grp-title { font-weight: 800; text-transform: uppercase; letter-spacing: 0.14em; font-size: 12px; color: var(--rose); margin: 0 0 14px; }
+  .fields { display: grid; gap: 18px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .f label.lbl, .f .lbl { display: block; font-weight: 700; font-size: 15.5px; margin-bottom: 7px; line-height: 1.35; }
+  .req { color: var(--rose); }
+  .hint { display: block; font-weight: 500; font-size: 13.5px; color: var(--ink-soft); margin-top: 2px; }
+  .f input[type=text], .f input[type=tel], .f input[type=date], .f input[type=number], .f textarea {
+    width: 100%; box-sizing: border-box; font: inherit; font-size: 16px; color: var(--ink);
+    background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r-sm); padding: 12px 14px;
+    transition: border-color .15s, box-shadow .15s; }
+  .f textarea { min-height: 96px; resize: vertical; line-height: 1.5; }
+  .f input:focus, .f textarea:focus { outline: none; border-color: var(--rose); box-shadow: 0 0 0 4px var(--rose-soft); background: #fff; }
+  .f.err input, .f.err textarea { border-color: var(--rose-deep); }
+  .f .msg { display: none; color: var(--rose-deep); font-size: 13.5px; font-weight: 700; margin-top: 6px; }
+  .f.err .msg { display: block; }
+  .unit { position: relative; }
+  .unit input { padding-right: 46px !important; }
+  .unit span { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-soft); font-weight: 700; font-size: 14px; }
+
+  /* opções em pílula (radio + checkbox) */
+  .opts { display: flex; flex-wrap: wrap; gap: 9px; }
+  .opt { position: relative; }
+  .opt input { position: absolute; opacity: 0; inset: 0; margin: 0; pointer-events: none; }
+  .opt span { display: inline-flex; align-items: center; gap: 7px; padding: 10px 16px; border-radius: 999px; border: 1.5px solid var(--line);
+    background: var(--surface); font-weight: 700; font-size: 15px; cursor: pointer; transition: all .15s; user-select: none; line-height: 1.25; }
+  .opt input[type=checkbox] + span::before { content: ""; width: 16px; height: 16px; border-radius: 5px; border: 1.5px solid #cbb3aa; background: #fff; flex: none; }
+  .opt input:checked + span { background: var(--rose); border-color: var(--rose); color: #fff; }
+  .opt input[type=checkbox]:checked + span::before { border-color: #fff; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D75F6A' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/12px no-repeat; }
+  .opt input:focus-visible + span { box-shadow: 0 0 0 4px var(--rose-soft); }
+  .opt-outro { margin-top: 10px; }
+  .f.err .opts .opt span { border-color: var(--rose-deep); }
+  .follow { margin-top: 12px; }
+  .check-line { display: flex; gap: 12px; align-items: flex-start; background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r-md); padding: 16px; cursor: pointer; }
+  .check-line input { width: 20px; height: 20px; accent-color: var(--rose); margin-top: 2px; flex: none; }
+  .f.err .check-line { border-color: var(--rose-deep); }
+  .legal { font-size: 15px; line-height: 1.55; color: var(--ink); background: var(--honey-soft); border-radius: var(--r-md); padding: 14px 16px; margin-bottom: 12px; }
+
+  /* card do pet */
+  .pet-card { border-top: 6px solid var(--rose); }
+  .pet-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+  .pet-head .card-title { margin: 0; }
+  .pet-rm { background: none; border: 0; color: var(--ink-soft); font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; text-decoration: underline; padding: 6px; }
+  .pet-rm:hover { color: var(--rose-deep); }
+  .add-pet { width: 100%; border: 2px dashed var(--rose); background: transparent; color: var(--rose-deep); font: inherit; font-weight: 800; font-size: 17px;
+    padding: 20px; border-radius: var(--r-lg); cursor: pointer; transition: background .15s; }
+  .add-pet:hover { background: var(--rose-soft); }
+  .send-row { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+  .send-row .btn { font-size: 18px; padding: 17px 44px; }
+  .send-row .btn[disabled] { opacity: .6; cursor: wait; }
+  .form-error { display: none; background: var(--rose-soft); color: var(--rose-deep); border-radius: var(--r-md); padding: 14px 18px; font-weight: 700; font-size: 15px; text-align: left; }
+  .form-error.show { display: block; }
+  .form-error a { color: inherit; }
+
+  /* ============ FICHA ============ */
+  #fichaWrap { display: none; max-width: 860px; margin: 0 auto; }
+  #fichaWrap.show { display: block; }
+  .ficha-ok { text-align: center; margin-bottom: 26px; }
+  .ficha-ok .big { font-size: 46px; line-height: 1; }
+  .ficha-ok h1 { font-size: clamp(28px, 4vw, 38px); margin: 12px 0 8px; }
+  .ficha-ok p { color: var(--ink-soft); margin: 0 auto; max-width: 520px; }
+  .ficha-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 22px 0 34px; }
+  .ficha { background: #fff; border: 1px solid var(--line); border-radius: var(--r-xl); box-shadow: var(--shadow); overflow: hidden; }
+  .fx-top { background: var(--rose); color: #fff; padding: 28px 34px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;
+    background-image: radial-gradient(circle at 92% -20%, rgba(255,255,255,.22) 0 120px, transparent 121px), radial-gradient(circle at 78% 130%, rgba(255,255,255,.14) 0 90px, transparent 91px); }
+  .fx-brand { display: flex; align-items: center; gap: 14px; }
+  .fx-brand .mk { width: 50px; height: 50px; border-radius: 50%; background: #fff; color: var(--rose); display: grid; place-items: center; }
+  .fx-brand .mk svg { width: 28px; height: 28px; }
+  .fx-brand b { font-family: "Bricolage Grotesque"; font-size: 26px; display: block; line-height: 1.05; }
+  .fx-brand small { font-weight: 700; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; opacity: .9; }
+  .fx-meta { text-align: right; font-size: 13.5px; line-height: 1.5; }
+  .fx-meta b { display: block; font-family: "Bricolage Grotesque"; font-size: 20px; letter-spacing: -.01em; }
+  .fx-body { padding: 30px 34px 34px; display: grid; gap: 26px; }
+  .fx-sec h3 { font-family: "Nunito Sans"; font-weight: 800; text-transform: uppercase; letter-spacing: .14em; font-size: 12px; color: var(--rose); margin: 0 0 12px; display: flex; align-items: center; gap: 10px; }
+  .fx-sec h3::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .kv { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px 26px; }
+  .kv .wide { grid-column: 1 / -1; }
+  .kv dt { font-size: 12px; font-weight: 800; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .08em; }
+  .kv dd { margin: 2px 0 0; font-weight: 600; font-size: 15.5px; white-space: pre-line; overflow-wrap: anywhere; }
+  .fx-pet { border: 1.5px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+  .fx-pet-head { background: var(--surface); padding: 20px 24px; display: flex; align-items: center; gap: 16px; border-bottom: 1.5px solid var(--line); }
+  .fx-pet-head .av { width: 56px; height: 56px; border-radius: 50%; background: var(--rose-soft); display: grid; place-items: center; font-size: 28px; flex: none; }
+  .fx-pet-head h4 { font-size: 26px; margin: 0; }
+  .fx-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
+  .tag { display: inline-flex; align-items: center; gap: 5px; font-weight: 800; font-size: 12.5px; padding: 5px 11px; border-radius: 999px; background: var(--shell); color: var(--ink); }
+  .tag.rose { background: var(--rose-soft); color: var(--rose-deep); }
+  .tag.sage { background: var(--sage-soft); color: var(--sage-ink); }
+  .tag.honey { background: var(--honey-soft); color: var(--honey-ink); }
+  .tag.off { background: transparent; border: 1.5px dashed var(--line); color: #b39e97; text-decoration: line-through; font-weight: 700; }
+  .fx-pet-body { padding: 22px 24px 24px; display: grid; gap: 22px; }
+  .alerts { display: grid; gap: 8px; }
+  .alert { border-radius: var(--r-sm); padding: 11px 14px; font-size: 15px; background: var(--rose-soft); color: var(--ink); }
+  .alert b { color: var(--rose-deep); }
+  .alert.ok { background: var(--sage-soft); }
+  .alert.ok b { color: var(--sage-ink); }
+  .auths { display: grid; gap: 10px; }
+  .auth { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; }
+  .auth .ck { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; flex: none; font-size: 13px; font-weight: 900; color: #fff; background: var(--sage); margin-top: 1px; }
+  .auth .ck.no { background: #c9b5ad; }
+  .fx-foot { text-align: center; font-size: 12.5px; color: var(--ink-soft); padding: 0 34px 26px; }
+
   @media (max-width: 720px) {
-    .form-card { padding: 4px; border-radius: 20px; margin-top: 26px; }
-    .form-card iframe { height: 7200px; }
+    .card { padding: 22px 18px; }
+    .row2, .kv { grid-template-columns: 1fr; }
+    .fx-top, .fx-body { padding-left: 20px; padding-right: 20px; }
+    .fx-meta { text-align: left; }
+    .fx-pet-head, .fx-pet-body { padding-left: 16px; padding-right: 16px; }
+  }
+
+  /* impressão / PDF: só a ficha */
+  @media print {
+    @page { size: A4; margin: 12mm; }
+    body { background: #fff !important; font-size: 13px; }
+    header.nav, footer.foot, .wa-float, .cad-head, #cadForm, .ficha-ok, .ficha-actions { display: none !important; }
+    .section { padding: 0 !important; }
+    .wrap { padding: 0 !important; max-width: none; }
+    #fichaWrap { max-width: none; }
+    .ficha { box-shadow: none; border: 0; border-radius: 0; }
+    .fx-top, .tag, .alert, .auth .ck, .fx-pet-head, .fx-brand .mk { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .fx-body { padding: 18px 0 0; }
+    .fx-top { border-radius: 14px; }
+    .kv { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .fx-pet { break-inside: auto; }
+    .fx-pet-head, .alert, .kv > div, .fx-sec h3 { break-inside: avoid; }
+    .fx-sec h3 { break-after: avoid; }
+    .fx-pet + .fx-pet { break-before: page; }
   }
 </style>
 </head>
@@ -396,13 +520,78 @@
 <section class="section" id="cadastro">
   <div class="wrap">
     <div class="cad-head center">
-      <div class="eyebrow">Cadastro do pet</div>
+      <div class="eyebrow">Ficha cadastral do pet</div>
       <h1 class="sec-title">Conta pra mim sobre o seu pet 🐾</h1>
-      <p class="sec-intro">Preencha a ficha antes da primeira hospedagem ou visita. Assim eu já conheço a rotina, a saúde e as manias dele, e cuido do jeitinho que ele está acostumado.</p>
-      <p class="form-alt">O formulário não carregou? <a href="https://docs.google.com/forms/d/e/1FAIpQLSc89Al4ptH1ZcwiXY_iyqG2f2xlxFX-XwuyApDVlTumjVZzgw/viewform" target="_blank" rel="noopener">Abrir em outra aba</a></p>
+      <p class="sec-intro">Preencha antes da primeira hospedagem ou visita. Assim eu já conheço a rotina, a saúde e as manias de cada um, e cuido do jeitinho que eles estão acostumados. Tem mais de um pet? Dá pra cadastrar todos de uma vez.</p>
     </div>
-    <div class="form-card">
-      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSc89Al4ptH1ZcwiXY_iyqG2f2xlxFX-XwuyApDVlTumjVZzgw/viewform?embedded=true" title="Formulário de cadastro do pet" loading="lazy">Carregando…</iframe>
+
+    <form id="cadForm" class="cad-form" novalidate>
+      <!-- Tutor -->
+      <div class="card">
+        <h2 class="card-title"><span class="ic">👤</span>Seus dados</h2>
+        <div class="fields">
+          <div class="f"><label class="lbl" for="t-nome">Nome completo <span class="req">*</span></label>
+            <input type="text" id="t-nome" data-t="nome" required autocomplete="name" maxlength="200" />
+            <div class="msg">Preencha seu nome.</div></div>
+          <div class="row2">
+            <div class="f"><label class="lbl" for="t-cpf">CPF <span class="req">*</span></label>
+              <input type="text" id="t-cpf" data-t="cpf" required inputmode="numeric" placeholder="000.000.000-00" maxlength="14" />
+              <div class="msg">Confira o CPF.</div></div>
+            <div class="f"><label class="lbl" for="t-tel">Telefone / WhatsApp <span class="req">*</span></label>
+              <input type="tel" id="t-tel" data-t="telefone" required autocomplete="tel" placeholder="(19) 99999-9999" maxlength="15" />
+              <div class="msg">Confira o telefone, com DDD.</div></div>
+          </div>
+          <div class="f"><label class="lbl" for="t-end">Endereço <span class="req">*</span></label>
+            <input type="text" id="t-end" data-t="endereco" required autocomplete="street-address" placeholder="Rua, número, bairro" maxlength="500" />
+            <div class="msg">Preencha o endereço.</div></div>
+          <div class="f"><label class="lbl" for="t-emerg">Contato de um familiar ou amigo que estará na cidade <span class="req">*</span>
+              <span class="hint">Nome e telefone, pra eu chamar se não conseguir falar com você.</span></label>
+            <input type="text" id="t-emerg" data-t="contato_emergencia" required maxlength="500" placeholder="Ex.: Maria (irmã) · (19) 98888-7777" />
+            <div class="msg">Preencha um contato de emergência.</div></div>
+        </div>
+      </div>
+
+      <!-- Pets (gerados pelo script) -->
+      <div id="pets" style="display:grid;gap:22px;"></div>
+      <button type="button" class="add-pet" id="addPet">+ Adicionar outro pet</button>
+
+      <!-- Autorizações -->
+      <div class="card">
+        <h2 class="card-title"><span class="ic">✍️</span>Autorizações</h2>
+        <div class="fields">
+          <div class="f" data-group="fotos"><span class="lbl">Autoriza a divulgação de fotos e vídeos nas redes sociais? <span class="req">*</span>
+              <span class="hint">Não colocamos o nome do pet nem do tutor.</span></span>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="t-fotos" value="true" required /><span>Sim</span></label>
+              <label class="opt"><input type="radio" name="t-fotos" value="false" /><span>Não</span></label>
+            </div>
+            <div class="msg">Escolha uma opção.</div></div>
+          <div class="f" data-group="emerg"><span class="lbl">Atendimento de emergência <span class="req">*</span></span>
+            <div class="legal">Autorizo que, em caso de emergência e caso eu não seja localizado(a), sejam tomadas as medidas veterinárias necessárias visando o bem-estar do meu pet. Estou ciente de que os custos veterinários serão de minha responsabilidade.</div>
+            <label class="check-line"><input type="checkbox" id="t-emerg-ok" required /><span><b>Li, estou ciente e concordo.</b></span></label>
+            <div class="msg">É preciso concordar pra concluir o cadastro.</div></div>
+        </div>
+      </div>
+
+      <div class="send-row">
+        <div class="form-error" id="formError"></div>
+        <button type="submit" class="btn btn-primary" id="sendBtn">Enviar cadastro</button>
+        <span class="hint">Depois de enviar, você recebe a ficha pronta pra salvar em PDF.</span>
+      </div>
+    </form>
+
+    <!-- Ficha (aparece depois do envio) -->
+    <div id="fichaWrap" aria-live="polite">
+      <div class="ficha-ok">
+        <div class="big">🎉</div>
+        <h1>Cadastro recebido!</h1>
+        <p>Obrigada! A ficha abaixo já está comigo. Salve uma cópia pra você também.</p>
+      </div>
+      <div class="ficha-actions">
+        <button type="button" class="btn btn-primary" id="printBtn">Baixar PDF / Imprimir</button>
+        <a class="btn btn-ghost" href="cadastro.html">Fazer outro cadastro</a>
+      </div>
+      <div id="ficha"></div>
     </div>
   </div>
 </section>
@@ -423,16 +612,350 @@
 
 
 <script>
+/* ============================================================
+   ⚙️  CONFIGURAÇÕES
+   ============================================================ */
+/* Supabase → Project Settings → API. A chave é a "anon" / "publishable" (NUNCA a service_role). */
+const SUPABASE_URL = "";        // ex.: "https://abcdefgh.supabase.co"
+const SUPABASE_ANON_KEY = "";   // ex.: "eyJhbGciOi..." ou "sb_publishable_..."
+
+const WHATSAPP = "5519981583108";
+
+/* Opções das perguntas — dá pra editar à vontade */
+const HOSPITAIS = ["Invet", "Pet Company - Covabra", "Vetlim", "Vital Vet"];
+const PODE_COMER = ["Sachê", "Petiscos do tipo bifinho", "Petiscos do tipo bolacinhas", "Maçã", "Banana", "Cenoura", "Brócolis", "Picolé de iogurte natural e banana", "Picolé de sachê"];
+const REACOES = ["Puxa muito", "Anda tranquilo", "Criança", "Homem", "Mulher", "Gato", "Pomba/passarinho", "Motos", "Caminhões", "Carro", "Bicicletas", "Trovão", "Fogos", "Chuva", "Costume de fugir e escapar"];
+
+/* ============================================================
+   (daqui pra baixo é o funcionamento — não precisa mexer)
+   ============================================================ */
 (function () {
-  var WHATSAPP = "5519981583108";
-  var WHATSAPP_MSG = "Oi Júlia! Vim pelo site 🐾";
   var wa = document.getElementById("waFloat");
-  if (wa) wa.href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(WHATSAPP_MSG);
-  var toggle = document.getElementById("navToggle");
-  var menu = document.getElementById("mobileMenu");
-  if (toggle && menu) {
-    toggle.addEventListener("click", function () { menu.classList.toggle("open"); });
+  if (wa) wa.href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent("Oi Júlia! Vim pelo site 🐾");
+  var toggle = document.getElementById("navToggle"), menu = document.getElementById("mobileMenu");
+  if (toggle && menu) toggle.addEventListener("click", function () { menu.classList.toggle("open"); });
+
+  var form = document.getElementById("cadForm");
+  var petsBox = document.getElementById("pets");
+  var MAX_PETS = 10;
+  var uid = 0;
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
   }
+
+  /* ---------- montagem do card de pet ---------- */
+  function pills(type, name, key, opts, required) {
+    return '<div class="opts">' + opts.map(function (o, i) {
+      var v = typeof o === "string" ? o : o[0], l = typeof o === "string" ? o : o[1];
+      return '<label class="opt"><input type="' + type + '" name="' + name + '" data-k="' + key + '" value="' + esc(v) + '"' +
+        (required && type === "radio" && i === 0 ? " required" : "") + ' /><span>' + esc(l) + '</span></label>';
+    }).join("") + "</div>";
+  }
+  function simNao(u, key) { return pills("radio", key + "-" + u, key, [["true", "Sim"], ["false", "Não"]], true); }
+  function lbl(text, req, hint) {
+    return text + (req ? ' <span class="req">*</span>' : "") + (hint ? '<span class="hint">' + hint + "</span>" : "");
+  }
+
+  function petCard() {
+    var u = ++uid;
+    var el = document.createElement("div");
+    el.className = "card pet-card";
+    el.setAttribute("data-pet", u);
+    el.innerHTML =
+      '<div class="pet-head"><h2 class="card-title"><span class="ic">🐾</span><span class="pet-title">Pet</span></h2>' +
+      '<button type="button" class="pet-rm">Remover</button></div>' +
+
+      '<div class="grp"><div class="grp-title">Dados do pet</div><div class="fields">' +
+        '<div class="f"><label class="lbl" for="nome-' + u + '">' + lbl("Nome", true) + '</label>' +
+          '<input type="text" id="nome-' + u + '" data-k="nome" required maxlength="120" /><div class="msg">Preencha o nome do pet.</div></div>' +
+        '<div class="row2">' +
+          '<div class="f"><label class="lbl" for="nasc-' + u + '">' + lbl("Data de nascimento") + '</label>' +
+            '<input type="date" id="nasc-' + u + '" data-k="nascimento" /></div>' +
+          '<div class="f"><label class="lbl" for="idade-' + u + '">' + lbl("Não sabe a data? Idade aproximada") + '</label>' +
+            '<input type="text" id="idade-' + u + '" data-k="idade_aproximada" maxlength="60" placeholder="Ex.: uns 3 anos" /></div>' +
+        '</div>' +
+        '<div class="row2">' +
+          '<div class="f"><span class="lbl">' + lbl("Sexo", true) + '</span>' + pills("radio", "sexo-" + u, "sexo", ["Fêmea", "Macho"], true) + '<div class="msg">Escolha uma opção.</div></div>' +
+          '<div class="f"><span class="lbl">' + lbl("Castrado?", true) + '</span>' + simNao(u, "castrado") + '<div class="msg">Escolha uma opção.</div></div>' +
+        '</div>' +
+        '<div class="f" data-if="cio" hidden><label class="lbl" for="cio-' + u + '">' + lbl("Data do último cio", false, "Se não souber o dia certinho, pode ser o mês.") + '</label>' +
+          '<input type="text" id="cio-' + u + '" data-k="ultimo_cio" maxlength="120" placeholder="Ex.: 10/08/2026 ou agosto" /></div>' +
+        '<div class="row2">' +
+          '<div class="f"><label class="lbl" for="raca-' + u + '">' + lbl("Raça") + '</label>' +
+            '<input type="text" id="raca-' + u + '" data-k="raca" maxlength="120" placeholder="Ex.: SRD, Shih-tzu…" /></div>' +
+          '<div class="f"><label class="lbl" for="peso-' + u + '">' + lbl("Peso aproximado", true) + '</label>' +
+            '<div class="unit"><input type="number" id="peso-' + u + '" data-k="peso_kg" required min="0.1" max="120" step="0.1" inputmode="decimal" /><span>kg</span></div>' +
+            '<div class="msg">Informe o peso aproximado.</div></div>' +
+        '</div>' +
+      '</div></div>' +
+
+      '<div class="grp"><div class="grp-title">Saúde</div><div class="fields">' +
+        '<div class="f"><label class="lbl" for="vet-' + u + '">' + lbl("Nome e contato do veterinário responsável") + '</label>' +
+          '<input type="text" id="vet-' + u + '" data-k="veterinario" maxlength="300" placeholder="Ex.: Dra. Paula · (19) 3333-4444" /></div>' +
+        '<div class="f" data-need="hospitais"><span class="lbl">' + lbl("Hospital 24 horas de preferência", true, "Pode marcar mais de um.") + '</span>' +
+          pills("checkbox", "hosp-" + u, "hospitais", HOSPITAIS) +
+          '<div class="opt-outro"><input type="text" data-k="hospitais_outro" maxlength="120" placeholder="Outro hospital" aria-label="Outro hospital" /></div>' +
+          '<div class="msg">Escolha ou escreva pelo menos um hospital.</div></div>' +
+        '<div class="f"><span class="lbl">' + lbl("Possui alguma doença crônica?", true) + '</span>' + simNao(u, "doenca") + '<div class="msg">Escolha uma opção.</div>' +
+          '<div class="follow" data-if="doenca" hidden><input type="text" data-k="doenca_cronica" required maxlength="1000" placeholder="Qual doença?" aria-label="Qual doença" /><div class="msg">Conte qual é a doença.</div></div></div>' +
+        '<div class="f"><span class="lbl">' + lbl("Possui alguma alergia?", true) + '</span>' + simNao(u, "alerg") + '<div class="msg">Escolha uma opção.</div>' +
+          '<div class="follow" data-if="alerg" hidden><input type="text" data-k="alergia" required maxlength="1000" placeholder="Alergia a quê?" aria-label="Qual alergia" /><div class="msg">Conte qual é a alergia.</div></div></div>' +
+        '<div class="f"><span class="lbl">' + lbl("Está com a proteção contra pulgas e carrapatos em dia?", true) + '</span>' + simNao(u, "antipulgas_em_dia") + '<div class="msg">Escolha uma opção.</div></div>' +
+        '<div class="f"><span class="lbl">' + lbl("Usa algum medicamento contínuo?", true) + '</span>' + simNao(u, "remedio") + '<div class="msg">Escolha uma opção.</div>' +
+          '<div class="follow" data-if="remedio" hidden><textarea data-k="medicamento" required maxlength="1000" placeholder="Qual remédio, dose e horários" aria-label="Descreva o uso do medicamento"></textarea><div class="msg">Descreva o uso do medicamento.</div></div></div>' +
+      '</div></div>' +
+
+      '<div class="grp"><div class="grp-title">Alimentação</div><div class="fields">' +
+        '<div class="f"><label class="lbl" for="alim-' + u + '">' + lbl("Ração ou alimentação natural: qual, quanto e em que horários?", true) + '</label>' +
+          '<textarea id="alim-' + u + '" data-k="alimentacao" required maxlength="2000" placeholder="Ex.: Ração Premier, 1 xícara às 8h e às 18h"></textarea><div class="msg">Conte como é a alimentação.</div></div>' +
+        '<div class="f"><span class="lbl">' + lbl("O que o seu pet pode comer?", false, "Marque tudo o que você autoriza.") + '</span>' +
+          pills("checkbox", "comer-" + u, "pode_comer", PODE_COMER) +
+          '<div class="opt-outro"><input type="text" data-k="pode_comer_outro" maxlength="200" placeholder="Outro (ex.: melancia)" aria-label="Outro alimento" /></div></div>' +
+      '</div></div>' +
+
+      '<div class="grp"><div class="grp-title">Comportamento</div><div class="fields">' +
+        '<div class="f" data-need="reacoes"><span class="lbl">' + lbl("No passeio: como ele anda e a quem/ao que costuma reagir?", true, "Marque tudo o que se aplica.") + '</span>' +
+          pills("checkbox", "reac-" + u, "reacoes", REACOES) +
+          '<div class="opt-outro"><input type="text" data-k="reacoes_outro" maxlength="200" placeholder="Outro" aria-label="Outra reação" /></div>' +
+          '<div class="msg">Marque pelo menos uma opção.</div></div>' +
+        '<div class="f"><label class="lbl" for="info-' + u + '">' + lbl("Alguma informação adicional sobre a rotina e o comportamento?") + '</label>' +
+          '<textarea id="info-' + u + '" data-k="info_adicional" maxlength="3000" placeholder="Manias, medos, onde dorme, brinquedo favorito…"></textarea></div>' +
+      '</div></div>';
+
+    el.querySelector(".pet-rm").addEventListener("click", function () { el.remove(); renumber(); });
+    el.addEventListener("change", function () { syncPet(el); });
+    petsBox.appendChild(el);
+    syncPet(el);
+    renumber();
+    return el;
+  }
+
+  function radioVal(scope, key) {
+    var r = scope.querySelector('input[data-k="' + key + '"]:checked');
+    return r ? r.value : "";
+  }
+  function show(block, on) {
+    block.hidden = !on;
+    block.querySelectorAll("input, textarea").forEach(function (i) { i.disabled = !on; });
+  }
+  function syncPet(el) {
+    show(el.querySelector('[data-if="cio"]'), radioVal(el, "sexo") === "Fêmea" && radioVal(el, "castrado") === "false");
+    ["doenca", "alerg", "remedio"].forEach(function (k) { show(el.querySelector('[data-if="' + k + '"]'), radioVal(el, k) === "true"); });
+  }
+  function renumber() {
+    var cards = petsBox.querySelectorAll(".pet-card");
+    cards.forEach(function (c, i) {
+      var nome = c.querySelector('[data-k="nome"]').value.trim();
+      c.querySelector(".pet-title").textContent = nome || ("Pet " + (i + 1));
+      c.querySelector(".pet-rm").style.display = cards.length > 1 ? "" : "none";
+    });
+    document.getElementById("addPet").style.display = cards.length >= MAX_PETS ? "none" : "";
+  }
+  petsBox.addEventListener("input", function (e) { if (e.target.getAttribute("data-k") === "nome") renumber(); });
+  document.getElementById("addPet").addEventListener("click", function () {
+    var el = petCard();
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    setTimeout(function () { el.querySelector('[data-k="nome"]').focus({ preventScroll: true }); }, 400);
+  });
+
+  /* ---------- máscaras ---------- */
+  function digits(s) { return s.replace(/\D/g, ""); }
+  var cpfIn = document.getElementById("t-cpf"), telIn = document.getElementById("t-tel");
+  cpfIn.addEventListener("input", function () {
+    var d = digits(cpfIn.value).slice(0, 11);
+    cpfIn.value = d.replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+  });
+  telIn.addEventListener("input", function () {
+    var d = digits(telIn.value).slice(0, 11);
+    telIn.value = d.length > 10 ? d.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3")
+      : d.replace(/(\d{2})(\d{0,4})(\d{0,4})/, function (_, a, b, c) { return "(" + a + ") " + b + (c ? "-" + c : ""); }).replace(/^\((\d{0,2})\) $/, "($1");
+  });
+  function cpfOk(v) {
+    var d = digits(v);
+    if (d.length !== 11 || /^(\d)\1+$/.test(d)) return false;
+    for (var t = 9; t < 11; t++) {
+      var s = 0;
+      for (var i = 0; i < t; i++) s += +d[i] * (t + 1 - i);
+      if (((s * 10) % 11) % 10 !== +d[t]) return false;
+    }
+    return true;
+  }
+
+  /* ---------- validação ---------- */
+  function fieldOf(node) { return node.closest(".follow") || node.closest(".f"); }
+  function validate() {
+    form.querySelectorAll(".err").forEach(function (e) { e.classList.remove("err"); });
+    var bad = [];
+    function mark(node) { var f = fieldOf(node); if (f && bad.indexOf(f) < 0) { f.classList.add("err"); bad.push(f); } }
+
+    form.querySelectorAll("input[required]:not(:disabled), textarea[required]:not(:disabled)").forEach(function (i) {
+      if (i.type === "radio") { if (!form.querySelector('input[name="' + i.name + '"]:checked')) mark(i); }
+      else if (i.type === "checkbox") { if (!i.checked) mark(i); }
+      else if (!i.value.trim() || !i.checkValidity()) mark(i);
+    });
+    if (cpfIn.value && !cpfOk(cpfIn.value)) mark(cpfIn);
+    if (telIn.value && digits(telIn.value).length < 10) mark(telIn);
+    form.querySelectorAll("[data-need]").forEach(function (f) {
+      var k = f.getAttribute("data-need");
+      if (!f.querySelector('input[data-k="' + k + '"]:checked') && !f.querySelector('[data-k="' + k + '_outro"]').value.trim()) mark(f);
+    });
+    // ordem visual
+    bad.sort(function (a, b) { return a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1; });
+    return bad;
+  }
+  form.addEventListener("input", function (e) { var f = fieldOf(e.target); if (f) f.classList.remove("err"); });
+  form.addEventListener("change", function (e) { var f = fieldOf(e.target); if (f) f.classList.remove("err"); var n = e.target.closest("[data-need]"); if (n) n.classList.remove("err"); });
+
+  /* ---------- coleta ---------- */
+  function checks(scope, key) {
+    var v = Array.prototype.map.call(scope.querySelectorAll('input[data-k="' + key + '"]:checked'), function (i) { return i.value; });
+    var o = scope.querySelector('[data-k="' + key + '_outro"]');
+    if (o && o.value.trim()) v.push(o.value.trim());
+    return v;
+  }
+  function val(scope, key) { var i = scope.querySelector('[data-k="' + key + '"]'); return i && !i.disabled ? i.value.trim() : ""; }
+  function collect() {
+    var tutor = {};
+    form.querySelectorAll("[data-t]").forEach(function (i) { tutor[i.getAttribute("data-t")] = i.value.trim(); });
+    tutor.autoriza_fotos = form.querySelector('input[name="t-fotos"]:checked').value === "true";
+    tutor.autoriza_emergencia = document.getElementById("t-emerg-ok").checked;
+    var pets = Array.prototype.map.call(petsBox.querySelectorAll(".pet-card"), function (el) {
+      return {
+        nome: val(el, "nome"), nascimento: val(el, "nascimento"), idade_aproximada: val(el, "idade_aproximada"),
+        sexo: radioVal(el, "sexo"), raca: val(el, "raca"), castrado: radioVal(el, "castrado") === "true",
+        ultimo_cio: val(el, "ultimo_cio"), peso_kg: val(el, "peso_kg"), veterinario: val(el, "veterinario"),
+        hospitais: checks(el, "hospitais"),
+        doenca_cronica: val(el, "doenca_cronica"), alergia: val(el, "alergia"),
+        antipulgas_em_dia: radioVal(el, "antipulgas_em_dia") === "true", medicamento: val(el, "medicamento"),
+        alimentacao: val(el, "alimentacao"), pode_comer: checks(el, "pode_comer"),
+        reacoes: checks(el, "reacoes"), info_adicional: val(el, "info_adicional")
+      };
+    });
+    return { tutor: tutor, pets: pets };
+  }
+
+  /* ---------- envio ---------- */
+  var errBox = document.getElementById("formError"), sendBtn = document.getElementById("sendBtn");
+  function showError(html) { errBox.innerHTML = html; errBox.classList.add("show"); }
+  var waHelp = ' Se preferir, <a href="https://wa.me/' + WHATSAPP + '" target="_blank" rel="noopener">me chama no WhatsApp</a>.';
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    errBox.classList.remove("show");
+    var bad = validate();
+    if (bad.length) {
+      showError("Faltou preencher " + (bad.length === 1 ? "1 campo" : bad.length + " campos") + ". Eles estão marcados em rosa.");
+      bad[0].scrollIntoView({ behavior: "smooth", block: "center" });
+      var first = bad[0].querySelector("input:not([type=radio]):not([type=checkbox]), textarea");
+      if (first) setTimeout(function () { first.focus({ preventScroll: true }); }, 350);
+      return;
+    }
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+      showError("O cadastro online ainda está sendo configurado." + waHelp);
+      return;
+    }
+    var data = collect();
+    sendBtn.disabled = true; sendBtn.textContent = "Enviando…";
+    fetch(SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/rpc/cadastrar", {
+      method: "POST",
+      headers: { "apikey": SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    }).then(function (r) {
+      return r.json().catch(function () { return null; }).then(function (body) {
+        if (!r.ok) throw new Error((body && body.message) || ("HTTP " + r.status));
+        return body;
+      });
+    }).then(function (id) {
+      renderFicha(data, String(id || ""), new Date());
+    }).catch(function (err) {
+      console.error(err);
+      showError("Não consegui enviar agora. Confira sua internet e tente de novo." + waHelp);
+    }).finally(function () {
+      sendBtn.disabled = false; sendBtn.textContent = "Enviar cadastro";
+    });
+  });
+
+  /* ---------- ficha ---------- */
+  function idade(p) {
+    if (p.nascimento) {
+      var n = new Date(p.nascimento + "T12:00:00"), h = new Date();
+      var m = (h.getFullYear() - n.getFullYear()) * 12 + h.getMonth() - n.getMonth() - (h.getDate() < n.getDate() ? 1 : 0);
+      if (m < 0) return "";
+      var a = Math.floor(m / 12), r = m % 12;
+      return (a ? a + (a > 1 ? " anos" : " ano") : "") + (a && r ? " e " : "") + (r ? r + (r > 1 ? " meses" : " mês") : (a ? "" : "menos de 1 mês"));
+    }
+    return p.idade_aproximada ? "~ " + p.idade_aproximada : "";
+  }
+  function dataBR(iso) { if (!iso) return ""; var s = iso.split("-"); return s[2] + "/" + s[1] + "/" + s[0]; }
+  function kv(items) {
+    return '<dl class="kv">' + items.filter(function (x) { return x[1]; }).map(function (x) {
+      return '<div class="' + (x[2] || "") + '"><dt>' + esc(x[0]) + "</dt><dd>" + esc(x[1]) + "</dd></div>";
+    }).join("") + "</dl>";
+  }
+  function tags(list, cls) { return list.map(function (t) { return '<span class="tag ' + (cls || "") + '">' + esc(t) + "</span>"; }).join(""); }
+  var PAW = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6.5" cy="9" r="2.1"/><circle cx="12" cy="6.4" r="2.3"/><circle cx="17.5" cy="9" r="2.1"/><path d="M12 11.4c-3 0-5.4 2.3-5.4 4.7 0 1.7 1.5 2.6 3.1 2.6 1 0 1.6-.4 2.3-.4s1.3.4 2.3.4c1.6 0 3.1-.9 3.1-2.6 0-2.4-2.4-4.7-5.4-4.7z"/></svg>';
+
+  function petHtml(p) {
+    var head = [p.sexo === "Fêmea" ? "♀ Fêmea" : "♂ Macho", p.raca, idade(p), p.peso_kg ? String(p.peso_kg).replace(".", ",") + " kg" : ""].filter(Boolean);
+    var alerts = [];
+    if (p.alergia) alerts.push('<div class="alert"><b>Alergia:</b> ' + esc(p.alergia) + "</div>");
+    if (p.doenca_cronica) alerts.push('<div class="alert"><b>Doença crônica:</b> ' + esc(p.doenca_cronica) + "</div>");
+    if (p.medicamento) alerts.push('<div class="alert"><b>Medicamento contínuo:</b> ' + esc(p.medicamento) + "</div>");
+    if (!p.antipulgas_em_dia) alerts.push('<div class="alert"><b>Antipulgas/carrapatos:</b> não está em dia</div>');
+    if (!alerts.length) alerts.push('<div class="alert ok"><b>Saúde:</b> sem doenças crônicas, alergias ou medicamentos contínuos · antipulgas em dia</div>');
+    var extrasComer = p.pode_comer.filter(function (x) { return PODE_COMER.indexOf(x) < 0; });
+    var comer = PODE_COMER.map(function (x) {
+      return p.pode_comer.indexOf(x) >= 0 ? '<span class="tag sage">✓ ' + esc(x) + "</span>" : '<span class="tag off">' + esc(x) + "</span>";
+    }).join("") + tags(extrasComer.map(function (x) { return "✓ " + x; }), "sage");
+
+    return '<article class="fx-pet">' +
+      '<div class="fx-pet-head"><div class="av">🐾</div><div><h4>' + esc(p.nome) + '</h4><div class="fx-tags">' +
+        tags(head) + '<span class="tag ' + (p.castrado ? "sage" : "honey") + '">' + (p.sexo === "Fêmea" ? (p.castrado ? "Castrada" : "Não castrada") : (p.castrado ? "Castrado" : "Não castrado")) + "</span>" +
+      "</div></div></div>" +
+      '<div class="fx-pet-body">' +
+        '<section class="fx-sec"><h3>Dados</h3>' + kv([
+          ["Nascimento", dataBR(p.nascimento)], ["Idade aproximada", p.nascimento ? "" : p.idade_aproximada],
+          ["Último cio", p.ultimo_cio]]) + (p.nascimento || p.idade_aproximada || p.ultimo_cio ? "" : '<span class="hint">Sem outras informações.</span>') + "</section>" +
+        '<section class="fx-sec"><h3>Saúde</h3><div class="alerts">' + alerts.join("") + "</div>" +
+          '<div style="margin-top:14px">' + kv([["Veterinário responsável", p.veterinario || "Não informado"], ["Hospital 24h de preferência", p.hospitais.join(" · ")]]) + "</div></section>" +
+        '<section class="fx-sec"><h3>Alimentação</h3>' + kv([["Rotina", p.alimentacao, "wide"]]) +
+          '<div style="margin-top:14px"><dl class="kv"><div class="wide"><dt>Pode comer</dt><dd><div class="fx-tags">' + comer + "</div></dd></div></dl></div></section>" +
+        '<section class="fx-sec"><h3>Comportamento</h3><div class="fx-tags">' + tags(p.reacoes, "rose") + "</div>" +
+          (p.info_adicional ? '<div style="margin-top:14px">' + kv([["Informações adicionais", p.info_adicional, "wide"]]) + "</div>" : "") + "</section>" +
+      "</div></article>";
+  }
+
+  function renderFicha(d, id, when) {
+    var t = d.tutor;
+    var code = id ? id.slice(0, 8).toUpperCase() : "";
+    var dt = when.toLocaleDateString("pt-BR") + " às " + when.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    document.getElementById("ficha").innerHTML =
+      '<div class="ficha">' +
+        '<div class="fx-top"><div class="fx-brand"><span class="mk">' + PAW + '</span><div><b>Ficha cadastral</b><small>Ju · petsitter · Limeira</small></div></div>' +
+          '<div class="fx-meta"><b>' + esc(d.pets.map(function (p) { return p.nome; }).join(", ")) + "</b>" + esc(dt) + (code ? " · nº " + esc(code) : "") + "</div></div>" +
+        '<div class="fx-body">' +
+          '<section class="fx-sec"><h3>Tutor</h3>' + kv([["Nome", t.nome, "wide"], ["CPF", t.cpf], ["Telefone", t.telefone], ["Endereço", t.endereco, "wide"], ["Contato de emergência", t.contato_emergencia, "wide"]]) + "</section>" +
+          d.pets.map(petHtml).join("") +
+          '<section class="fx-sec"><h3>Autorizações</h3><div class="auths">' +
+            '<div class="auth"><span class="ck' + (t.autoriza_fotos ? "" : " no") + '">' + (t.autoriza_fotos ? "✓" : "✕") + "</span><span>" +
+              (t.autoriza_fotos ? "<b>Autoriza</b>" : "<b>Não autoriza</b>") + " a divulgação de fotos e vídeos nas redes sociais (sem nome do pet e do tutor).</span></div>" +
+            '<div class="auth"><span class="ck">✓</span><span><b>Atendimento de emergência:</b> autoriza que, em caso de emergência e se não for localizado(a), sejam tomadas as medidas veterinárias necessárias, com custos sob sua responsabilidade.</span></div>' +
+          "</div></section>" +
+        "</div>" +
+        '<div class="fx-foot">Ju Petsitter · Limeira-SP · @jupetslimeira</div>' +
+      "</div>";
+    form.style.display = "none";
+    document.querySelector(".cad-head").style.display = "none";
+    document.getElementById("fichaWrap").classList.add("show");
+    document.title = "Ficha cadastral · " + d.pets.map(function (p) { return p.nome; }).join(", ") + " · Ju Pets";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
+
+  petCard();
 })();
 </script>
 </body>
