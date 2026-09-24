@@ -379,6 +379,10 @@
   .item .flag { display: inline-block; margin-top: 6px; font-size: 12px; font-weight: 800; padding: 3px 9px; border-radius: 999px; background: var(--rose-soft); color: var(--rose-deep); }
   .empty { text-align: center; color: var(--ink-soft); padding: 40px 10px; }
   #vDetail { max-width: 460px; margin: 0 auto; }
+  #vEdit { max-width: 760px; margin: 0 auto; }
+  #vEdit .send-row { position: sticky; bottom: 0; z-index: 5; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 8px 16px;
+    background: var(--cream); padding: 10px 0 12px; border-top: 1px solid var(--line); }
+  #vEdit .send-row .btn { font-size: 16px; padding: 12px 28px; }
   .detail-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 22px; }
   .detail-bar .sp { flex: 1; }
   .link-btn { background: none; border: 0; font: inherit; font-weight: 800; color: var(--rose-deep); cursor: pointer; padding: 8px 4px; }
@@ -393,6 +397,7 @@
     .nav-inner .who-am-i span { display: none; }
   }
 </style>
+<link rel="stylesheet" href="form.css" />
 <link rel="stylesheet" href="ficha.css" />
 </head>
 <body>
@@ -438,12 +443,28 @@
       <div class="list" id="list"></div>
     </div>
 
+    <!-- Edição -->
+    <div id="vEdit" hidden>
+      <div class="detail-bar"><button type="button" class="link-btn" id="editBack">← Cancelar</button></div>
+      <div class="eyebrow">Editar ficha</div>
+      <h1 id="editTitle">Editar</h1>
+      <p class="sub">Altere o que mudou e toque em <b>Salvar alterações</b>.</p>
+      <form id="editForm" class="cad-form" style="margin-top:0" novalidate>
+        <div class="send-row">
+          <div class="msg-err" id="editErr" style="width:100%"></div>
+          <button type="submit" class="btn btn-primary" id="saveBtn">Salvar alterações</button>
+          <button type="button" class="link-btn" id="editCancel">Cancelar</button>
+        </div>
+      </form>
+    </div>
+
     <!-- Ficha -->
     <div id="vDetail" class="ficha-page" hidden>
       <div class="detail-bar no-print">
         <button type="button" class="link-btn" id="backBtn">← Voltar</button>
         <span class="sp"></span>
-        <a class="btn btn-wa btn-sm" id="waTutor" target="_blank" rel="noopener">WhatsApp do tutor</a>
+        <button type="button" class="btn btn-ghost btn-sm" id="editBtn">Editar</button>
+        <a class="btn btn-wa btn-sm" id="waTutor" target="_blank" rel="noopener">WhatsApp</a>
         <button type="button" class="btn btn-primary btn-sm" id="printBtn">Baixar PDF</button>
       </div>
       <div id="ficha"></div>
@@ -456,6 +477,7 @@
 </section>
 
 <script src="ficha.js"></script>
+<script src="form.js"></script>
 <script>
 /* Mesmo projeto do cadastro.html */
 const SUPABASE_URL = "https://xeccdccundlhtisaegiy.supabase.co";
@@ -506,7 +528,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
 
   /* ---------- telas ---------- */
   function show(view) {
-    ["vLogin", "vList", "vDetail"].forEach(function (v) { $(v).hidden = v !== view; });
+    ["vLogin", "vList", "vDetail", "vEdit"].forEach(function (v) { $(v).hidden = v !== view; });
     $("whoAmI").hidden = view === "vLogin";
     if (session) $("whoEmail").textContent = session.email || "";
     window.scrollTo(0, 0);
@@ -605,8 +627,9 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
   }
   function route() {
     if (!session) return show("vLogin");
-    var m = location.hash.match(/^#ficha\/(.+)$/);
-    if (m) openDetail(m[1]);
+    var m = location.hash.match(/^#ficha\/(.+)$/), e = location.hash.match(/^#editar\/(.+)$/);
+    if (e) openEdit(e[1]);
+    else if (m) openDetail(m[1]);
     else { document.title = "Fichas dos pets · Ju Pets"; show("vList"); }
   }
   window.addEventListener("hashchange", route);
@@ -626,6 +649,50 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
     api("tutores?id=eq." + encodeURIComponent(current.id), { method: "DELETE", headers: { Prefer: "return=minimal" } })
       .then(function () { rows = rows.filter(function (r) { return r.id !== current.id; }); current = null; location.hash = ""; renderList(); })
       .catch(function () { alert("Não consegui apagar agora. Tente de novo."); });
+  });
+
+  /* ---------- edição ---------- */
+  var editApi = null, editing = null;
+  function openEdit(id) {
+    var t = rows.filter(function (r) { return r.id === id; })[0];
+    if (!t) { location.hash = ""; return; }
+    editing = t;
+    var f = $("editForm");
+    // limpa campos de uma edição anterior (mantém só a linha dos botões)
+    Array.prototype.slice.call(f.children).forEach(function (c) { if (!c.classList.contains("send-row")) c.remove(); });
+    err("editErr", "");
+    editApi = JuForm.criar(f, { admin: true, dados: toFicha(t) });
+    $("editTitle").textContent = "Editar: " + (t.pets || []).slice().sort(function (a, b) { return a.ordem - b.ordem; }).map(function (p) { return p.nome; }).join(", ");
+    document.title = "Editar ficha · Ju Pets";
+    show("vEdit");
+  }
+  function sairEdicao() { if (editing) location.hash = "ficha/" + editing.id; else location.hash = ""; }
+  $("editBtn").addEventListener("click", function () { if (current) location.hash = "editar/" + current.id; });
+  $("editBack").addEventListener("click", sairEdicao);
+  $("editCancel").addEventListener("click", sairEdicao);
+  $("editForm").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    if (!editApi || !editing) return;
+    var bad = editApi.validar();
+    if (bad.length) {
+      err("editErr", "Faltou preencher " + (bad.length === 1 ? "1 campo obrigatório" : bad.length + " campos obrigatórios") + ". Eles estão marcados em rosa.");
+      bad[0].scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    var d = editApi.coletar(), b = $("saveBtn"), id = editing.id;
+    b.disabled = true; b.textContent = "Salvando…"; err("editErr", "");
+    api("rpc/admin_salvar", { method: "POST", body: JSON.stringify({ p_tutor_id: id, p_tutor: d.tutor, p_pets: d.pets }) })
+      .then(function () { return api("tutores?select=*,pets(*)&id=eq." + encodeURIComponent(id)); })
+      .then(function (data) {
+        if (data && data[0]) rows = rows.map(function (r) { return r.id === id ? data[0] : r; });
+        renderList();
+        location.hash = "ficha/" + id;
+      })
+      .catch(function (e) {
+        console.error(e);
+        err("editErr", e.message.indexOf("sessão") >= 0 ? e.message : "Não consegui salvar agora. Confira sua internet e tente de novo.");
+      })
+      .finally(function () { b.disabled = false; b.textContent = "Salvar alterações"; });
   });
 
   /* ---------- início ---------- */
