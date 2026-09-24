@@ -1,5 +1,14 @@
 /* Ficha cadastral do pet — usada em cadastro.html (cliente) e admin.html (Júlia).
    Depende das variáveis de cor/fonte do site (:root). */
+
+/* Fonte própria da ficha (DejaVu Sans, só os caracteres usados), pra ficha e o PDF
+   saírem iguais em qualquer celular ou computador. */
+@font-face { font-family: "Ficha Sans"; src: url("fonts/DejaVuSans.woff2") format("woff2"); font-weight: 400; font-display: block; }
+@font-face { font-family: "Ficha Sans"; src: url("fonts/DejaVuSans-Bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+.ficha, .ficha * { font-family: "Ficha Sans", "DejaVu Sans", Verdana, sans-serif !important; }
+/* Mantém cores e fundos mesmo com "Gráficos de fundo" desligado na impressão */
+.ficha, .ficha *, .ficha *::before, .ficha *::after { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
 .ficha { background: #fff; border: 1px solid var(--line); border-radius: var(--r-xl); box-shadow: var(--shadow); overflow: hidden; }
 .fx-top { background: var(--rose); color: #fff; padding: 28px 34px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;
   background-image: radial-gradient(circle at 92% -20%, rgba(255,255,255,.22) 0 120px, transparent 121px), radial-gradient(circle at 78% 130%, rgba(255,255,255,.14) 0 90px, transparent 91px); }
@@ -55,7 +64,6 @@
   .wrap { padding: 0 !important; max-width: none; }
   .ficha-page { max-width: none !important; margin: 0 !important; }
   .ficha { box-shadow: none; border: 0; border-radius: 0; overflow: visible; }
-  .fx-top, .tag, .alert, .auth .ck, .fx-pet-head, .fx-brand .mk { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .fx-top { border-radius: 12px; padding: 14px 18px; }
   .fx-brand .mk { width: 38px; height: 38px; } .fx-brand .mk svg { width: 22px; height: 22px; }
   .fx-brand b { font-size: 20px; } .fx-meta { font-size: 11px; } .fx-meta b { font-size: 15px; }
