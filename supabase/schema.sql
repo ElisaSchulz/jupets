@@ -179,3 +179,105 @@ create policy "admin apaga tutores" on public.tutores
 drop policy if exists "admin lê pets" on public.pets;
 create policy "admin lê pets" on public.pets
   for select to authenticated using (public.is_admin());
+
+-- =====================================================================
+--  Edição pela página de admin: salva o tutor e os pets de uma ficha de uma vez.
+--  Pets que vierem com id são atualizados, sem id são criados, e os que
+--  não vierem mais na lista são apagados.
+-- =====================================================================
+create or replace function public.admin_salvar(p_tutor_id uuid, p_tutor jsonb, p_pets jsonb)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  p    jsonb;
+  n    int := 0;
+  pid  uuid;
+  keep uuid[] := '{}';
+begin
+  if not public.is_admin() then
+    raise exception 'Sem permissão.';
+  end if;
+  if jsonb_typeof(p_pets) <> 'array' or jsonb_array_length(p_pets) = 0 then
+    raise exception 'A ficha precisa ter pelo menos um pet.';
+  end if;
+  if jsonb_array_length(p_pets) > 10 then
+    raise exception 'Máximo de 10 pets por cadastro.';
+  end if;
+
+  update public.tutores set
+    nome = trim(p_tutor->>'nome'),
+    cpf = p_tutor->>'cpf',
+    endereco = p_tutor->>'endereco',
+    telefone = p_tutor->>'telefone',
+    contato_emergencia = p_tutor->>'contato_emergencia',
+    autoriza_fotos = (p_tutor->>'autoriza_fotos')::boolean,
+    autoriza_emergencia = (p_tutor->>'autoriza_emergencia')::boolean
+  where id = p_tutor_id;
+  if not found then
+    raise exception 'Cadastro não encontrado.';
+  end if;
+
+  for p in select * from jsonb_array_elements(p_pets) loop
+    n := n + 1;
+    pid := nullif(p->>'id', '')::uuid;
+    if pid is not null and exists (select 1 from public.pets where id = pid and tutor_id = p_tutor_id) then
+      update public.pets set
+        ordem = n,
+        nome = trim(p->>'nome'),
+        nascimento = nullif(p->>'nascimento','')::date,
+        idade_aproximada = nullif(p->>'idade_aproximada',''),
+        sexo = p->>'sexo',
+        raca = nullif(p->>'raca',''),
+        castrado = (p->>'castrado')::boolean,
+        ultimo_cio = nullif(p->>'ultimo_cio',''),
+        veterinario = nullif(p->>'veterinario',''),
+        hospitais = coalesce(array(select jsonb_array_elements_text(p->'hospitais')), '{}'),
+        peso_kg = nullif(p->>'peso_kg','')::numeric,
+        doenca_cronica = nullif(p->>'doenca_cronica',''),
+        alergia = nullif(p->>'alergia',''),
+        antipulgas_em_dia = (p->>'antipulgas_em_dia')::boolean,
+        medicamento = nullif(p->>'medicamento',''),
+        alimentacao = p->>'alimentacao',
+        pode_comer = coalesce(array(select jsonb_array_elements_text(p->'pode_comer')), '{}'),
+        reacoes = coalesce(array(select jsonb_array_elements_text(p->'reacoes')), '{}'),
+        info_adicional = nullif(p->>'info_adicional','')
+      where id = pid;
+    else
+      insert into public.pets (
+        tutor_id, ordem, nome, nascimento, idade_aproximada, sexo, raca, castrado, ultimo_cio,
+        veterinario, hospitais, peso_kg, doenca_cronica, alergia, antipulgas_em_dia, medicamento,
+        alimentacao, pode_comer, reacoes, info_adicional
+      ) values (
+        p_tutor_id, n, trim(p->>'nome'),
+        nullif(p->>'nascimento','')::date,
+        nullif(p->>'idade_aproximada',''),
+        p->>'sexo',
+        nullif(p->>'raca',''),
+        (p->>'castrado')::boolean,
+        nullif(p->>'ultimo_cio',''),
+        nullif(p->>'veterinario',''),
+        coalesce(array(select jsonb_array_elements_text(p->'hospitais')), '{}'),
+        nullif(p->>'peso_kg','')::numeric,
+        nullif(p->>'doenca_cronica',''),
+        nullif(p->>'alergia',''),
+        (p->>'antipulgas_em_dia')::boolean,
+        nullif(p->>'medicamento',''),
+        p->>'alimentacao',
+        coalesce(array(select jsonb_array_elements_text(p->'pode_comer')), '{}'),
+        coalesce(array(select jsonb_array_elements_text(p->'reacoes')), '{}'),
+        nullif(p->>'info_adicional','')
+      )
+      returning id into pid;
+    end if;
+    keep := keep || pid;
+  end loop;
+
+  delete from public.pets where tutor_id = p_tutor_id and not (id = any(keep));
+end;
+$$;
+
+revoke all on function public.admin_salvar(uuid, jsonb, jsonb) from public;
+grant execute on function public.admin_salvar(uuid, jsonb, jsonb) to authenticated;

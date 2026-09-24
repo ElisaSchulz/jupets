@@ -351,64 +351,6 @@
 <style>
   /* ============ CADASTRO — formulário ============ */
   .cad-head { max-width: 680px; margin: 0 auto; }
-  .cad-form { max-width: 760px; margin: 38px auto 0; display: grid; gap: 22px; }
-  .card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 30px; box-shadow: var(--shadow-sm); }
-  .card-title { display: flex; align-items: center; gap: 12px; font-size: 22px; margin: 0 0 20px; }
-  .card-title .ic { width: 38px; height: 38px; border-radius: 50%; background: var(--rose-soft); color: var(--rose-deep); display: inline-grid; place-items: center; font-size: 18px; flex: none; }
-  .grp + .grp { margin-top: 26px; padding-top: 24px; border-top: 1px dashed var(--line); }
-  .grp-title { font-weight: 800; text-transform: uppercase; letter-spacing: 0.14em; font-size: 12px; color: var(--rose); margin: 0 0 14px; }
-  .fields { display: grid; gap: 18px; }
-  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-  .f label.lbl, .f .lbl { display: block; font-weight: 700; font-size: 15.5px; margin-bottom: 7px; line-height: 1.35; }
-  .req { color: var(--rose); }
-  .hint { display: block; font-weight: 500; font-size: 13.5px; color: var(--ink-soft); margin-top: 2px; }
-  .f input[type=text], .f input[type=tel], .f input[type=date], .f input[type=number], .f textarea {
-    width: 100%; box-sizing: border-box; font: inherit; font-size: 16px; color: var(--ink);
-    background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r-sm); padding: 12px 14px;
-    transition: border-color .15s, box-shadow .15s; }
-  .f textarea { min-height: 96px; resize: vertical; line-height: 1.5; }
-  .f input:focus, .f textarea:focus { outline: none; border-color: var(--rose); box-shadow: 0 0 0 4px var(--rose-soft); background: #fff; }
-  .f.err input, .f.err textarea { border-color: var(--rose-deep); }
-  .f .msg { display: none; color: var(--rose-deep); font-size: 13.5px; font-weight: 700; margin-top: 6px; }
-  .f.err .msg { display: block; }
-  .unit { position: relative; }
-  .unit input { padding-right: 46px !important; }
-  .unit span { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-soft); font-weight: 700; font-size: 14px; }
-
-  /* opções em pílula (radio + checkbox) */
-  .opts { display: flex; flex-wrap: wrap; gap: 9px; }
-  .opt { position: relative; }
-  .opt input { position: absolute; opacity: 0; inset: 0; margin: 0; pointer-events: none; }
-  .opt span { display: inline-flex; align-items: center; gap: 7px; padding: 10px 16px; border-radius: 999px; border: 1.5px solid var(--line);
-    background: var(--surface); font-weight: 700; font-size: 15px; cursor: pointer; transition: all .15s; user-select: none; line-height: 1.25; }
-  .opt input[type=checkbox] + span::before { content: ""; width: 16px; height: 16px; border-radius: 5px; border: 1.5px solid #cbb3aa; background: #fff; flex: none; }
-  .opt input:checked + span { background: var(--rose); border-color: var(--rose); color: #fff; }
-  .opt input[type=checkbox]:checked + span::before { border-color: #fff; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D75F6A' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/12px no-repeat; }
-  .opt input:focus-visible + span { box-shadow: 0 0 0 4px var(--rose-soft); }
-  .opt-outro { margin-top: 10px; }
-  .f.err .opts .opt span { border-color: var(--rose-deep); }
-  .follow { margin-top: 12px; }
-  .check-line { display: flex; gap: 12px; align-items: flex-start; background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r-md); padding: 16px; cursor: pointer; }
-  .check-line input { width: 20px; height: 20px; accent-color: var(--rose); margin-top: 2px; flex: none; }
-  .f.err .check-line { border-color: var(--rose-deep); }
-  .legal { font-size: 15px; line-height: 1.55; color: var(--ink); background: var(--honey-soft); border-radius: var(--r-md); padding: 14px 16px; margin-bottom: 12px; }
-
-  /* card do pet */
-  .pet-card { border-top: 6px solid var(--rose); }
-  .pet-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
-  .pet-head .card-title { margin: 0; }
-  .pet-rm { background: none; border: 0; color: var(--ink-soft); font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; text-decoration: underline; padding: 6px; }
-  .pet-rm:hover { color: var(--rose-deep); }
-  .add-pet { width: 100%; border: 2px dashed var(--rose); background: transparent; color: var(--rose-deep); font: inherit; font-weight: 800; font-size: 17px;
-    padding: 20px; border-radius: var(--r-lg); cursor: pointer; transition: background .15s; }
-  .add-pet:hover { background: var(--rose-soft); }
-  .send-row { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
-  .send-row .btn { font-size: 18px; padding: 17px 44px; }
-  .send-row .btn[disabled] { opacity: .6; cursor: wait; }
-  .form-error { display: none; background: var(--rose-soft); color: var(--rose-deep); border-radius: var(--r-md); padding: 14px 18px; font-weight: 700; font-size: 15px; text-align: left; }
-  .form-error.show { display: block; }
-  .form-error a { color: inherit; }
-
   /* ============ FICHA ============ */
   #fichaWrap { display: none; max-width: 860px; margin: 0 auto; }
   #fichaWrap.show { display: block; }
@@ -418,11 +360,8 @@
   .ficha-ok p { color: var(--ink-soft); margin: 0 auto; max-width: 520px; }
   .ficha-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 22px 0 34px; }
 
-  @media (max-width: 720px) {
-    .card { padding: 22px 18px; }
-    .row2 { grid-template-columns: 1fr; }
-  }
 </style>
+<link rel="stylesheet" href="form.css" />
 <link rel="stylesheet" href="ficha.css" />
 </head>
 <body>
@@ -467,53 +406,7 @@
     </div>
 
     <form id="cadForm" class="cad-form no-print" novalidate>
-      <!-- Tutor -->
-      <div class="card">
-        <h2 class="card-title"><span class="ic">👤</span>Seus dados</h2>
-        <div class="fields">
-          <div class="f"><label class="lbl" for="t-nome">Nome completo <span class="req">*</span></label>
-            <input type="text" id="t-nome" data-t="nome" required autocomplete="name" maxlength="200" />
-            <div class="msg">Preencha seu nome.</div></div>
-          <div class="row2">
-            <div class="f"><label class="lbl" for="t-cpf">CPF <span class="req">*</span></label>
-              <input type="text" id="t-cpf" data-t="cpf" required inputmode="numeric" placeholder="000.000.000-00" maxlength="14" />
-              <div class="msg">Confira o CPF.</div></div>
-            <div class="f"><label class="lbl" for="t-tel">Telefone / WhatsApp <span class="req">*</span></label>
-              <input type="tel" id="t-tel" data-t="telefone" required autocomplete="tel" placeholder="(19) 99999-9999" maxlength="15" />
-              <div class="msg">Confira o telefone, com DDD.</div></div>
-          </div>
-          <div class="f"><label class="lbl" for="t-end">Endereço <span class="req">*</span></label>
-            <input type="text" id="t-end" data-t="endereco" required autocomplete="street-address" placeholder="Rua, número, bairro" maxlength="500" />
-            <div class="msg">Preencha o endereço.</div></div>
-          <div class="f"><label class="lbl" for="t-emerg">Contato de um familiar ou amigo que estará na cidade <span class="req">*</span>
-              <span class="hint">Nome e telefone, pra eu chamar se não conseguir falar com você.</span></label>
-            <input type="text" id="t-emerg" data-t="contato_emergencia" required maxlength="500" placeholder="Ex.: Maria (irmã) · (19) 98888-7777" />
-            <div class="msg">Preencha um contato de emergência.</div></div>
-        </div>
-      </div>
-
-      <!-- Pets (gerados pelo script) -->
-      <div id="pets" style="display:grid;gap:22px;"></div>
-      <button type="button" class="add-pet" id="addPet">+ Adicionar outro pet</button>
-
-      <!-- Autorizações -->
-      <div class="card">
-        <h2 class="card-title"><span class="ic">✍️</span>Autorizações</h2>
-        <div class="fields">
-          <div class="f" data-group="fotos"><span class="lbl">Autoriza a divulgação de fotos e vídeos nas redes sociais? <span class="req">*</span>
-              <span class="hint">Não colocamos o nome do pet nem do tutor.</span></span>
-            <div class="opts">
-              <label class="opt"><input type="radio" name="t-fotos" value="true" required /><span>Sim</span></label>
-              <label class="opt"><input type="radio" name="t-fotos" value="false" /><span>Não</span></label>
-            </div>
-            <div class="msg">Escolha uma opção.</div></div>
-          <div class="f" data-group="emerg"><span class="lbl">Atendimento de emergência <span class="req">*</span></span>
-            <div class="legal">Autorizo que, em caso de emergência e caso eu não seja localizado(a), sejam tomadas as medidas veterinárias necessárias visando o bem-estar do meu pet. Estou ciente de que os custos veterinários serão de minha responsabilidade.</div>
-            <label class="check-line"><input type="checkbox" id="t-emerg-ok" required /><span><b>Li, estou ciente e concordo.</b></span></label>
-            <div class="msg">É preciso concordar pra concluir o cadastro.</div></div>
-        </div>
-      </div>
-
+      <!-- campos montados pelo form.js -->
       <div class="send-row">
         <div class="form-error" id="formError"></div>
         <button type="submit" class="btn btn-primary" id="sendBtn">Enviar cadastro</button>
@@ -553,6 +446,7 @@
 
 
 <script src="ficha.js"></script>
+<script src="form.js"></script>
 <script>
 /* ============================================================
    ⚙️  CONFIGURAÇÕES
@@ -572,205 +466,11 @@ const WHATSAPP = "5519981583108";
   var toggle = document.getElementById("navToggle"), menu = document.getElementById("mobileMenu");
   if (toggle && menu) toggle.addEventListener("click", function () { menu.classList.toggle("open"); });
 
-  var HOSPITAIS = JuFicha.OPCOES.HOSPITAIS, PODE_COMER = JuFicha.OPCOES.PODE_COMER, REACOES = JuFicha.OPCOES.REACOES;
-  var esc = JuFicha.esc;
   var form = document.getElementById("cadForm");
-  var petsBox = document.getElementById("pets");
-  var MAX_PETS = 10;
-  var uid = 0;
 
 
 
-  /* ---------- montagem do card de pet ---------- */
-  function pills(type, name, key, opts, required) {
-    return '<div class="opts">' + opts.map(function (o, i) {
-      var v = typeof o === "string" ? o : o[0], l = typeof o === "string" ? o : o[1];
-      return '<label class="opt"><input type="' + type + '" name="' + name + '" data-k="' + key + '" value="' + esc(v) + '"' +
-        (required && type === "radio" && i === 0 ? " required" : "") + ' /><span>' + esc(l) + '</span></label>';
-    }).join("") + "</div>";
-  }
-  function simNao(u, key) { return pills("radio", key + "-" + u, key, [["true", "Sim"], ["false", "Não"]], true); }
-  function lbl(text, req, hint) {
-    return text + (req ? ' <span class="req">*</span>' : "") + (hint ? '<span class="hint">' + hint + "</span>" : "");
-  }
-
-  function petCard() {
-    var u = ++uid;
-    var el = document.createElement("div");
-    el.className = "card pet-card";
-    el.setAttribute("data-pet", u);
-    el.innerHTML =
-      '<div class="pet-head"><h2 class="card-title"><span class="ic">🐾</span><span class="pet-title">Pet</span></h2>' +
-      '<button type="button" class="pet-rm">Remover</button></div>' +
-
-      '<div class="grp"><div class="grp-title">Dados do pet</div><div class="fields">' +
-        '<div class="f"><label class="lbl" for="nome-' + u + '">' + lbl("Nome", true) + '</label>' +
-          '<input type="text" id="nome-' + u + '" data-k="nome" required maxlength="120" /><div class="msg">Preencha o nome do pet.</div></div>' +
-        '<div class="row2">' +
-          '<div class="f"><label class="lbl" for="nasc-' + u + '">' + lbl("Data de nascimento") + '</label>' +
-            '<input type="date" id="nasc-' + u + '" data-k="nascimento" /></div>' +
-          '<div class="f"><label class="lbl" for="idade-' + u + '">' + lbl("Não sabe a data? Idade aproximada") + '</label>' +
-            '<input type="text" id="idade-' + u + '" data-k="idade_aproximada" maxlength="60" placeholder="Ex.: uns 3 anos" /></div>' +
-        '</div>' +
-        '<div class="row2">' +
-          '<div class="f"><span class="lbl">' + lbl("Sexo", true) + '</span>' + pills("radio", "sexo-" + u, "sexo", ["Fêmea", "Macho"], true) + '<div class="msg">Escolha uma opção.</div></div>' +
-          '<div class="f"><span class="lbl">' + lbl("Castrado?", true) + '</span>' + simNao(u, "castrado") + '<div class="msg">Escolha uma opção.</div></div>' +
-        '</div>' +
-        '<div class="f" data-if="cio" hidden><label class="lbl" for="cio-' + u + '">' + lbl("Data do último cio", false, "Se não souber o dia certinho, pode ser o mês.") + '</label>' +
-          '<input type="text" id="cio-' + u + '" data-k="ultimo_cio" maxlength="120" placeholder="Ex.: 10/08/2026 ou agosto" /></div>' +
-        '<div class="row2">' +
-          '<div class="f"><label class="lbl" for="raca-' + u + '">' + lbl("Raça") + '</label>' +
-            '<input type="text" id="raca-' + u + '" data-k="raca" maxlength="120" placeholder="Ex.: SRD, Shih-tzu…" /></div>' +
-          '<div class="f"><label class="lbl" for="peso-' + u + '">' + lbl("Peso aproximado", true) + '</label>' +
-            '<div class="unit"><input type="number" id="peso-' + u + '" data-k="peso_kg" required min="0.1" max="120" step="0.1" inputmode="decimal" /><span>kg</span></div>' +
-            '<div class="msg">Informe o peso aproximado.</div></div>' +
-        '</div>' +
-      '</div></div>' +
-
-      '<div class="grp"><div class="grp-title">Saúde</div><div class="fields">' +
-        '<div class="f"><label class="lbl" for="vet-' + u + '">' + lbl("Nome e contato do veterinário responsável") + '</label>' +
-          '<input type="text" id="vet-' + u + '" data-k="veterinario" maxlength="300" placeholder="Ex.: Dra. Paula · (19) 3333-4444" /></div>' +
-        '<div class="f" data-need="hospitais"><span class="lbl">' + lbl("Hospital 24 horas de preferência", true, "Pode marcar mais de um.") + '</span>' +
-          pills("checkbox", "hosp-" + u, "hospitais", HOSPITAIS) +
-          '<div class="opt-outro"><input type="text" data-k="hospitais_outro" maxlength="120" placeholder="Outro hospital" aria-label="Outro hospital" /></div>' +
-          '<div class="msg">Escolha ou escreva pelo menos um hospital.</div></div>' +
-        '<div class="f"><span class="lbl">' + lbl("Possui alguma doença crônica?", true) + '</span>' + simNao(u, "doenca") + '<div class="msg">Escolha uma opção.</div>' +
-          '<div class="follow" data-if="doenca" hidden><input type="text" data-k="doenca_cronica" required maxlength="1000" placeholder="Qual doença?" aria-label="Qual doença" /><div class="msg">Conte qual é a doença.</div></div></div>' +
-        '<div class="f"><span class="lbl">' + lbl("Possui alguma alergia?", true) + '</span>' + simNao(u, "alerg") + '<div class="msg">Escolha uma opção.</div>' +
-          '<div class="follow" data-if="alerg" hidden><input type="text" data-k="alergia" required maxlength="1000" placeholder="Alergia a quê?" aria-label="Qual alergia" /><div class="msg">Conte qual é a alergia.</div></div></div>' +
-        '<div class="f"><span class="lbl">' + lbl("Está com a proteção contra pulgas e carrapatos em dia?", true) + '</span>' + simNao(u, "antipulgas_em_dia") + '<div class="msg">Escolha uma opção.</div></div>' +
-        '<div class="f"><span class="lbl">' + lbl("Usa algum medicamento contínuo?", true) + '</span>' + simNao(u, "remedio") + '<div class="msg">Escolha uma opção.</div>' +
-          '<div class="follow" data-if="remedio" hidden><textarea data-k="medicamento" required maxlength="1000" placeholder="Qual remédio, dose e horários" aria-label="Descreva o uso do medicamento"></textarea><div class="msg">Descreva o uso do medicamento.</div></div></div>' +
-      '</div></div>' +
-
-      '<div class="grp"><div class="grp-title">Alimentação</div><div class="fields">' +
-        '<div class="f"><label class="lbl" for="alim-' + u + '">' + lbl("Ração ou alimentação natural: qual, quanto e em que horários?", true) + '</label>' +
-          '<textarea id="alim-' + u + '" data-k="alimentacao" required maxlength="2000" placeholder="Ex.: Ração Premier, 1 xícara às 8h e às 18h"></textarea><div class="msg">Conte como é a alimentação.</div></div>' +
-        '<div class="f"><span class="lbl">' + lbl("O que o seu pet pode comer?", false, "Marque tudo o que você autoriza.") + '</span>' +
-          pills("checkbox", "comer-" + u, "pode_comer", PODE_COMER) +
-          '<div class="opt-outro"><input type="text" data-k="pode_comer_outro" maxlength="200" placeholder="Outro (ex.: melancia)" aria-label="Outro alimento" /></div></div>' +
-      '</div></div>' +
-
-      '<div class="grp"><div class="grp-title">Comportamento</div><div class="fields">' +
-        '<div class="f" data-need="reacoes"><span class="lbl">' + lbl("No passeio: como ele anda e a quem/ao que costuma reagir?", true, "Marque tudo o que se aplica.") + '</span>' +
-          pills("checkbox", "reac-" + u, "reacoes", REACOES) +
-          '<div class="opt-outro"><input type="text" data-k="reacoes_outro" maxlength="200" placeholder="Outro" aria-label="Outra reação" /></div>' +
-          '<div class="msg">Marque pelo menos uma opção.</div></div>' +
-        '<div class="f"><label class="lbl" for="info-' + u + '">' + lbl("Alguma informação adicional sobre a rotina e o comportamento?") + '</label>' +
-          '<textarea id="info-' + u + '" data-k="info_adicional" maxlength="3000" placeholder="Manias, medos, onde dorme, brinquedo favorito…"></textarea></div>' +
-      '</div></div>';
-
-    el.querySelector(".pet-rm").addEventListener("click", function () { el.remove(); renumber(); });
-    el.addEventListener("change", function () { syncPet(el); });
-    petsBox.appendChild(el);
-    syncPet(el);
-    renumber();
-    return el;
-  }
-
-  function radioVal(scope, key) {
-    var r = scope.querySelector('input[data-k="' + key + '"]:checked');
-    return r ? r.value : "";
-  }
-  function show(block, on) {
-    block.hidden = !on;
-    block.querySelectorAll("input, textarea").forEach(function (i) { i.disabled = !on; });
-  }
-  function syncPet(el) {
-    show(el.querySelector('[data-if="cio"]'), radioVal(el, "sexo") === "Fêmea" && radioVal(el, "castrado") === "false");
-    ["doenca", "alerg", "remedio"].forEach(function (k) { show(el.querySelector('[data-if="' + k + '"]'), radioVal(el, k) === "true"); });
-  }
-  function renumber() {
-    var cards = petsBox.querySelectorAll(".pet-card");
-    cards.forEach(function (c, i) {
-      var nome = c.querySelector('[data-k="nome"]').value.trim();
-      c.querySelector(".pet-title").textContent = nome || ("Pet " + (i + 1));
-      c.querySelector(".pet-rm").style.display = cards.length > 1 ? "" : "none";
-    });
-    document.getElementById("addPet").style.display = cards.length >= MAX_PETS ? "none" : "";
-  }
-  petsBox.addEventListener("input", function (e) { if (e.target.getAttribute("data-k") === "nome") renumber(); });
-  document.getElementById("addPet").addEventListener("click", function () {
-    var el = petCard();
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
-    setTimeout(function () { el.querySelector('[data-k="nome"]').focus({ preventScroll: true }); }, 400);
-  });
-
-  /* ---------- máscaras ---------- */
-  function digits(s) { return s.replace(/\D/g, ""); }
-  var cpfIn = document.getElementById("t-cpf"), telIn = document.getElementById("t-tel");
-  cpfIn.addEventListener("input", function () {
-    var d = digits(cpfIn.value).slice(0, 11);
-    cpfIn.value = d.replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-  });
-  telIn.addEventListener("input", function () {
-    var d = digits(telIn.value).slice(0, 11);
-    telIn.value = d.length > 10 ? d.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3")
-      : d.replace(/(\d{2})(\d{0,4})(\d{0,4})/, function (_, a, b, c) { return "(" + a + ") " + b + (c ? "-" + c : ""); }).replace(/^\((\d{0,2})\) $/, "($1");
-  });
-  function cpfOk(v) {
-    var d = digits(v);
-    if (d.length !== 11 || /^(\d)\1+$/.test(d)) return false;
-    for (var t = 9; t < 11; t++) {
-      var s = 0;
-      for (var i = 0; i < t; i++) s += +d[i] * (t + 1 - i);
-      if (((s * 10) % 11) % 10 !== +d[t]) return false;
-    }
-    return true;
-  }
-
-  /* ---------- validação ---------- */
-  function fieldOf(node) { return node.closest(".follow") || node.closest(".f"); }
-  function validate() {
-    form.querySelectorAll(".err").forEach(function (e) { e.classList.remove("err"); });
-    var bad = [];
-    function mark(node) { var f = fieldOf(node); if (f && bad.indexOf(f) < 0) { f.classList.add("err"); bad.push(f); } }
-
-    form.querySelectorAll("input[required]:not(:disabled), textarea[required]:not(:disabled)").forEach(function (i) {
-      if (i.type === "radio") { if (!form.querySelector('input[name="' + i.name + '"]:checked')) mark(i); }
-      else if (i.type === "checkbox") { if (!i.checked) mark(i); }
-      else if (!i.value.trim() || !i.checkValidity()) mark(i);
-    });
-    if (cpfIn.value && !cpfOk(cpfIn.value)) mark(cpfIn);
-    if (telIn.value && digits(telIn.value).length < 10) mark(telIn);
-    form.querySelectorAll("[data-need]").forEach(function (f) {
-      var k = f.getAttribute("data-need");
-      if (!f.querySelector('input[data-k="' + k + '"]:checked') && !f.querySelector('[data-k="' + k + '_outro"]').value.trim()) mark(f);
-    });
-    // ordem visual
-    bad.sort(function (a, b) { return a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1; });
-    return bad;
-  }
-  form.addEventListener("input", function (e) { var f = fieldOf(e.target); if (f) f.classList.remove("err"); });
-  form.addEventListener("change", function (e) { var f = fieldOf(e.target); if (f) f.classList.remove("err"); var n = e.target.closest("[data-need]"); if (n) n.classList.remove("err"); });
-
-  /* ---------- coleta ---------- */
-  function checks(scope, key) {
-    var v = Array.prototype.map.call(scope.querySelectorAll('input[data-k="' + key + '"]:checked'), function (i) { return i.value; });
-    var o = scope.querySelector('[data-k="' + key + '_outro"]');
-    if (o && o.value.trim()) v.push(o.value.trim());
-    return v;
-  }
-  function val(scope, key) { var i = scope.querySelector('[data-k="' + key + '"]'); return i && !i.disabled ? i.value.trim() : ""; }
-  function collect() {
-    var tutor = {};
-    form.querySelectorAll("[data-t]").forEach(function (i) { tutor[i.getAttribute("data-t")] = i.value.trim(); });
-    tutor.autoriza_fotos = form.querySelector('input[name="t-fotos"]:checked').value === "true";
-    tutor.autoriza_emergencia = document.getElementById("t-emerg-ok").checked;
-    var pets = Array.prototype.map.call(petsBox.querySelectorAll(".pet-card"), function (el) {
-      return {
-        nome: val(el, "nome"), nascimento: val(el, "nascimento"), idade_aproximada: val(el, "idade_aproximada"),
-        sexo: radioVal(el, "sexo"), raca: val(el, "raca"), castrado: radioVal(el, "castrado") === "true",
-        ultimo_cio: val(el, "ultimo_cio"), peso_kg: val(el, "peso_kg"), veterinario: val(el, "veterinario"),
-        hospitais: checks(el, "hospitais"),
-        doenca_cronica: val(el, "doenca_cronica"), alergia: val(el, "alergia"),
-        antipulgas_em_dia: radioVal(el, "antipulgas_em_dia") === "true", medicamento: val(el, "medicamento"),
-        alimentacao: val(el, "alimentacao"), pode_comer: checks(el, "pode_comer"),
-        reacoes: checks(el, "reacoes"), info_adicional: val(el, "info_adicional")
-      };
-    });
-    return { tutor: tutor, pets: pets };
-  }
+  var cad = JuForm.criar(form);
 
   /* ---------- envio ---------- */
   var errBox = document.getElementById("formError"), sendBtn = document.getElementById("sendBtn");
@@ -780,7 +480,7 @@ const WHATSAPP = "5519981583108";
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     errBox.classList.remove("show");
-    var bad = validate();
+    var bad = cad.validar();
     if (bad.length) {
       showError("Faltou preencher " + (bad.length === 1 ? "1 campo" : bad.length + " campos") + ". Eles estão marcados em rosa.");
       bad[0].scrollIntoView({ behavior: "smooth", block: "center" });
@@ -792,7 +492,7 @@ const WHATSAPP = "5519981583108";
       showError("O cadastro online ainda está sendo configurado." + waHelp);
       return;
     }
-    var data = collect();
+    var data = cad.coletar();
     sendBtn.disabled = true; sendBtn.textContent = "Enviando…";
     fetch(SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/rpc/cadastrar", {
       method: "POST",
@@ -832,7 +532,6 @@ const WHATSAPP = "5519981583108";
       .finally(function () { printBtn.disabled = false; printBtn.textContent = "Baixar PDF"; });
   });
 
-  petCard();
 })();
 </script>
 </body>

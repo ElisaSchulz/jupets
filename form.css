@@ -1,0 +1,63 @@
+/* Formulário do cadastro do pet — usado em cadastro.html e admin.html (edição). */
+.cad-form { max-width: 760px; margin: 38px auto 0; display: grid; gap: 22px; }
+.card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 30px; box-shadow: var(--shadow-sm); }
+.card-title { display: flex; align-items: center; gap: 12px; font-size: 22px; margin: 0 0 20px; }
+.card-title .ic { width: 38px; height: 38px; border-radius: 50%; background: var(--rose-soft); color: var(--rose-deep); display: inline-grid; place-items: center; font-size: 18px; flex: none; }
+.grp + .grp { margin-top: 26px; padding-top: 24px; border-top: 1px dashed var(--line); }
+.grp-title { font-weight: 800; text-transform: uppercase; letter-spacing: 0.14em; font-size: 12px; color: var(--rose); margin: 0 0 14px; }
+.fields { display: grid; gap: 18px; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.f label.lbl, .f .lbl { display: block; font-weight: 700; font-size: 15.5px; margin-bottom: 7px; line-height: 1.35; }
+.req { color: var(--rose); }
+.hint { display: block; font-weight: 500; font-size: 13.5px; color: var(--ink-soft); margin-top: 2px; }
+.f input[type=text], .f input[type=tel], .f input[type=date], .f input[type=number], .f textarea {
+  width: 100%; box-sizing: border-box; font: inherit; font-size: 16px; color: var(--ink);
+  background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r-sm); padding: 12px 14px;
+  transition: border-color .15s, box-shadow .15s; }
+.f textarea { min-height: 96px; resize: vertical; line-height: 1.5; }
+.f input:focus, .f textarea:focus { outline: none; border-color: var(--rose); box-shadow: 0 0 0 4px var(--rose-soft); background: #fff; }
+.f.err input, .f.err textarea { border-color: var(--rose-deep); }
+.f .msg { display: none; color: var(--rose-deep); font-size: 13.5px; font-weight: 700; margin-top: 6px; }
+.f.err .msg { display: block; }
+.unit { position: relative; }
+.unit input { padding-right: 46px !important; }
+.unit span { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-soft); font-weight: 700; font-size: 14px; }
+
+/* opções em pílula (radio + checkbox) */
+.opts { display: flex; flex-wrap: wrap; gap: 9px; }
+.opt { position: relative; }
+.opt input { position: absolute; opacity: 0; inset: 0; margin: 0; pointer-events: none; }
+.opt span { display: inline-flex; align-items: center; gap: 7px; padding: 10px 16px; border-radius: 999px; border: 1.5px solid var(--line);
+  background: var(--surface); font-weight: 700; font-size: 15px; cursor: pointer; transition: all .15s; user-select: none; line-height: 1.25; }
+.opt input[type=checkbox] + span::before { content: ""; width: 16px; height: 16px; border-radius: 5px; border: 1.5px solid #cbb3aa; background: #fff; flex: none; }
+.opt input:checked + span { background: var(--rose); border-color: var(--rose); color: #fff; }
+.opt input[type=checkbox]:checked + span::before { border-color: #fff; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D75F6A' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/12px no-repeat; }
+.opt input:focus-visible + span { box-shadow: 0 0 0 4px var(--rose-soft); }
+.opt-outro { margin-top: 10px; }
+.f.err .opts .opt span { border-color: var(--rose-deep); }
+.follow { margin-top: 12px; }
+.check-line { display: flex; gap: 12px; align-items: flex-start; background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r-md); padding: 16px; cursor: pointer; }
+.check-line input { width: 20px; height: 20px; accent-color: var(--rose); margin-top: 2px; flex: none; }
+.f.err .check-line { border-color: var(--rose-deep); }
+.legal { font-size: 15px; line-height: 1.55; color: var(--ink); background: var(--honey-soft); border-radius: var(--r-md); padding: 14px 16px; margin-bottom: 12px; }
+
+/* card do pet */
+.pet-card { border-top: 6px solid var(--rose); }
+.pet-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+.pet-head .card-title { margin: 0; }
+.pet-rm { background: none; border: 0; color: var(--ink-soft); font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; text-decoration: underline; padding: 6px; }
+.pet-rm:hover { color: var(--rose-deep); }
+.add-pet { width: 100%; border: 2px dashed var(--rose); background: transparent; color: var(--rose-deep); font: inherit; font-weight: 800; font-size: 17px;
+  padding: 20px; border-radius: var(--r-lg); cursor: pointer; transition: background .15s; }
+.add-pet:hover { background: var(--rose-soft); }
+.send-row { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.send-row .btn { font-size: 18px; padding: 17px 44px; }
+.send-row .btn[disabled] { opacity: .6; cursor: wait; }
+.form-error { display: none; background: var(--rose-soft); color: var(--rose-deep); border-radius: var(--r-md); padding: 14px 18px; font-weight: 700; font-size: 15px; text-align: left; }
+.form-error.show { display: block; }
+.form-error a { color: inherit; }
+
+@media (max-width: 720px) {
+  .card { padding: 22px 18px; }
+  .row2 { grid-template-columns: 1fr; }
+}
