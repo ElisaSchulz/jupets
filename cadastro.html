@@ -417,86 +417,13 @@
   .ficha-ok h1 { font-size: clamp(28px, 4vw, 38px); margin: 12px 0 8px; }
   .ficha-ok p { color: var(--ink-soft); margin: 0 auto; max-width: 520px; }
   .ficha-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 22px 0 34px; }
-  .ficha { background: #fff; border: 1px solid var(--line); border-radius: var(--r-xl); box-shadow: var(--shadow); overflow: hidden; }
-  .fx-top { background: var(--rose); color: #fff; padding: 28px 34px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;
-    background-image: radial-gradient(circle at 92% -20%, rgba(255,255,255,.22) 0 120px, transparent 121px), radial-gradient(circle at 78% 130%, rgba(255,255,255,.14) 0 90px, transparent 91px); }
-  .fx-brand { display: flex; align-items: center; gap: 14px; }
-  .fx-brand .mk { width: 50px; height: 50px; border-radius: 50%; background: #fff; color: var(--rose); display: grid; place-items: center; }
-  .fx-brand .mk svg { width: 28px; height: 28px; }
-  .fx-brand b { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-size: 26px; display: block; line-height: 1.05; }
-  .fx-brand small { font-weight: 700; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; opacity: .9; }
-  .fx-meta { text-align: right; font-size: 13.5px; line-height: 1.5; }
-  .fx-meta b { display: block; font-family: "Bricolage Grotesque", system-ui, sans-serif; font-size: 20px; letter-spacing: -.01em; }
-  .fx-body { padding: 30px 34px 34px; display: grid; gap: 26px; }
-  .fx-sec h3 { font-family: "Nunito Sans", system-ui, sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: .14em; font-size: 12px; color: var(--rose); margin: 0 0 12px; display: flex; align-items: center; gap: 10px; }
-  .fx-sec h3::after { content: ""; flex: 1; height: 1px; background: var(--line); }
-  .kv { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px 26px; }
-  .kv .wide { grid-column: 1 / -1; }
-  .kv dt { font-size: 12px; font-weight: 800; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .08em; }
-  .kv dd { margin: 2px 0 0; font-weight: 600; font-size: 15.5px; white-space: pre-line; overflow-wrap: anywhere; }
-  .fx-pet { border: 1.5px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
-  .fx-pet-head { background: var(--surface); padding: 20px 24px; display: flex; align-items: center; gap: 16px; border-bottom: 1.5px solid var(--line); }
-  .fx-pet-head .av { width: 56px; height: 56px; border-radius: 50%; background: var(--rose-soft); display: grid; place-items: center; font-size: 28px; flex: none; }
-  .fx-pet-head h4 { font-size: 26px; margin: 0; }
-  .fx-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
-  .tag { display: inline-flex; align-items: center; gap: 5px; font-weight: 800; font-size: 12.5px; padding: 5px 11px; border-radius: 999px; background: var(--shell); color: var(--ink); }
-  .tag.rose { background: var(--rose-soft); color: var(--rose-deep); }
-  .tag.sage { background: var(--sage-soft); color: var(--sage-ink); }
-  .tag.honey { background: var(--honey-soft); color: var(--honey-ink); }
-  .tag.off { background: transparent; border: 1.5px dashed var(--line); color: #b39e97; text-decoration: line-through; font-weight: 700; }
-  .fx-pet-body { padding: 22px 24px 24px; display: grid; gap: 22px; }
-  .alerts { display: grid; gap: 8px; }
-  .alert { border-radius: var(--r-sm); padding: 11px 14px; font-size: 15px; background: var(--rose-soft); color: var(--ink); }
-  .alert b { color: var(--rose-deep); }
-  .alert.ok { background: var(--sage-soft); }
-  .alert.ok b { color: var(--sage-ink); }
-  .auths { display: grid; gap: 10px; }
-  .auth { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; }
-  .auth .ck { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; flex: none; font-size: 13px; font-weight: 900; color: #fff; background: var(--sage); margin-top: 1px; }
-  .auth .ck.no { background: #c9b5ad; }
-  .fx-foot { text-align: center; font-size: 12.5px; color: var(--ink-soft); padding: 0 34px 26px; }
 
   @media (max-width: 720px) {
     .card { padding: 22px 18px; }
-    .row2, .kv { grid-template-columns: 1fr; }
-    .fx-top, .fx-body { padding-left: 20px; padding-right: 20px; }
-    .fx-meta { text-align: left; }
-    .fx-pet-head, .fx-pet-body { padding-left: 16px; padding-right: 16px; }
-  }
-
-  /* impressão / PDF: só a ficha, compacta */
-  @media print {
-    @page { size: A4; margin: 10mm; }
-    body { background: #fff !important; font-size: 11px; line-height: 1.45; }
-    header.nav, footer.foot, .wa-float, .cad-head, #cadForm, .ficha-ok, .ficha-actions { display: none !important; }
-    .section { padding: 0 !important; }
-    .wrap { padding: 0 !important; max-width: none; }
-    #fichaWrap { max-width: none; }
-    .ficha { box-shadow: none; border: 0; border-radius: 0; overflow: visible; }
-    .fx-top, .tag, .alert, .auth .ck, .fx-pet-head, .fx-brand .mk { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .fx-top { border-radius: 12px; padding: 14px 18px; }
-    .fx-brand .mk { width: 38px; height: 38px; } .fx-brand .mk svg { width: 22px; height: 22px; }
-    .fx-brand b { font-size: 20px; } .fx-meta { font-size: 11px; } .fx-meta b { font-size: 15px; }
-    .fx-body { padding: 14px 0 0; gap: 14px; }
-    .fx-sec h3 { font-size: 9.5px; margin-bottom: 6px; }
-    .kv { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px 18px; }
-    .kv dt { font-size: 9px; } .kv dd { font-size: 12px; }
-    .fx-pet { border-radius: 12px; }
-    .fx-pet-head { padding: 10px 14px; gap: 12px; }
-    .fx-pet-head .av { width: 38px; height: 38px; font-size: 19px; }
-    .fx-pet-head h4 { font-size: 19px; }
-    .fx-tags { gap: 4px; margin-top: 4px; }
-    .tag { font-size: 10px; padding: 3px 8px; }
-    .fx-pet-body { padding: 12px 14px 14px; gap: 12px; }
-    .alerts { gap: 5px; } .alert { font-size: 11.5px; padding: 6px 10px; }
-    .fx-pet-body [style*="margin-top:14px"] { margin-top: 8px !important; }
-    .auth { font-size: 11.5px; } .auths { gap: 6px; }
-    .fx-foot { padding: 10px 0 0; font-size: 10px; }
-    .fx-pet-head, .alert, .kv > div, .fx-sec, .auths { break-inside: avoid; }
-    .fx-sec h3 { break-after: avoid; }
-    .fx-pet + .fx-pet { break-before: page; }
+    .row2 { grid-template-columns: 1fr; }
   }
 </style>
+<link rel="stylesheet" href="ficha.css" />
 </head>
 <body>
 
@@ -533,13 +460,13 @@
 <!-- ============ CADASTRO ============ -->
 <section class="section" id="cadastro">
   <div class="wrap">
-    <div class="cad-head center">
+    <div class="cad-head center no-print">
       <div class="eyebrow">Ficha cadastral do pet</div>
       <h1 class="sec-title">Conta pra mim sobre o seu pet 🐾</h1>
       <p class="sec-intro">Preencha antes da primeira hospedagem ou visita. Assim eu já conheço a rotina, a saúde e as manias de cada um, e cuido do jeitinho que eles estão acostumados. Tem mais de um pet? Dá pra cadastrar todos de uma vez.</p>
     </div>
 
-    <form id="cadForm" class="cad-form" novalidate>
+    <form id="cadForm" class="cad-form no-print" novalidate>
       <!-- Tutor -->
       <div class="card">
         <h2 class="card-title"><span class="ic">👤</span>Seus dados</h2>
@@ -595,13 +522,13 @@
     </form>
 
     <!-- Ficha (aparece depois do envio) -->
-    <div id="fichaWrap" aria-live="polite">
-      <div class="ficha-ok">
+    <div id="fichaWrap" class="ficha-page" aria-live="polite">
+      <div class="ficha-ok no-print">
         <div class="big">🎉</div>
         <h1>Cadastro recebido!</h1>
         <p>Obrigada! A ficha abaixo já está comigo. Salve uma cópia pra você também.</p>
       </div>
-      <div class="ficha-actions">
+      <div class="ficha-actions no-print">
         <button type="button" class="btn btn-primary" id="printBtn">Baixar PDF / Imprimir</button>
         <a class="btn btn-ghost" href="cadastro.html">Fazer outro cadastro</a>
       </div>
@@ -625,6 +552,7 @@
 </a>
 
 
+<script src="ficha.js"></script>
 <script>
 /* ============================================================
    ⚙️  CONFIGURAÇÕES
@@ -635,11 +563,6 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";   //
 
 const WHATSAPP = "5519981583108";
 
-/* Opções das perguntas — dá pra editar à vontade */
-const HOSPITAIS = ["Invet", "Pet Company - Covabra", "Vetlim", "Vital Vet"];
-const PODE_COMER = ["Sachê", "Petiscos do tipo bifinho", "Petiscos do tipo bolacinhas", "Maçã", "Banana", "Cenoura", "Brócolis", "Picolé de iogurte natural e banana", "Picolé de sachê"];
-const REACOES = ["Puxa muito", "Anda tranquilo", "Criança", "Homem", "Mulher", "Gato", "Pomba/passarinho", "Motos", "Caminhões", "Carro", "Bicicletas", "Trovão", "Fogos", "Chuva", "Costume de fugir e escapar"];
-
 /* ============================================================
    (daqui pra baixo é o funcionamento — não precisa mexer)
    ============================================================ */
@@ -649,16 +572,14 @@ const REACOES = ["Puxa muito", "Anda tranquilo", "Criança", "Homem", "Mulher", 
   var toggle = document.getElementById("navToggle"), menu = document.getElementById("mobileMenu");
   if (toggle && menu) toggle.addEventListener("click", function () { menu.classList.toggle("open"); });
 
+  var HOSPITAIS = JuFicha.OPCOES.HOSPITAIS, PODE_COMER = JuFicha.OPCOES.PODE_COMER, REACOES = JuFicha.OPCOES.REACOES;
+  var esc = JuFicha.esc;
   var form = document.getElementById("cadForm");
   var petsBox = document.getElementById("pets");
   var MAX_PETS = 10;
   var uid = 0;
 
-  function esc(s) {
-    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-    });
-  }
+
 
   /* ---------- montagem do card de pet ---------- */
   function pills(type, name, key, opts, required) {
@@ -892,75 +813,8 @@ const REACOES = ["Puxa muito", "Anda tranquilo", "Criança", "Homem", "Mulher", 
     });
   });
 
-  /* ---------- ficha ---------- */
-  function idade(p) {
-    if (p.nascimento) {
-      var n = new Date(p.nascimento + "T12:00:00"), h = new Date();
-      var m = (h.getFullYear() - n.getFullYear()) * 12 + h.getMonth() - n.getMonth() - (h.getDate() < n.getDate() ? 1 : 0);
-      if (m < 0) return "";
-      var a = Math.floor(m / 12), r = m % 12;
-      return (a ? a + (a > 1 ? " anos" : " ano") : "") + (a && r ? " e " : "") + (r ? r + (r > 1 ? " meses" : " mês") : (a ? "" : "menos de 1 mês"));
-    }
-    return p.idade_aproximada ? "~ " + p.idade_aproximada : "";
-  }
-  function dataBR(iso) { if (!iso) return ""; var s = iso.split("-"); return s[2] + "/" + s[1] + "/" + s[0]; }
-  function kv(items) {
-    return '<dl class="kv">' + items.filter(function (x) { return x[1]; }).map(function (x) {
-      return '<div class="' + (x[2] || "") + '"><dt>' + esc(x[0]) + "</dt><dd>" + esc(x[1]) + "</dd></div>";
-    }).join("") + "</dl>";
-  }
-  function tags(list, cls) { return list.map(function (t) { return '<span class="tag ' + (cls || "") + '">' + esc(t) + "</span>"; }).join(""); }
-  var PAW = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6.5" cy="9" r="2.1"/><circle cx="12" cy="6.4" r="2.3"/><circle cx="17.5" cy="9" r="2.1"/><path d="M12 11.4c-3 0-5.4 2.3-5.4 4.7 0 1.7 1.5 2.6 3.1 2.6 1 0 1.6-.4 2.3-.4s1.3.4 2.3.4c1.6 0 3.1-.9 3.1-2.6 0-2.4-2.4-4.7-5.4-4.7z"/></svg>';
-
-  function petHtml(p) {
-    var head = [p.sexo === "Fêmea" ? "♀ Fêmea" : "♂ Macho", p.raca, idade(p), p.peso_kg ? String(p.peso_kg).replace(".", ",") + " kg" : ""].filter(Boolean);
-    var alerts = [];
-    if (p.alergia) alerts.push('<div class="alert"><b>Alergia:</b> ' + esc(p.alergia) + "</div>");
-    if (p.doenca_cronica) alerts.push('<div class="alert"><b>Doença crônica:</b> ' + esc(p.doenca_cronica) + "</div>");
-    if (p.medicamento) alerts.push('<div class="alert"><b>Medicamento contínuo:</b> ' + esc(p.medicamento) + "</div>");
-    if (!p.antipulgas_em_dia) alerts.push('<div class="alert"><b>Antipulgas/carrapatos:</b> não está em dia</div>');
-    if (!alerts.length) alerts.push('<div class="alert ok"><b>Saúde:</b> sem doenças crônicas, alergias ou medicamentos contínuos · antipulgas em dia</div>');
-    var extrasComer = p.pode_comer.filter(function (x) { return PODE_COMER.indexOf(x) < 0; });
-    var comer = PODE_COMER.map(function (x) {
-      return p.pode_comer.indexOf(x) >= 0 ? '<span class="tag sage">✓ ' + esc(x) + "</span>" : '<span class="tag off">' + esc(x) + "</span>";
-    }).join("") + tags(extrasComer.map(function (x) { return "✓ " + x; }), "sage");
-
-    return '<article class="fx-pet">' +
-      '<div class="fx-pet-head"><div class="av">🐾</div><div><h4>' + esc(p.nome) + '</h4><div class="fx-tags">' +
-        tags(head) + '<span class="tag ' + (p.castrado ? "sage" : "honey") + '">' + (p.sexo === "Fêmea" ? (p.castrado ? "Castrada" : "Não castrada") : (p.castrado ? "Castrado" : "Não castrado")) + "</span>" +
-      "</div></div></div>" +
-      '<div class="fx-pet-body">' +
-        '<section class="fx-sec"><h3>Dados</h3>' + kv([
-          ["Nascimento", dataBR(p.nascimento)], ["Idade aproximada", p.nascimento ? "" : p.idade_aproximada],
-          ["Último cio", p.ultimo_cio]]) + (p.nascimento || p.idade_aproximada || p.ultimo_cio ? "" : '<span class="hint">Sem outras informações.</span>') + "</section>" +
-        '<section class="fx-sec"><h3>Saúde</h3><div class="alerts">' + alerts.join("") + "</div>" +
-          '<div style="margin-top:14px">' + kv([["Veterinário responsável", p.veterinario || "Não informado"], ["Hospital 24h de preferência", p.hospitais.join(" · ")]]) + "</div></section>" +
-        '<section class="fx-sec"><h3>Alimentação</h3>' + kv([["Rotina", p.alimentacao, "wide"]]) +
-          '<div style="margin-top:14px"><dl class="kv"><div class="wide"><dt>Pode comer</dt><dd><div class="fx-tags">' + comer + "</div></dd></div></dl></div></section>" +
-        '<section class="fx-sec"><h3>Comportamento</h3><div class="fx-tags">' + tags(p.reacoes, "rose") + "</div>" +
-          (p.info_adicional ? '<div style="margin-top:14px">' + kv([["Informações adicionais", p.info_adicional, "wide"]]) + "</div>" : "") + "</section>" +
-      "</div></article>";
-  }
-
   function renderFicha(d, id, when) {
-    var t = d.tutor;
-    var code = id ? id.slice(0, 8).toUpperCase() : "";
-    var dt = when.toLocaleDateString("pt-BR") + " às " + when.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
-    document.getElementById("ficha").innerHTML =
-      '<div class="ficha">' +
-        '<div class="fx-top"><div class="fx-brand"><span class="mk">' + PAW + '</span><div><b>Ficha cadastral</b><small>Ju · petsitter · Limeira</small></div></div>' +
-          '<div class="fx-meta"><b>' + esc(d.pets.map(function (p) { return p.nome; }).join(", ")) + "</b>" + esc(dt) + (code ? " · nº " + esc(code) : "") + "</div></div>" +
-        '<div class="fx-body">' +
-          '<section class="fx-sec"><h3>Tutor</h3>' + kv([["Nome", t.nome, "wide"], ["CPF", t.cpf], ["Telefone", t.telefone], ["Endereço", t.endereco, "wide"], ["Contato de emergência", t.contato_emergencia, "wide"]]) + "</section>" +
-          d.pets.map(petHtml).join("") +
-          '<section class="fx-sec"><h3>Autorizações</h3><div class="auths">' +
-            '<div class="auth"><span class="ck' + (t.autoriza_fotos ? "" : " no") + '">' + (t.autoriza_fotos ? "✓" : "✕") + "</span><span>" +
-              (t.autoriza_fotos ? "<b>Autoriza</b>" : "<b>Não autoriza</b>") + " a divulgação de fotos e vídeos nas redes sociais (sem nome do pet e do tutor).</span></div>" +
-            '<div class="auth"><span class="ck">✓</span><span><b>Atendimento de emergência:</b> autoriza que, em caso de emergência e se não for localizado(a), sejam tomadas as medidas veterinárias necessárias, com custos sob sua responsabilidade.</span></div>' +
-          "</div></section>" +
-        "</div>" +
-        '<div class="fx-foot">Ju Petsitter · Limeira-SP · @jupetslimeira</div>' +
-      "</div>";
+    document.getElementById("ficha").innerHTML = JuFicha.html(d, id, when);
     form.style.display = "none";
     document.querySelector(".cad-head").style.display = "none";
     document.getElementById("fichaWrap").classList.add("show");

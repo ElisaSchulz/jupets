@@ -140,3 +140,42 @@ join public.pets p on p.tutor_id = t.id
 order by t.criado_em desc, p.ordem;
 
 revoke all on public.fichas from anon, authenticated;
+
+-- =====================================================================
+--  Página de admin (admin.html): só quem está na tabela "admins" lê os cadastros.
+--  Depois de rodar este arquivo, cadastre seu e-mail (o mesmo do usuário criado em
+--  Authentication → Users) rodando no SQL Editor:
+--    insert into public.admins (email) values ('seu-email@exemplo.com');
+-- =====================================================================
+create table if not exists public.admins (
+  email text primary key
+);
+alter table public.admins enable row level security;   -- sem policies: ninguém lê pelo site
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.admins
+    where lower(email) = lower(coalesce(auth.jwt() ->> 'email', ''))
+  );
+$$;
+
+grant select, delete on public.tutores to authenticated;
+grant select on public.pets to authenticated;
+
+drop policy if exists "admin lê tutores" on public.tutores;
+create policy "admin lê tutores" on public.tutores
+  for select to authenticated using (public.is_admin());
+
+drop policy if exists "admin apaga tutores" on public.tutores;
+create policy "admin apaga tutores" on public.tutores
+  for delete to authenticated using (public.is_admin());
+
+drop policy if exists "admin lê pets" on public.pets;
+create policy "admin lê pets" on public.pets
+  for select to authenticated using (public.is_admin());
