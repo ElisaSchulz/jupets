@@ -529,7 +529,7 @@
         <p>Obrigada! A ficha abaixo já está comigo. Salve uma cópia pra você também.</p>
       </div>
       <div class="ficha-actions no-print">
-        <button type="button" class="btn btn-primary" id="printBtn">Baixar PDF / Imprimir</button>
+        <button type="button" class="btn btn-primary" id="printBtn">Baixar PDF</button>
         <a class="btn btn-ghost" href="cadastro.html">Fazer outro cadastro</a>
       </div>
       <div id="ficha"></div>
@@ -813,7 +813,9 @@ const WHATSAPP = "5519981583108";
     });
   });
 
+  var fichaAtual = null;
   function renderFicha(d, id, when) {
+    fichaAtual = [d, id, when];
     document.getElementById("ficha").innerHTML = JuFicha.html(d, id, when);
     form.style.display = "none";
     document.querySelector(".cad-head").style.display = "none";
@@ -821,7 +823,14 @@ const WHATSAPP = "5519981583108";
     document.title = "Ficha cadastral · " + d.pets.map(function (p) { return p.nome; }).join(", ") + " · Ju Pets";
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
-  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
+  var printBtn = document.getElementById("printBtn");
+  printBtn.addEventListener("click", function () {
+    if (!fichaAtual || printBtn.disabled) return;
+    printBtn.disabled = true; printBtn.textContent = "Gerando PDF…";
+    JuFicha.baixarPdf.apply(null, fichaAtual)
+      .catch(function (e) { console.error(e); alert("Não consegui gerar o PDF agora. Tente de novo."); })
+      .finally(function () { printBtn.disabled = false; printBtn.textContent = "Baixar PDF"; });
+  });
 
   petCard();
 })();

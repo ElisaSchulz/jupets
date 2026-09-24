@@ -378,6 +378,7 @@
   .item .when { color: var(--ink-soft); font-size: 13px; font-weight: 700; text-align: right; flex: none; }
   .item .flag { display: inline-block; margin-top: 6px; font-size: 12px; font-weight: 800; padding: 3px 9px; border-radius: 999px; background: var(--rose-soft); color: var(--rose-deep); }
   .empty { text-align: center; color: var(--ink-soft); padding: 40px 10px; }
+  #vDetail { max-width: 460px; margin: 0 auto; }
   .detail-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 22px; }
   .detail-bar .sp { flex: 1; }
   .link-btn { background: none; border: 0; font: inherit; font-weight: 800; color: var(--rose-deep); cursor: pointer; padding: 8px 4px; }
@@ -443,7 +444,7 @@
         <button type="button" class="link-btn" id="backBtn">← Voltar</button>
         <span class="sp"></span>
         <a class="btn btn-wa btn-sm" id="waTutor" target="_blank" rel="noopener">WhatsApp do tutor</a>
-        <button type="button" class="btn btn-primary btn-sm" id="printBtn">Baixar PDF / Imprimir</button>
+        <button type="button" class="btn btn-primary btn-sm" id="printBtn">Baixar PDF</button>
       </div>
       <div id="ficha"></div>
       <div class="center no-print" style="margin-top:22px;">
@@ -610,7 +611,14 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
   }
   window.addEventListener("hashchange", route);
   $("backBtn").addEventListener("click", function () { location.hash = ""; });
-  $("printBtn").addEventListener("click", function () { window.print(); });
+  $("printBtn").addEventListener("click", function () {
+    var b = $("printBtn");
+    if (!current || b.disabled) return;
+    b.disabled = true; b.textContent = "Gerando PDF…";
+    JuFicha.baixarPdf(toFicha(current), current.id, new Date(current.criado_em))
+      .catch(function (e) { console.error(e); alert("Não consegui gerar o PDF agora. Tente de novo."); })
+      .finally(function () { b.disabled = false; b.textContent = "Baixar PDF"; });
+  });
   $("deleteBtn").addEventListener("click", function () {
     if (!current) return;
     var nomes = (current.pets || []).map(function (p) { return p.nome; }).join(", ");
