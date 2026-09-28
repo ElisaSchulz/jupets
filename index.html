@@ -1130,10 +1130,13 @@ const MESES_VISIVEIS = 2;
   var dragging = false;
   var startX = 0, startScroll = 0, moved = 0;
   var pos = 0;              // posição acumulada (float) — scrollLeft arredonda, então acumulamos aqui
+  var touching = false;     // dedo na tela (o celular pode assumir a rolagem sozinho)
+  var touchUntil = 0;       // depois de soltar, espera a rolagem com impulso terminar
 
   function loop() {
     var h = half();
-    if (!paused && !dragging && !reduce) {
+    var touchHold = touching || performance.now() < touchUntil;
+    if (!paused && !dragging && !touchHold && !reduce) {
       pos += speed;
     } else {
       pos = marquee.scrollLeft; // sincroniza após arraste/hover
@@ -1142,7 +1145,7 @@ const MESES_VISIVEIS = 2;
       if (pos >= h) pos -= h;
       else if (pos < 0) pos += h;
     }
-    if (!dragging) marquee.scrollLeft = pos;
+    if (!dragging && !touchHold) marquee.scrollLeft = pos;
     requestAnimationFrame(loop);
   }
   requestAnimationFrame(loop);
@@ -1152,6 +1155,17 @@ const MESES_VISIVEIS = 2;
   marquee.addEventListener("mouseleave", function () { paused = false; });
   marquee.addEventListener("focusin", function () { paused = true; });
   marquee.addEventListener("focusout", function () { paused = false; });
+
+  // toque no celular: se o navegador assumir a rolagem (pointercancel),
+  // a rolagem automática para enquanto o dedo estiver na tela e até o
+  // impulso acabar, pra não puxar as fotos de volta
+  marquee.addEventListener("touchstart", function () { touching = true; }, { passive: true });
+  function touchEnd() { touching = false; touchUntil = performance.now() + 700; }
+  marquee.addEventListener("touchend", touchEnd, { passive: true });
+  marquee.addEventListener("touchcancel", touchEnd, { passive: true });
+  marquee.addEventListener("scroll", function () {
+    if (!touching && performance.now() < touchUntil) touchUntil = performance.now() + 300;
+  }, { passive: true });
 
   // arrastar pra navegar
   marquee.addEventListener("pointerdown", function (e) {
