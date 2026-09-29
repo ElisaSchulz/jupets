@@ -479,10 +479,13 @@
   .bol-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
   .bol-form .opts { gap: 7px; }
   .bol-form .opt span { padding: 8px 13px; font-size: 14.5px; }
-  .bol-add { display: flex; gap: 8px; margin-top: 10px; }
-  .bol-add input { flex: 1; min-width: 0; font: inherit; font-size: 16px; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r-sm); padding: 10px 12px; }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-  .chips button { font: inherit; font-size: 13px; font-weight: 700; background: var(--rose-soft); color: var(--rose-deep); border: 0; border-radius: 999px; padding: 6px 11px; cursor: pointer; }
+  .bsec { padding: 14px 0; border-top: 1px dashed var(--line); }
+  .bsec:first-child { border-top: 0; padding-top: 0; }
+  .bsec h3 { font-size: 18px; margin: 0 0 2px; }
+  .bsec .hint { font-size: 13.5px; color: var(--ink-soft); margin: 0 0 4px; }
+  .bsec .bsec-rot { font-weight: 800; font-size: 14.5px; margin: 10px 0 6px; }
+  .bsec .opts { margin-top: 8px; }
+  .bsec .obs-in { width: 100%; box-sizing: border-box; margin-top: 8px; font: inherit; font-size: 16px; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r-sm); padding: 10px 12px; }
   .foto-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .foto-row input[type=file] { font-size: 14px; max-width: 100%; width: auto; border: 0; background: none; padding: 0; box-shadow: none; }
   @media (max-width: 820px) {
@@ -568,12 +571,7 @@
       <div class="bol-grid">
         <form class="adm-card bol-form" id="bolForm">
           <div class="fld"><label for="bData">Data</label><input type="date" id="bData" /></div>
-          <div class="f" style="margin-bottom:18px">
-            <span class="lbl">O que rolou hoje</span>
-            <div class="opts" id="bItens"></div>
-            <div class="bol-add"><input type="text" id="bNovo" maxlength="60" placeholder="Outro item, ex.: Tomou banho 🛁" /><button type="button" class="btn btn-ghost btn-sm" id="bAdd">Incluir</button></div>
-          </div>
-          <div class="fld"><label for="bHumor">Humor de hoje</label><input type="text" id="bHumor" maxlength="140" placeholder="ex.: super sociável, fez amizade com o Thor 💛" /><div class="chips" id="bHumores"></div></div>
+          <div id="bSecoes"></div>
           <div class="fld"><label for="bRecado">Recadinho <span class="muted">(opcional)</span></label><textarea id="bRecado" maxlength="400" placeholder="ex.: Amanhã ela sai às 18h, ração tá acabando 😉"></textarea></div>
           <div class="fld" style="margin-bottom:0"><label for="bFoto">Foto <span class="muted">(opcional)</span></label>
             <div class="foto-row"><input type="file" id="bFoto" accept="image/*" /><button type="button" class="link-btn danger" id="bFotoRm" hidden>Remover foto</button></div></div>
@@ -1152,16 +1150,15 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
     try { return !!(navigator.canShare && navigator.canShare({ files: [new File([""], "a.png", { type: "image/png" })] })); } catch (e) { return false; }
   })();
   if (!podeCompartilhar) { $("bolShare").hidden = true; $("bolDl").className = "btn btn-primary btn-sm"; }
-  $("bHumores").innerHTML = JuBoletim.HUMORES.map(function (h) { return '<button type="button">' + esc(h) + "</button>"; }).join("");
 
   function bolKey() { return "jupets-boletim-" + boletim.estId + "-" + boletim.data; }
   function salvarRascunho() {
-    try { localStorage.setItem(bolKey(), JSON.stringify({ itens: boletim.itens, humor: boletim.humor, recado: boletim.recado })); } catch (e) {}
+    try { localStorage.setItem(bolKey(), JSON.stringify({ resp: boletim.resp, obs: boletim.obs, recado: boletim.recado })); } catch (e) {}
   }
   function lerRascunho() {
     try {
       var r = JSON.parse(localStorage.getItem(bolKey()) || "null");
-      if (r && Array.isArray(r.itens)) { boletim.itens = r.itens; boletim.humor = r.humor || ""; boletim.recado = r.recado || ""; }
+      if (r && r.resp) { boletim.resp = r.resp; boletim.obs = r.obs || {}; boletim.recado = r.recado || ""; }
       // rascunhos de outros dias não servem mais
       Object.keys(localStorage).forEach(function (k) { if (k.indexOf("jupets-boletim-") === 0 && k.slice(-10) < hoje()) localStorage.removeItem(k); });
     } catch (e) {}
@@ -1171,28 +1168,40 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
     if (!info) { location.hash = "#hoje"; return; }
     if (!boletim || boletim.estId !== estId) {
       boletim = {
-        estId: estId, nome: info.pet.nome, servico: e.servico, data: hoje(), humor: "", recado: "", foto: "",
-        itens: JuBoletim.ITENS.map(function (i) { return { t: i.t, e: i.e, on: i.remedio ? !!info.pet.medicamento : i.on }; })
+        estId: estId, nome: info.pet.nome, servico: e.servico, data: hoje(), recado: "", foto: "",
+        resp: JuBoletim.respostasPadrao(), obs: {}
       };
       lerRascunho();
       $("bFoto").value = "";
     }
-    $("bData").value = boletim.data; $("bHumor").value = boletim.humor; $("bRecado").value = boletim.recado; $("bNovo").value = "";
+    $("bData").value = boletim.data; $("bRecado").value = boletim.recado;
     $("bFotoRm").hidden = !boletim.foto;
     $("bolTitle").textContent = info.pet.nome;
     document.title = "Boletim · " + info.pet.nome + " · Ju Pets";
-    renderBolItens(); renderBol();
+    renderBolSecoes(); renderBol();
     show("vBoletim");
   }
   function bolData() {
     return {
-      nome: boletim.nome, servico: boletim.servico, data: br(boletim.data), humor: boletim.humor.trim(), recado: boletim.recado.trim(), foto: boletim.foto,
-      itens: boletim.itens.filter(function (i) { return i.on; })
+      nome: boletim.nome, servico: boletim.servico, data: br(boletim.data), resp: boletim.resp, obs: boletim.obs,
+      recado: boletim.recado.trim(), foto: boletim.foto
     };
   }
-  function renderBolItens() {
-    $("bItens").innerHTML = boletim.itens.map(function (i, n) {
-      return '<label class="opt"><input type="checkbox" data-i="' + n + '"' + (i.on ? " checked" : "") + " /><span>" + esc(i.t + (i.e ? " " + i.e : "")) + "</span></label>";
+  /* Formulário a partir do modelo (JuBoletim.SECOES): uma pílula por opção */
+  function renderBolSecoes() {
+    $("bSecoes").innerHTML = JuBoletim.SECOES.map(function (s) {
+      return '<div class="bsec"><h3>' + s.ic + " " + esc(s.t) + "</h3>" +
+        (s.pergunta ? '<p class="hint">' + esc(s.pergunta) + "</p>" : "") +
+        s.linhas.map(function (l) {
+          var sel = boletim.resp[l.k] || [];
+          return (l.rot ? '<div class="bsec-rot">' + esc(l.rot) + "</div>" : "") +
+            '<div class="opts">' + l.op.map(function (o) {
+              return '<label class="opt"><input type="checkbox" data-k="' + esc(l.k) + '" value="' + esc(o) + '"' + (sel.indexOf(o) >= 0 ? " checked" : "") + " /><span>" + esc(o) + "</span></label>";
+            }).join("") + "</div>" +
+            (l.obs && sel.indexOf(l.obs) >= 0 ? '<input type="text" class="obs-in" data-obs="' + esc(l.k) + '" maxlength="140" placeholder="O que você observou?" value="' + esc(boletim.obs[l.k] || "") + '" />' : "");
+        }).join("") +
+        (s.linhas.some(function (l) { return l.multi; }) ? '<p class="hint" style="margin-top:6px">Pode marcar mais de um.</p>' : "") +
+        "</div>";
     }).join("");
   }
   /* Atualiza a prévia e, depois de uma pausa, já deixa a imagem pronta:
@@ -1211,20 +1220,21 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
     return JuBoletim.png(bolData()).then(function (blob) { if (v === bolVer) bolBlob = blob; return blob; });
   }
   $("bData").addEventListener("change", function () { boletim.data = $("bData").value || hoje(); renderBol(); });
-  $("bItens").addEventListener("change", function (ev) { var n = ev.target.getAttribute("data-i"); if (n != null) { boletim.itens[+n].on = ev.target.checked; renderBol(); } });
-  function addItem() {
-    var t = $("bNovo").value.trim();
-    if (!t) return;
-    boletim.itens.push({ t: t, e: "", on: true });
-    $("bNovo").value = "";
-    renderBolItens(); renderBol();
-  }
-  $("bAdd").addEventListener("click", addItem);
-  $("bNovo").addEventListener("keydown", function (ev) { if (ev.key === "Enter") { ev.preventDefault(); addItem(); } });
-  $("bHumor").addEventListener("input", function () { boletim.humor = $("bHumor").value; renderBol(); });
-  $("bHumores").addEventListener("click", function (ev) {
-    var b = ev.target.closest("button");
-    if (b) { boletim.humor = $("bHumor").value = b.textContent; renderBol(); }
+  $("bSecoes").addEventListener("change", function (ev) {
+    var i = ev.target, k = i.getAttribute("data-k");
+    if (!k) return;
+    var linha = null;
+    JuBoletim.SECOES.forEach(function (s) { s.linhas.forEach(function (l) { if (l.k === k) linha = l; }); });
+    var sel = (boletim.resp[k] || []).filter(function (o) { return o !== i.value; });
+    if (i.checked) sel = linha.multi ? sel.concat(i.value) : [i.value];   // escolha única: marcar uma desmarca as outras
+    boletim.resp[k] = linha.op.filter(function (o) { return sel.indexOf(o) >= 0; });
+    renderBolSecoes(); renderBol();
+    var obs = $("bSecoes").querySelector('[data-obs="' + k + '"]');
+    if (obs && i.checked && i.value === linha.obs) obs.focus();
+  });
+  $("bSecoes").addEventListener("input", function (ev) {
+    var k = ev.target.getAttribute("data-obs");
+    if (k) { boletim.obs[k] = ev.target.value; renderBol(); }
   });
   $("bRecado").addEventListener("input", function () { boletim.recado = $("bRecado").value; renderBol(); });
   $("bFoto").addEventListener("change", function () {
