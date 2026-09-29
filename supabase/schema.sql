@@ -281,3 +281,40 @@ $$;
 
 revoke all on function public.admin_salvar(uuid, jsonb, jsonb) from public;
 grant execute on function public.admin_salvar(uuid, jsonb, jsonb) to authenticated;
+
+-- =====================================================================
+--  Hóspedes e rotina (admin.html → aba "Hoje").
+--  estadias: quem está (ou vai estar) com a Júlia, e de quando até quando.
+--  admin_config: ajustes da página de admin (ex.: horários da rotina).
+-- =====================================================================
+create table if not exists public.estadias (
+  id        uuid primary key default gen_random_uuid(),
+  criado_em timestamptz not null default now(),
+  pet_id    uuid not null references public.pets(id) on delete cascade,
+  servico   text not null default 'Hospedagem' check (servico in ('Hospedagem','Creche')),
+  entrada   date not null,
+  saida     date,                                   -- vazio = sem data pra sair
+  obs       text check (char_length(obs) <= 2000),
+  check (saida is null or saida >= entrada)
+);
+
+create index if not exists estadias_pet_id_idx on public.estadias (pet_id);
+alter table public.estadias enable row level security;
+grant select, insert, update, delete on public.estadias to authenticated;
+
+drop policy if exists "admin gerencia estadias" on public.estadias;
+create policy "admin gerencia estadias" on public.estadias
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
+
+create table if not exists public.admin_config (
+  chave         text primary key check (char_length(chave) <= 60),
+  valor         jsonb not null,
+  atualizado_em timestamptz not null default now()
+);
+
+alter table public.admin_config enable row level security;
+grant select, insert, update on public.admin_config to authenticated;
+
+drop policy if exists "admin gerencia config" on public.admin_config;
+create policy "admin gerencia config" on public.admin_config
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
