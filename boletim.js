@@ -25,18 +25,20 @@
   var PAW = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6.5" cy="9" r="2.1"/><circle cx="12" cy="6.4" r="2.3"/><circle cx="17.5" cy="9" r="2.1"/><path d="M12 11.4c-3 0-5.4 2.3-5.4 4.7 0 1.7 1.5 2.6 3.1 2.6 1 0 1.6-.4 2.3-.4s1.3.4 2.3.4c1.6 0 3.1-.9 3.1-2.6 0-2.4-2.4-4.7-5.4-4.7z"/></svg>';
   var CHECK = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 
-  /* Seção no cartão: todas as opções do modelo, com as escolhidas marcadas. Sem nada marcado, a seção não aparece. */
+  /* Seção no cartão: só as opções escolhidas. Linhas e seções sem nada marcado não aparecem. */
   function secaoHtml(s, resp, obs) {
     if (!s.linhas.some(function (l) { return (resp[l.k] || []).length; })) return "";
     return '<section class="bol-sec"><h3><span class="ic">' + s.ic + "</span>" + esc(s.t) + "</h3>" +
       (s.pergunta ? '<p class="bol-q">' + esc(s.pergunta) + "</p>" : "") +
       s.linhas.map(function (l) {
         var sel = resp[l.k] || [], nota = l.obs && sel.indexOf(l.obs) >= 0 ? String(obs[l.k] || "").trim() : "";
+        // com a observação escrita, o texto já diz tudo: a pílula "Observação" sai
+        var ops = l.op.filter(function (o) { return sel.indexOf(o) >= 0 && !(nota && o === l.obs); });
+        if (!ops.length && !nota) return "";
         return '<div class="bol-linha">' + (l.rot ? '<span class="bol-rot">' + esc(l.rot) + "</span>" : "") +
-          '<div class="bol-ops">' + l.op.map(function (o) {
-            var on = sel.indexOf(o) >= 0;
-            return '<span class="bol-op' + (on ? " on" : "") + '">' + (on ? '<span class="ck">' + CHECK + "</span>" : "") + esc(o) + "</span>";
-          }).join("") + "</div>" +
+          (ops.length ? '<div class="bol-ops">' + ops.map(function (o) {
+            return '<span class="bol-op on"><span class="ck">' + CHECK + "</span>" + esc(o) + "</span>";
+          }).join("") + "</div>" : "") +
           (nota ? '<div class="bol-obs"><b>Obs.:</b> ' + esc(nota) + "</div>" : "") + "</div>";
       }).join("") + "</section>";
   }
