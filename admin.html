@@ -388,12 +388,15 @@
   .link-btn { background: none; border: 0; font: inherit; font-weight: 800; color: var(--rose-deep); cursor: pointer; padding: 8px 4px; }
   .link-btn.danger { color: var(--ink-soft); font-weight: 700; text-decoration: underline; font-size: 14px; }
   .link-btn.danger:hover { color: var(--rose-deep); }
+  .nav-inner .who-am-i .link-btn { white-space: nowrap; }
+  .nav-inner .who-am-i .sm { display: none; font-weight: inherit; }
   .nav-inner .who-am-i { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--ink-soft); }
   [hidden] { display: none !important; }
   /* ---------- abas ---------- */
   .tabs { display: flex; gap: 6px; background: var(--shell); border-radius: 999px; padding: 5px; margin: 0 0 26px; width: max-content; max-width: 100%; }
   .tabs a { text-decoration: none; font-weight: 800; font-size: 15px; padding: 9px 20px; border-radius: 999px; color: var(--ink-soft); }
   .tabs a.on { background: #fff; color: var(--rose-deep); box-shadow: var(--shadow-sm); }
+  @media (max-width: 420px) { .tabs a { padding: 9px 14px; font-size: 14.5px; } }
   .h2 { font-size: 24px; margin: 0; }
   .sec-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 42px 0 14px; }
   .sec-head .sp { flex: 1; }
@@ -472,6 +475,15 @@
   .dlg .fld { min-width: 0; }
   .fld input[type=date] { min-width: 0; -webkit-appearance: none; appearance: none; min-height: 50px; }
 
+  /* ---------- instagram ---------- */
+  .ig-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+  .ig { background: #fff; border: 1.5px solid var(--line); border-radius: var(--r-md); overflow: hidden; display: flex; flex-direction: column; }
+  .ig img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; background: var(--shell); }
+  .ig .ig-body { padding: 12px 14px 14px; display: grid; gap: 8px; flex: 1; }
+  .ig .ig-nm { font-weight: 800; }
+  .ig .ig-tx { font-size: 14px; color: var(--ink-soft); white-space: pre-line; }
+  .ig .btn { justify-content: center; text-decoration: none; margin-top: auto; }
+
   /* ---------- boletim ---------- */
   #vBoletim { max-width: 900px; margin: 0 auto; }
   .bol-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; margin-top: 18px; }
@@ -498,6 +510,7 @@
     .item { flex-wrap: wrap; }
     .item .when { text-align: left; width: 100%; padding-left: 62px; }
     .nav-inner .who-am-i span { display: none; }
+    .nav-inner .who-am-i .sm { display: inline; }
   }
 </style>
 <link rel="stylesheet" href="form.css" />
@@ -512,7 +525,7 @@
       <span class="mk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6.5" cy="9" r="2.1"/><circle cx="12" cy="6.4" r="2.3"/><circle cx="17.5" cy="9" r="2.1"/><path d="M12 11.4c-3 0-5.4 2.3-5.4 4.7 0 1.7 1.5 2.6 3.1 2.6 1 0 1.6-.4 2.3-.4s1.3.4 2.3.4c1.6 0 3.1-.9 3.1-2.6 0-2.4-2.4-4.7-5.4-4.7z"/></svg></span>
       <span class="wm">Ju<small>área da Júlia</small></span>
     </a>
-    <div class="who-am-i" id="whoAmI" hidden><span id="whoEmail"></span><button type="button" class="btn btn-ghost btn-sm" id="logoutBtn">Sair</button></div>
+    <div class="who-am-i" id="whoAmI" hidden><span id="whoEmail"></span><button type="button" class="link-btn" id="senhaBtn"><span class="lg">Trocar senha</span><b class="sm">Senha</b></button><button type="button" class="btn btn-ghost btn-sm" id="logoutBtn">Sair</button></div>
   </div>
 </header>
 
@@ -537,7 +550,16 @@
     <nav class="tabs" id="tabs" hidden>
       <a href="#hoje" id="tabHoje">Hoje</a>
       <a href="#cadastros" id="tabCad">Cadastros</a>
+      <a href="#instagram" id="tabIg">Instagram</a>
     </nav>
+
+    <!-- Instagram: materiais prontos pra postar -->
+    <div id="vInsta" hidden>
+      <div class="eyebrow">Para o seu Instagram</div>
+      <h1>Recursos do Instagram</h1>
+      <p class="sub">Artes e modelos prontos. Toque em <b>Baixar</b> e poste direto do celular.</p>
+      <div class="ig-grid" id="igList"></div>
+    </div>
 
     <!-- Hoje: hóspedes + rotina -->
     <div id="vHoje" hidden>
@@ -665,6 +687,23 @@
   </form>
 </dialog>
 
+<!-- Trocar senha -->
+<dialog class="dlg" id="dlgSenha">
+  <form id="senhaForm" novalidate>
+    <h3>Trocar senha</h3>
+    <input type="email" id="sEmail" autocomplete="username" hidden />
+    <div class="fld"><label for="sAtual">Senha atual</label><input type="password" id="sAtual" autocomplete="current-password" required /></div>
+    <div class="fld"><label for="sNova">Nova senha <span class="muted">(mínimo 8 caracteres)</span></label><input type="password" id="sNova" autocomplete="new-password" minlength="8" required /></div>
+    <div class="fld"><label for="sNova2">Repita a nova senha</label><input type="password" id="sNova2" autocomplete="new-password" minlength="8" required /></div>
+    <div class="msg-err" id="senhaErr"></div>
+    <div class="dlg-actions">
+      <span class="sp"></span>
+      <button type="button" class="link-btn" id="senhaCancel">Cancelar</button>
+      <button type="submit" class="btn btn-primary btn-sm" id="senhaSave">Salvar nova senha</button>
+    </div>
+  </form>
+</dialog>
+
 <script src="ficha.js"></script>
 <script src="form.js"></script>
 <script src="boletim.js"></script>
@@ -718,11 +757,12 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
 
   /* ---------- telas ---------- */
   function show(view) {
-    ["vLogin", "vList", "vDetail", "vEdit", "vHoje", "vBoletim"].forEach(function (v) { $(v).hidden = v !== view; });
+    ["vLogin", "vList", "vDetail", "vEdit", "vHoje", "vBoletim", "vInsta"].forEach(function (v) { $(v).hidden = v !== view; });
     $("whoAmI").hidden = view === "vLogin";
-    $("tabs").hidden = view !== "vHoje" && view !== "vList";
+    $("tabs").hidden = view !== "vHoje" && view !== "vList" && view !== "vInsta";
     $("tabHoje").classList.toggle("on", view === "vHoje");
     $("tabCad").classList.toggle("on", view === "vList");
+    $("tabIg").classList.toggle("on", view === "vInsta");
     if (view === "vHoje") listaAtual = "#hoje";
     if (view === "vList") listaAtual = "#cadastros";
     if (session) $("whoEmail").textContent = session.email || "";
@@ -827,6 +867,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
     else if ((m = h.match(/^#ficha\/(.+)$/))) openDetail(m[1]);
     else if ((m = h.match(/^#boletim\/(.+)$/))) openBoletim(m[1]);
     else if (h === "#cadastros") { document.title = "Fichas dos pets · Ju Pets"; show("vList"); }
+    else if (h === "#instagram") { document.title = "Instagram · Ju Pets"; renderInsta(); show("vInsta"); }
     else { document.title = "Hoje · Ju Pets"; renderHoje(); show("vHoje"); }
   }
   window.addEventListener("hashchange", route);
@@ -1269,6 +1310,59 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
   $("bolDl").addEventListener("click", function () {
     comImagem($("bolDl"), "Baixar PNG", function (blob, nome) { JuBoletim.baixar(blob, nome); });
   });
+
+  /* ---------- trocar senha ----------
+     Confere a senha atual entrando de novo e só então grava a nova (PUT /auth/v1/user). */
+  $("senhaBtn").addEventListener("click", function () {
+    $("senhaForm").reset(); err("senhaErr", ""); $("sEmail").value = session.email || "";
+    $("dlgSenha").showModal();
+  });
+  $("senhaCancel").addEventListener("click", function () { $("dlgSenha").close(); });
+  $("senhaForm").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var atual = $("sAtual").value, nova = $("sNova").value, b = $("senhaSave");
+    err("senhaErr", "");
+    if (!atual) return err("senhaErr", "Digite a senha atual.");
+    if (nova.length < 8) return err("senhaErr", "A nova senha precisa ter pelo menos 8 caracteres.");
+    if (nova !== $("sNova2").value) return err("senhaErr", "As duas senhas novas não são iguais.");
+    if (nova === atual) return err("senhaErr", "A nova senha é igual à atual.");
+    b.disabled = true; b.textContent = "Salvando…";
+    authCall("password", { email: session.email, password: atual })
+      .catch(function (e) { throw new Error(e.status === 400 ? "A senha atual está incorreta." : "Não consegui conferir sua senha agora. Tente de novo."); })
+      .then(function (s) {
+        saveSession(s);
+        return fetch(API + "/auth/v1/user", {
+          method: "PUT", headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + s.access_token, "Content-Type": "application/json" },
+          body: JSON.stringify({ password: nova })
+        }).then(function (r) {
+          if (r.ok) return;
+          return r.json().catch(function () { return {}; }).then(function (x) {
+            var code = x.error_code || x.code || "";
+            if (code === "weak_password") throw new Error("Senha fraca demais. Use letras e números, com pelo menos 8 caracteres.");
+            if (code === "same_password") throw new Error("A nova senha é igual à atual.");
+            throw new Error("Não consegui trocar a senha agora. Tente de novo.");
+          });
+        });
+      })
+      .then(function () { $("dlgSenha").close(); alert("Senha trocada! Use a nova senha no próximo login."); })
+      .catch(function (e) { err("senhaErr", e.message); })
+      .finally(function () { b.disabled = false; b.textContent = "Salvar nova senha"; });
+  });
+
+  /* ---------- instagram ----------
+     Para adicionar um recurso: coloque a imagem em images/instagram/ e acrescente uma linha aqui.
+     { img: "images/instagram/arquivo.png", nome: "Título", texto: "legenda ou dica (opcional)" } */
+  var RECURSOS_INSTA = [];
+  function renderInsta() {
+    if (!RECURSOS_INSTA.length) { $("igList").innerHTML = '<div class="empty">Em breve: as artes para o Instagram vão aparecer aqui. 📸</div>'; return; }
+    $("igList").innerHTML = RECURSOS_INSTA.map(function (r) {
+      var arq = r.img.split("/").pop();
+      return '<div class="ig"><a href="' + esc(r.img) + '" target="_blank" rel="noopener"><img src="' + esc(r.img) + '" alt="' + esc(r.nome) + '" loading="lazy" /></a>' +
+        '<div class="ig-body"><div class="ig-nm">' + esc(r.nome) + "</div>" +
+        (r.texto ? '<div class="ig-tx">' + esc(r.texto) + "</div>" : "") +
+        '<a class="btn btn-primary btn-sm" href="' + esc(r.img) + '" download="' + esc(arq) + '">Baixar</a></div></div>';
+    }).join("");
+  }
 
   /* ---------- início ---------- */
   function start() {
