@@ -318,3 +318,9 @@ grant select, insert, update on public.admin_config to authenticated;
 drop policy if exists "admin gerencia config" on public.admin_config;
 create policy "admin gerencia config" on public.admin_config
   for all to authenticated using (public.is_admin()) with check (public.is_admin());
+
+-- =====================================================================
+--  Admins cadastrados. Cada e-mail precisa também de um usuário em
+--  Authentication → Users (Add user → Create new user, com "Auto Confirm User").
+-- =====================================================================
+insert into public.admins (email) values ('elisacmazzo@gmail.com') on conflict do nothing;
