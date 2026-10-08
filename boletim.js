@@ -23,9 +23,9 @@
     { ic: "🤍", t: "Socialização", linhas: [{ k: "social", op: [
       "Interagiu tranquilamente com os outros cães", "Socializou bem, mas preferiu manter distância em alguns momentos",
       "Preferiu ficar mais reservado hoje", "Aproveitou a companhia dos outros cães no seu próprio ritmo"] }] },
-    { t: "Qual o mood ou mood’s de hoje?", linhas: [{ k: "mood", multi: true, op: [
-      "Preguiçoso", "Ligado no 220", "Tranquilão", "Sem muito papo", "Explorador oficial",
-      "Super simpático e aumigo de todos", "Modo soneca ativado"] }] }
+    { ic: "✨", t: "Qual o mood ou mood’s de hoje?", linhas: [{ k: "mood", multi: true, op: [
+      "🦥 Preguiçoso", "⚡ Ligado no 220", "😌 Tranquilão", "🤐 Sem muito papo", "🧭 Explorador oficial",
+      "🥰 Super simpático e aumigo de todos", "😴 Modo soneca ativado"] }] }
   ];
   /* Respostas iniciais de um boletim novo: { chave: [opções marcadas] } */
   function respostasPadrao() {
