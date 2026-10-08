@@ -1231,7 +1231,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
   /* Formulário a partir do modelo (JuBoletim.SECOES): uma pílula por opção */
   function renderBolSecoes() {
     $("bSecoes").innerHTML = JuBoletim.SECOES.map(function (s) {
-      return '<div class="bsec"><h3>' + s.ic + " " + esc(s.t) + "</h3>" +
+      return '<div class="bsec"><h3>' + (s.ic ? s.ic + " " : "") + esc(s.t) + "</h3>" +
         (s.pergunta ? '<p class="hint">' + esc(s.pergunta) + "</p>" : "") +
         s.linhas.map(function (l) {
           var sel = boletim.resp[l.k] || [];
@@ -1239,7 +1239,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
             '<div class="opts">' + l.op.map(function (o) {
               return '<label class="opt"><input type="checkbox" data-k="' + esc(l.k) + '" value="' + esc(o) + '"' + (sel.indexOf(o) >= 0 ? " checked" : "") + " /><span>" + esc(o) + "</span></label>";
             }).join("") + "</div>" +
-            (l.obs && sel.indexOf(l.obs) >= 0 ? '<input type="text" class="obs-in" data-obs="' + esc(l.k) + '" maxlength="140" placeholder="O que você observou?" value="' + esc(boletim.obs[l.k] || "") + '" />' : "");
+            (l.obs ? '<input type="text" class="obs-in" data-obs="' + esc(l.k) + '" maxlength="140" placeholder="Obs: (opcional)" value="' + esc(boletim.obs[l.k] || "") + '" />' : "");
         }).join("") +
         (s.linhas.some(function (l) { return l.multi; }) ? '<p class="hint" style="margin-top:6px">Pode marcar mais de um.</p>' : "") +
         "</div>";
@@ -1270,8 +1270,6 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
     if (i.checked) sel = linha.multi ? sel.concat(i.value) : [i.value];   // escolha única: marcar uma desmarca as outras
     boletim.resp[k] = linha.op.filter(function (o) { return sel.indexOf(o) >= 0; });
     renderBolSecoes(); renderBol();
-    var obs = $("bSecoes").querySelector('[data-obs="' + k + '"]');
-    if (obs && i.checked && i.value === linha.obs) obs.focus();
   });
   $("bSecoes").addEventListener("input", function (ev) {
     var k = ev.target.getAttribute("data-obs");
