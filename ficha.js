@@ -3,6 +3,11 @@
   /* Opções das perguntas — dá pra editar à vontade */
   const HOSPITAIS = ["Invet", "Pet Company - Covabra", "Vetlim", "Vital Vet"];
   const PODE_COMER = ["Sachê", "Petiscos do tipo bifinho", "Petiscos do tipo bolacinhas", "Maçã", "Banana", "Cenoura", "Brócolis", "Picolé de iogurte natural e banana", "Picolé de sachê"];
+  const ESPECIES = ["Cão", "Gato", "Pássaro", "Roedor", "Outro"];
+  /* Só no atendimento domiciliar */
+  const ACESSOS = ["Chave entregue em mãos", "Chave deixada na portaria", "Fechadura com senha", "Chave em local combinado", "Alguém da casa abre", "Outro"];
+  const DEVOLUCAO = ["Em mãos, quando você voltar", "Deixo na portaria", "Fica comigo pras próximas visitas", "Não se aplica"];
+  const TAREFAS_CASA = ["Regar plantas", "Recolher correspondência", "Abrir e fechar janelas e cortinas", "Acender e apagar luzes"];
   const REACOES = ["Puxa muito", "Anda tranquilo", "Criança", "Homem", "Mulher", "Gato", "Pomba/passarinho", "Motos", "Caminhões", "Carro", "Bicicletas", "Trovão", "Fogos", "Chuva", "Costume de fugir e escapar"];
 
   function esc(s) {
@@ -34,15 +39,18 @@
   function lista(arr) { return arr.length > 1 ? arr.slice(0, -1).join(", ") + " e " + arr[arr.length - 1] : arr.join(""); }
   var PAW = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6.5" cy="9" r="2.1"/><circle cx="12" cy="6.4" r="2.3"/><circle cx="17.5" cy="9" r="2.1"/><path d="M12 11.4c-3 0-5.4 2.3-5.4 4.7 0 1.7 1.5 2.6 3.1 2.6 1 0 1.6-.4 2.3-.4s1.3.4 2.3.4c1.6 0 3.1-.9 3.1-2.6 0-2.4-2.4-4.7-5.4-4.7z"/></svg>';
 
+  /* cão ou gato (vazio = cão: hospedagem e cadastros antigos) */
+  function caoGato(p) { return !p.especie || p.especie === "Cão" || p.especie === "Gato"; }
+
   function petHtml(p) {
     var fem = p.sexo === "Fêmea";
-    var head = [fem ? "♀ Fêmea" : "♂ Macho", p.raca, idade(p), p.peso_kg ? String(p.peso_kg).replace(".", ",") + " kg" : ""].filter(Boolean);
+    var head = [p.especie, fem ? "♀ Fêmea" : "♂ Macho", p.raca, idade(p), p.peso_kg ? String(p.peso_kg).replace(".", ",") + " kg" : ""].filter(Boolean);
     var alerts = [];
     if (p.alergia) alerts.push('<div class="alert"><b>Alergia:</b> ' + esc(p.alergia) + "</div>");
     if (p.doenca_cronica) alerts.push('<div class="alert"><b>Doença crônica:</b> ' + esc(p.doenca_cronica) + "</div>");
     if (p.medicamento) alerts.push('<div class="alert"><b>Medicamento contínuo:</b> ' + esc(p.medicamento) + "</div>");
-    if (!p.antipulgas_em_dia) alerts.push('<div class="alert"><b>Antipulgas/carrapatos:</b> não está em dia</div>');
-    if (!alerts.length) alerts.push('<div class="alert ok"><b>Saúde:</b> sem doenças crônicas, alergias ou remédios contínuos · antipulgas em dia</div>');
+    if (p.antipulgas_em_dia === false) alerts.push('<div class="alert"><b>Antipulgas/carrapatos:</b> não está em dia</div>');
+    if (!alerts.length) alerts.push('<div class="alert ok"><b>Saúde:</b> sem doenças crônicas, alergias ou remédios contínuos' + (p.antipulgas_em_dia ? " · antipulgas em dia" : "") + "</div>");
 
     var pode = p.pode_comer, naoPode = PODE_COMER.filter(function (x) { return pode.indexOf(x) < 0; });
     var comer = (pode.length ? '<div class="fx-tags">' + tags(pode.map(function (x) { return "✓ " + x; }), "sage") + "</div>"
@@ -51,13 +59,14 @@
 
     return '<article class="fx-pet">' +
       '<div class="fx-pet-head"><div class="av">🐾</div><div><h4>' + esc(p.nome) + '</h4><div class="fx-tags">' +
-        tags(head) + '<span class="tag ' + (p.castrado ? "sage" : "honey") + '">' + (fem ? (p.castrado ? "Castrada" : "Não castrada") : (p.castrado ? "Castrado" : "Não castrado")) + "</span>" +
+        tags(head) + (p.castrado == null ? "" : '<span class="tag ' + (p.castrado ? "sage" : "honey") + '">' + (fem ? (p.castrado ? "Castrada" : "Não castrada") : (p.castrado ? "Castrado" : "Não castrado")) + "</span>") +
       "</div></div></div>" +
       '<div class="fx-pet-body">' +
         sec("Saúde", '<div class="alerts">' + alerts.join("") + "</div>" +
           kv([["Veterinário", p.veterinario || "Não informado"], ["Hospital 24h", p.hospitais.join(" · ")]])) +
         sec("Dados", kv([["Nascimento", dataBR(p.nascimento), "half"], ["Idade aproximada", p.nascimento ? "" : p.idade_aproximada, "half"], ["Último cio", p.ultimo_cio, "half"]])) +
-        sec("Alimentação", kv([["Rotina", p.alimentacao]]) + '<dl class="kv" style="margin-top:10px"><div><dt>Pode comer</dt><dd>' + comer + "</dd></div></dl>") +
+        sec("Alimentação", kv([["Rotina", p.alimentacao]]) + (caoGato(p) ? '<dl class="kv" style="margin-top:10px"><div><dt>Pode comer</dt><dd>' + comer + "</dd></div></dl>" : "")) +
+        sec("Necessidades", kv([["Onde faz e como limpar", p.necessidades]])) +
         sec("Comportamento", (p.reacoes.length ? '<div class="fx-tags" style="margin-top:0">' + tags(p.reacoes, "rose") + "</div>" : "") +
           (p.info_adicional ? '<div style="margin-top:10px">' + kv([["Informações adicionais", p.info_adicional]]) + "</div>" : "")) +
       "</div></article>";
@@ -69,6 +78,7 @@
     var code = id ? id.slice(0, 8).toUpperCase() : "";
     var dt = when.toLocaleDateString("pt-BR") + " às " + when.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
     var tel = String(t.telefone || "").replace(/\D/g, "");
+    var dom = t.tipo === "Domiciliar";
     return (
       '<div class="ficha">' +
         '<div class="fx-top"><div class="fx-brand"><span class="mk">' + PAW + "</span><span>Ficha cadastral · Ju Petsitter</span></div>" +
@@ -80,12 +90,24 @@
             ["Telefone", tel ? '<a href="tel:+55' + esc(tel) + '">' + esc(t.telefone) + "</a>" : "", "half", true],
             ["CPF", t.cpf, "half"],
             ["Endereço", t.endereco],
-            ["Contato de emergência", t.contato_emergencia]])) + "</div>" +
+            ["Contato de emergência", t.contato_emergencia],
+            ["Serviço", dom ? "Atendimento domiciliar" : "Hospedagem"]])) + "</div>" +
+          (dom ? '<div class="fx-block">' + sec("Casa e acesso", kv([
+            ["Como entrar", t.acesso_entrada, "half"],
+            ["Devolução da chave", t.devolucao_chave, "half"],
+            ["Detalhes da entrada", t.acesso_detalhes],
+            ["Portaria, interfone, alarme, portões", t.portaria_alarme],
+            ["Onde ficam as coisas do pet", t.onde_ficam],
+            ["Áreas restritas", t.areas_restritas],
+            ["Outras pessoas na casa", t.outras_pessoas],
+            ["Ajudinhas na casa", (t.tarefas_casa || []).join(" · ")]])) + "</div>" : "") +
           d.pets.map(petHtml).join("") +
           '<div class="fx-block">' + sec("Autorizações", '<div class="auths">' +
             '<div class="auth"><span class="ck' + (t.autoriza_fotos ? "" : " no") + '">' + (t.autoriza_fotos ? "✓" : "✕") + "</span><span>" +
               (t.autoriza_fotos ? "<b>Autoriza</b>" : "<b>Não autoriza</b>") + " fotos e vídeos nas redes sociais (sem nome do pet e do tutor).</span></div>" +
             '<div class="auth"><span class="ck">✓</span><span><b>Emergência:</b> autoriza as medidas veterinárias necessárias caso não seja localizado(a), com custos sob sua responsabilidade.</span></div>' +
+            (dom ? '<div class="auth"><span class="ck' + (t.autoriza_entrada ? "" : " no") + '">' + (t.autoriza_entrada ? "✓" : "✕") + "</span><span><b>Entrada na casa:</b> " +
+              (t.autoriza_entrada ? "autoriza" : "não autorizou") + " a entrada da Júlia na residência durante o período combinado, só pra cuidar do(s) pet(s).</span></div>" : "") +
           "</div>") + "</div>" +
         "</div>" +
         '<div class="fx-foot">Ju Petsitter · Limeira-SP · @jupetslimeira</div>' +
@@ -154,7 +176,8 @@
   }
 
   window.JuFicha = {
-    OPCOES: { HOSPITAIS: HOSPITAIS, PODE_COMER: PODE_COMER, REACOES: REACOES },
+    OPCOES: { HOSPITAIS: HOSPITAIS, PODE_COMER: PODE_COMER, REACOES: REACOES, ESPECIES: ESPECIES,
+              ACESSOS: ACESSOS, DEVOLUCAO: DEVOLUCAO, TAREFAS_CASA: TAREFAS_CASA },
     html: html,
     baixarPdf: baixarPdf,
     esc: esc

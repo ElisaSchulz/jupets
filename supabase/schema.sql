@@ -47,6 +47,26 @@ create table if not exists public.pets (
 
 create index if not exists pets_tutor_id_idx on public.pets (tutor_id);
 
+-- ---------- Atendimento domiciliar (cliente escolhe o serviço no começo do cadastro) ----------
+-- Campos da casa só são preenchidos no domiciliar. Cadastros antigos ficam como Hospedagem.
+alter table public.tutores add column if not exists tipo text not null default 'Hospedagem'
+  check (tipo in ('Hospedagem','Domiciliar'));
+alter table public.tutores add column if not exists acesso_entrada  text check (char_length(acesso_entrada) <= 120);
+alter table public.tutores add column if not exists acesso_detalhes text check (char_length(acesso_detalhes) <= 2000);
+alter table public.tutores add column if not exists devolucao_chave text check (char_length(devolucao_chave) <= 120);
+alter table public.tutores add column if not exists portaria_alarme text check (char_length(portaria_alarme) <= 2000);
+alter table public.tutores add column if not exists onde_ficam      text check (char_length(onde_ficam) <= 2000);
+alter table public.tutores add column if not exists areas_restritas text check (char_length(areas_restritas) <= 2000);
+alter table public.tutores add column if not exists outras_pessoas  text check (char_length(outras_pessoas) <= 1000);
+alter table public.tutores add column if not exists tarefas_casa    text[] not null default '{}';
+alter table public.tutores add column if not exists autoriza_entrada boolean;
+
+-- espécie: vazio = cão (hospedagem é só de cães). Castração e antipulgas ficam vazios pra pássaros e roedores.
+alter table public.pets add column if not exists especie text check (especie in ('Cão','Gato','Pássaro','Roedor','Outro'));
+alter table public.pets add column if not exists necessidades text check (char_length(necessidades) <= 2000);
+alter table public.pets alter column castrado drop not null;
+alter table public.pets alter column antipulgas_em_dia drop not null;
+
 -- Segurança: ninguém lê nem grava direto nas tabelas pelo site.
 -- Só dá pra cadastrar pela função "cadastrar" abaixo. Você vê tudo pelo painel.
 alter table public.tutores enable row level security;
@@ -71,12 +91,24 @@ begin
     raise exception 'Máximo de 10 pets por cadastro.';
   end if;
 
-  insert into public.tutores (nome, cpf, endereco, telefone, contato_emergencia, autoriza_fotos, autoriza_emergencia)
+  insert into public.tutores (nome, cpf, endereco, telefone, contato_emergencia, autoriza_fotos, autoriza_emergencia,
+    tipo, acesso_entrada, acesso_detalhes, devolucao_chave, portaria_alarme, onde_ficam, areas_restritas,
+    outras_pessoas, tarefas_casa, autoriza_entrada)
   values (
     trim(tutor->>'nome'), tutor->>'cpf', tutor->>'endereco', tutor->>'telefone',
     tutor->>'contato_emergencia',
     (tutor->>'autoriza_fotos')::boolean,
-    (tutor->>'autoriza_emergencia')::boolean
+    (tutor->>'autoriza_emergencia')::boolean,
+    coalesce(nullif(tutor->>'tipo',''), 'Hospedagem'),
+    nullif(tutor->>'acesso_entrada',''),
+    nullif(tutor->>'acesso_detalhes',''),
+    nullif(tutor->>'devolucao_chave',''),
+    nullif(tutor->>'portaria_alarme',''),
+    nullif(tutor->>'onde_ficam',''),
+    nullif(tutor->>'areas_restritas',''),
+    nullif(tutor->>'outras_pessoas',''),
+    coalesce(array(select jsonb_array_elements_text(tutor->'tarefas_casa')), '{}'),
+    (tutor->>'autoriza_entrada')::boolean
   )
   returning id into tid;
 
@@ -85,7 +117,7 @@ begin
     insert into public.pets (
       tutor_id, ordem, nome, nascimento, idade_aproximada, sexo, raca, castrado, ultimo_cio,
       veterinario, hospitais, peso_kg, doenca_cronica, alergia, antipulgas_em_dia, medicamento,
-      alimentacao, pode_comer, reacoes, info_adicional
+      alimentacao, pode_comer, reacoes, info_adicional, especie, necessidades
     ) values (
       tid, n, trim(p->>'nome'),
       nullif(p->>'nascimento','')::date,
@@ -104,7 +136,9 @@ begin
       p->>'alimentacao',
       coalesce(array(select jsonb_array_elements_text(p->'pode_comer')), '{}'),
       coalesce(array(select jsonb_array_elements_text(p->'reacoes')), '{}'),
-      nullif(p->>'info_adicional','')
+      nullif(p->>'info_adicional',''),
+      nullif(p->>'especie',''),
+      nullif(p->>'necessidades','')
     );
   end loop;
 
@@ -134,7 +168,9 @@ select t.criado_em, t.nome as tutor, t.telefone, t.cpf, t.endereco, t.contato_em
        p.nome as pet, p.sexo, p.raca, p.nascimento, p.idade_aproximada, p.castrado, p.ultimo_cio,
        p.peso_kg, p.veterinario, p.hospitais, p.doenca_cronica, p.alergia, p.antipulgas_em_dia,
        p.medicamento, p.alimentacao, p.pode_comer, p.reacoes, p.info_adicional,
-       t.id as tutor_id, p.id as pet_id
+       t.id as tutor_id, p.id as pet_id,
+       t.tipo, p.especie, p.necessidades, t.acesso_entrada, t.acesso_detalhes, t.devolucao_chave,
+       t.portaria_alarme, t.onde_ficam, t.areas_restritas, t.outras_pessoas, t.tarefas_casa, t.autoriza_entrada
 from public.tutores t
 join public.pets p on p.tutor_id = t.id
 order by t.criado_em desc, p.ordem;
@@ -214,7 +250,17 @@ begin
     telefone = p_tutor->>'telefone',
     contato_emergencia = p_tutor->>'contato_emergencia',
     autoriza_fotos = (p_tutor->>'autoriza_fotos')::boolean,
-    autoriza_emergencia = (p_tutor->>'autoriza_emergencia')::boolean
+    autoriza_emergencia = (p_tutor->>'autoriza_emergencia')::boolean,
+    tipo = coalesce(nullif(p_tutor->>'tipo',''), 'Hospedagem'),
+    acesso_entrada = nullif(p_tutor->>'acesso_entrada',''),
+    acesso_detalhes = nullif(p_tutor->>'acesso_detalhes',''),
+    devolucao_chave = nullif(p_tutor->>'devolucao_chave',''),
+    portaria_alarme = nullif(p_tutor->>'portaria_alarme',''),
+    onde_ficam = nullif(p_tutor->>'onde_ficam',''),
+    areas_restritas = nullif(p_tutor->>'areas_restritas',''),
+    outras_pessoas = nullif(p_tutor->>'outras_pessoas',''),
+    tarefas_casa = coalesce(array(select jsonb_array_elements_text(p_tutor->'tarefas_casa')), '{}'),
+    autoriza_entrada = (p_tutor->>'autoriza_entrada')::boolean
   where id = p_tutor_id;
   if not found then
     raise exception 'Cadastro não encontrado.';
@@ -243,13 +289,15 @@ begin
         alimentacao = p->>'alimentacao',
         pode_comer = coalesce(array(select jsonb_array_elements_text(p->'pode_comer')), '{}'),
         reacoes = coalesce(array(select jsonb_array_elements_text(p->'reacoes')), '{}'),
-        info_adicional = nullif(p->>'info_adicional','')
+        info_adicional = nullif(p->>'info_adicional',''),
+        especie = nullif(p->>'especie',''),
+        necessidades = nullif(p->>'necessidades','')
       where id = pid;
     else
       insert into public.pets (
         tutor_id, ordem, nome, nascimento, idade_aproximada, sexo, raca, castrado, ultimo_cio,
         veterinario, hospitais, peso_kg, doenca_cronica, alergia, antipulgas_em_dia, medicamento,
-        alimentacao, pode_comer, reacoes, info_adicional
+        alimentacao, pode_comer, reacoes, info_adicional, especie, necessidades
       ) values (
         p_tutor_id, n, trim(p->>'nome'),
         nullif(p->>'nascimento','')::date,
@@ -268,7 +316,9 @@ begin
         p->>'alimentacao',
         coalesce(array(select jsonb_array_elements_text(p->'pode_comer')), '{}'),
         coalesce(array(select jsonb_array_elements_text(p->'reacoes')), '{}'),
-        nullif(p->>'info_adicional','')
+        nullif(p->>'info_adicional',''),
+        nullif(p->>'especie',''),
+        nullif(p->>'necessidades','')
       )
       returning id into pid;
     end if;
