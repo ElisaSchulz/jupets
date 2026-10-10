@@ -1239,9 +1239,9 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
             '<div class="opts">' + l.op.map(function (o) {
               return '<label class="opt"><input type="checkbox" data-k="' + esc(l.k) + '" value="' + esc(o) + '"' + (sel.indexOf(o) >= 0 ? " checked" : "") + " /><span>" + esc(o) + "</span></label>";
             }).join("") + "</div>" +
-            (l.obs ? '<input type="text" class="obs-in" data-obs="' + esc(l.k) + '" maxlength="140" placeholder="Obs: (opcional)" value="' + esc(boletim.obs[l.k] || "") + '" />' : "");
+            (l.obs ? '<input type="text" class="obs-in" data-obs="' + esc(l.k) + '" maxlength="140" placeholder="Obs: (opcional)" value="' + esc(boletim.obs[l.k] || "") + '" />' : "") +
+            (l.multi ? '<p class="hint" style="margin-top:6px">Pode marcar mais de um.</p>' : "");
         }).join("") +
-        (s.linhas.some(function (l) { return l.multi; }) ? '<p class="hint" style="margin-top:6px">Pode marcar mais de um.</p>' : "") +
         "</div>";
     }).join("");
   }
