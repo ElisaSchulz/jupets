@@ -8,8 +8,10 @@
       "Teve um dia tranquilo e ficou mais reservado", "Teve um dia animado e cheio de energia",
       "Aproveitou bastante as brincadeiras", "Gostou de receber um pouquinho mais de atenção e carinho"] }] },
     { ic: "🍽️", t: "Alimentação", linhas: [{ k: "comida", op: [
-      "Comeu toda a refeição", "Comeu parte da refeição", "Hoje não teve muito interesse pela comida", "Não trouxe a refeição"],
-      padrao: "Comeu toda a refeição" }] },
+      "Comeu toda a refeição", "Comeu parte da refeição", "Hoje não teve muito interesse pela comida", "Não trouxe a refeição",
+      "Comeu só petiscos"],
+      padrao: "Comeu toda a refeição" }, { k: "petiscos", rot: "Petiscos", multi: true, op: [
+      "Petisco tipo biscoito", "Petisco tipo bifinho", "Melão", "Maçã", "Banana"] }] },
     { ic: "💧", t: "Água", linhas: [{ k: "agua", op: [
       "Bebeu água normalmente ao longo do dia", "Bebeu bastante água", "Bebeu menos água que o habitual"],
       padrao: "Bebeu água normalmente ao longo do dia" }] },
