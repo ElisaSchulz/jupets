@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Diário da estadia · Ju Pets</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="referrer" content="no-referrer" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --rose: #D75F6A; --rose-deep: #B5434F; --rose-soft: rgba(215,95,106,0.14);
+    --cream: #FBF1ED; --surface: #FFF8F4; --shell: #F5E3DB; --line: #ECD8CF;
+    --ink: #3E2D2A; --ink-soft: #7B635C;
+    --r-lg: 26px; --r-md: 18px; --r-sm: 12px;
+    --shadow-sm: 0 12px 26px -18px rgba(62,45,42,0.5);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--cream); color: var(--ink); font-family: "Nunito Sans", system-ui, sans-serif; font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  h1, h2 { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 800; line-height: 1.08; letter-spacing: -0.02em; margin: 0; }
+  [hidden] { display: none !important; }
+  .wrap { max-width: 620px; margin: 0 auto; padding: 0 16px; }
+  header { padding: 18px 0; }
+  .logo { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; color: inherit; }
+  .logo .mk { width: 40px; height: 40px; border-radius: 50%; background: var(--rose); color: #fff; display: grid; place-items: center; }
+  .logo .mk svg { width: 23px; height: 23px; }
+  .logo .wm { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 800; font-size: 23px; }
+  .logo .wm small { display: block; font-family: "Nunito Sans", system-ui, sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); }
+  main { padding: 6px 0 40px; }
+  .eyebrow { font-weight: 800; text-transform: uppercase; letter-spacing: .18em; font-size: 12px; color: var(--rose); }
+  h1 { font-size: clamp(32px, 8vw, 42px); margin: 6px 0 4px; overflow-wrap: anywhere; }
+  .sub { color: var(--ink-soft); margin: 0; font-size: 15.5px; }
+  .card { background: #fff; border: 1.5px solid var(--line); border-radius: var(--r-lg); padding: 22px 20px; box-shadow: var(--shadow-sm); }
+  .msg { text-align: center; padding: 34px 22px; }
+  .msg .ic { font-size: 40px; }
+  .msg p { margin: 8px 0 0; color: var(--ink-soft); }
+  .btn { font: inherit; font-weight: 800; border: 0; cursor: pointer; border-radius: 999px; padding: 12px 24px; font-size: 16px; background: var(--rose); color: #fff; }
+  .btn:active { transform: translateY(1px); }
+  .btn[disabled] { opacity: .6; cursor: wait; }
+  .btn-ghost { background: transparent; color: var(--ink); border: 2px solid var(--ink); padding: 10px 20px; font-size: 15px; }
+  .pin-in { display: block; width: 180px; margin: 16px auto 12px; font: inherit; font-size: 28px; letter-spacing: .4em; text-align: center; padding: 10px 12px 10px 22px;
+    border: 1.5px solid var(--line); border-radius: var(--r-sm); background: var(--surface); color: var(--ink); }
+  .pin-in:focus { outline: none; border-color: var(--rose); box-shadow: 0 0 0 4px var(--rose-soft); }
+  .erro { color: var(--rose-deep); font-weight: 700; font-size: 15px; min-height: 1.4em; margin: 0 0 10px; }
+  .pets { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+  .pets button { font: inherit; font-weight: 800; font-size: 15px; border: 1.5px solid var(--line); background: #fff; color: var(--ink); border-radius: 999px; padding: 8px 16px; cursor: pointer; }
+  .pets button.on { background: var(--rose); border-color: var(--rose); color: #fff; }
+  .ult { display: inline-flex; align-items: center; gap: 8px; margin: 14px 0 0; font-size: 14.5px; font-weight: 700; color: var(--ink-soft); }
+  .ult::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #6aa84f; }
+  .hoje { margin: 18px 0 26px; }
+  .hoje h2 { font-size: 20px; margin: 0 0 10px; }
+  .dl-resumo span { background: #fff; border: 1.5px solid var(--line); font-size: 14.5px; padding: 6px 12px; }
+  .rodape { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 26px; font-size: 14px; color: var(--ink-soft); }
+</style>
+<link rel="stylesheet" href="diario.css" />
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="logo" href="index.html">
+      <span class="mk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6.5" cy="9" r="2.1"/><circle cx="12" cy="6.4" r="2.3"/><circle cx="17.5" cy="9" r="2.1"/><path d="M12 11.4c-3 0-5.4 2.3-5.4 4.7 0 1.7 1.5 2.6 3.1 2.6 1 0 1.6-.4 2.3-.4s1.3.4 2.3.4c1.6 0 3.1-.9 3.1-2.6 0-2.4-2.4-4.7-5.4-4.7z"/></svg></span>
+      <span class="wm">Ju<small>petsitter · limeira</small></span>
+    </a>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="vMsg" class="card msg"><div class="ic">🐾</div><p>Carregando o diário…</p></div>
+
+  <form id="vPin" class="card msg" hidden novalidate>
+    <div class="ic">🔒</div>
+    <h2 style="font-size:24px;margin-top:6px">Diário da estadia</h2>
+    <p>Para abrir, digite os <b>4 últimos números do seu telefone</b>.</p>
+    <input class="pin-in" id="pin" inputmode="numeric" autocomplete="off" maxlength="4" pattern="[0-9]*" aria-label="4 últimos números do telefone" />
+    <div class="erro" id="pinErr" role="alert"></div>
+    <button type="submit" class="btn" id="pinBtn">Abrir diário</button>
+  </form>
+
+  <div id="vDiario" hidden>
+    <div class="pets" id="pets" hidden></div>
+    <div class="eyebrow">Diário da estadia</div>
+    <h1 id="nome"></h1>
+    <p class="sub" id="datas"></p>
+    <div class="ult" id="ult" hidden></div>
+    <div class="hoje" id="hoje"></div>
+    <div id="tl"></div>
+    <div class="rodape"><span>Atualiza sozinho a cada 2 minutos.</span><button type="button" class="btn btn-ghost" id="atualizar">Atualizar agora</button></div>
+  </div>
+</main>
+
+<script src="diario.js"></script>
+<script>
+/* Mesmo projeto do cadastro.html. O tutor só chama a função diario_publico:
+   ela devolve apenas o diário deste link (nome do pet, datas e registros). */
+const SUPABASE_URL = "https://xeccdccundlhtisaegiy.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
+
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = JuDiario.esc;
+  var codigo = (location.hash.replace(/^#(k=)?/, "").match(/^[0-9a-f]{64}$/) || [""])[0];
+  var PIN_KEY = "jupets-diario-pin-" + codigo.slice(0, 12);
+  var dados = null, atual = 0, timer = null, carregando = false;
+
+  function lerPin() { try { return localStorage.getItem(PIN_KEY) || ""; } catch (e) { return ""; } }
+  function gravarPin(p) { try { p ? localStorage.setItem(PIN_KEY, p) : localStorage.removeItem(PIN_KEY); } catch (e) {} }
+  function br(iso) { if (!iso) return ""; var s = iso.split("-"); return s[2] + "/" + s[1]; }
+
+  function mostrar(v) { ["vMsg", "vPin", "vDiario"].forEach(function (x) { $(x).hidden = x !== v; }); }
+  function mensagem(ic, txt, tentar) {
+    $("vMsg").innerHTML = '<div class="ic">' + ic + "</div><p>" + txt + "</p>" +
+      (tentar ? '<p style="margin-top:16px"><button type="button" class="btn" id="tentar">Tentar de novo</button></p>' : "");
+    if (tentar) $("tentar").addEventListener("click", function () { carregar(); });
+    mostrar("vMsg");
+  }
+
+  function carregar(pin) {
+    if (!codigo) return Promise.resolve(mensagem("🔗", "Este link está incompleto. Confira se copiou o link inteiro que a Júlia mandou."));
+    if (carregando) return Promise.resolve();
+    carregando = true;
+    var p = pin != null ? pin : lerPin();
+    return fetch(SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/rpc/diario_publico", {
+      method: "POST", headers: { apikey: SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_codigo: codigo, p_pin: p || null })
+    }).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    }).then(function (d) {
+      if (d.erro === "invalido") return mensagem("🔗", "Este link não funciona mais. Peça o link novo para a Júlia.");
+      if (d.erro === "expirado") return mensagem("🏡", "Este diário foi encerrado. Obrigado por confiar na Ju Pets! 🐾");
+      if (d.pin) {
+        gravarPin("");
+        $("pinErr").textContent = d.erro === "bloqueado" ? "Muitas tentativas. Espere 15 minutos e tente de novo."
+          : d.erro === "pin" && p ? "Esses números não conferem. Tente de novo." : "";
+        $("pin").value = "";
+        mostrar("vPin"); $("pin").focus();
+        return;
+      }
+      if (p) gravarPin(p);
+      dados = d; render(); mostrar("vDiario");
+      agendar();
+    }).catch(function (e) {
+      console.error(e);
+      if (!dados) mensagem("📶", "Não consegui carregar o diário. Confira sua internet.", true);
+    }).finally(function () { carregando = false; });
+  }
+
+  function render() {
+    var pets = dados.pets || [];
+    if (!pets.length) return mensagem("🏡", "Este diário ainda não tem nenhum pet.");
+    if (atual >= pets.length) atual = 0;
+    var p = pets[atual], regs = p.registros || [], hoje = JuDiario.diaKey(new Date());
+    $("pets").hidden = pets.length < 2;
+    $("pets").innerHTML = pets.map(function (x, i) {
+      return '<button type="button" data-i="' + i + '" class="' + (i === atual ? "on" : "") + '">' + esc(x.nome) + "</button>";
+    }).join("");
+    $("nome").textContent = p.nome;
+    document.title = "Diário · " + p.nome + " · Ju Pets";
+    var fem = p.sexo === "Fêmea";
+    $("datas").textContent = (fem ? "Hospedada" : "Hospedado") + " desde " + br(p.entrada) + (p.saida ? " · volta pra casa " + br(p.saida) : "");
+    $("ult").hidden = !regs.length;
+    if (regs.length) $("ult").textContent = "Última atualização " + JuDiario.haQuanto(regs[0].em) + " (" + JuDiario.hora(regs[0].em) + ")";
+    var res = JuDiario.resumoDia(regs, hoje);
+    $("hoje").innerHTML = res.length ? "<h2>Hoje até agora</h2>" + '<div class="dl-resumo">' + res.map(function (x) {
+      return "<span>" + x.ic + " " + esc(x.t) + (x.n > 1 ? " · " + x.n + "x" : "") + "</span>";
+    }).join("") + "</div>" : "";
+    $("tl").innerHTML = JuDiario.linhaDoTempo(regs, { vazio: "Ainda não tem registros. Assim que a Júlia anotar algo, aparece aqui. 🐾" });
+  }
+
+  function agendar() {
+    clearTimeout(timer);
+    timer = setTimeout(function () { if (document.visibilityState !== "hidden") carregar(); else agendar(); }, 120000);
+  }
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible" && dados) carregar(); });
+  $("atualizar").addEventListener("click", function () {
+    var b = this; b.disabled = true;
+    carregar().then(function () { b.disabled = false; });
+  });
+  $("pets").addEventListener("click", function (ev) {
+    var b = ev.target.closest("[data-i]");
+    if (b) { atual = +b.getAttribute("data-i"); render(); window.scrollTo(0, 0); }
+  });
+  $("pin").addEventListener("input", function () { this.value = this.value.replace(/\D/g, "").slice(0, 4); });
+  $("vPin").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var v = $("pin").value;
+    if (v.length !== 4) { $("pinErr").textContent = "Digite os 4 números."; return; }
+    $("pinBtn").disabled = true;
+    carregar(v).then(function () { $("pinBtn").disabled = false; });
+  });
+  window.addEventListener("hashchange", function () { location.reload(); });
+
+  carregar();
+})();
+</script>
+</body>
+</html>
