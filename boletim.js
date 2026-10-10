@@ -11,7 +11,8 @@
       "Comeu toda a refeição", "Comeu parte da refeição", "Hoje não teve muito interesse pela comida", "Não trouxe a refeição",
       "Comeu só petiscos"],
       padrao: "Comeu toda a refeição" }, { k: "petiscos", rot: "Petiscos", multi: true, op: [
-      "Petisco tipo biscoito", "Petisco tipo bifinho", "Melão", "Maçã", "Banana"] }] },
+      "Petisco tipo biscoito", "Petisco tipo bifinho", "Melão", "Maçã", "Banana",
+      "Sorvete de iogurte natural e banana", "Sorvete de iogurte natural", "Sachê congelado"] }] },
     { ic: "💧", t: "Água", linhas: [{ k: "agua", op: [
       "Bebeu água normalmente ao longo do dia", "Bebeu bastante água", "Bebeu menos água que o habitual"],
       padrao: "Bebeu água normalmente ao longo do dia" }] },
