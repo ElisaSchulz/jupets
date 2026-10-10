@@ -470,7 +470,8 @@ const WHATSAPP = "5519981583108";
 
 
 
-  var cad = JuForm.criar(form);
+  var servico = (new URLSearchParams(location.search).get("servico") || "").toLowerCase();
+  var cad = JuForm.criar(form, { tipo: servico === "domiciliar" ? "Domiciliar" : servico === "hospedagem" ? "Hospedagem" : "" });
 
   /* ---------- envio ---------- */
   var errBox = document.getElementById("formError"), sendBtn = document.getElementById("sendBtn");

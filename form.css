@@ -23,6 +23,8 @@
 .unit input { padding-right: 46px !important; }
 .unit span { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-soft); font-weight: 700; font-size: 14px; }
 
+[data-only][hidden], [data-if][hidden] { display: none !important; }
+
 /* opções em pílula (radio + checkbox) */
 .opts { display: flex; flex-wrap: wrap; gap: 9px; }
 .opt { position: relative; }

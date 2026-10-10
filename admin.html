@@ -821,10 +821,10 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
     if (!shown.length) { $("list").innerHTML = '<div class="empty">Nada encontrado para essa busca.</div>'; return; }
     $("list").innerHTML = shown.map(function (t) {
       var pets = (t.pets || []).slice().sort(function (a, b) { return a.ordem - b.ordem; });
-      var atencao = pets.some(function (p) { return p.alergia || p.doenca_cronica || p.medicamento || !p.antipulgas_em_dia; });
+      var atencao = pets.some(function (p) { return p.alergia || p.doenca_cronica || p.medicamento || p.antipulgas_em_dia === false; });
       return '<button type="button" class="item" data-id="' + esc(t.id) + '"><span class="av">🐾</span><span class="main">' +
         '<div class="pets">' + esc(pets.map(function (p) { return p.nome; }).join(", ") || "—") + "</div>" +
-        '<div class="who">' + esc(t.nome) + " · " + esc(t.telefone) + "</div>" +
+        '<div class="who">' + esc(t.nome) + " · " + esc(t.telefone) + " · " + (t.tipo === "Domiciliar" ? "🔑 Domiciliar" : "🏡 Hospedagem") + "</div>" +
         (atencao ? '<span class="flag">⚠ atenção à saúde</span>' : "") +
         '</span><span class="when">' + esc(fmtDate(t.criado_em)) + "</span></button>";
     }).join("");
@@ -1012,8 +1012,8 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
     if (p.medicamento) al.push(["💊 Remédio", p.medicamento]);
     if (p.alergia) al.push(["Alergia", p.alergia]);
     if (p.doenca_cronica) al.push(["Doença crônica", p.doenca_cronica]);
-    if (!p.antipulgas_em_dia) al.push(["Antipulgas", "não está em dia"]);
-    if (fem && !p.castrado) al.push(["Não castrada", p.ultimo_cio ? "último cio: " + p.ultimo_cio : "fique de olho no cio"]);
+    if (p.antipulgas_em_dia === false) al.push(["Antipulgas", "não está em dia"]);
+    if (fem && p.castrado === false) al.push(["Não castrada", p.ultimo_cio ? "último cio: " + p.ultimo_cio : "fique de olho no cio"]);
 
     function linha(ic, rot, corpo) { return corpo ? "<div><dt>" + ic + "</dt><dd><b>" + esc(rot) + "</b>" + corpo + "</dd></div>" : ""; }
     function tagList(l, cls) { return '<div class="fx-tags">' + l.map(function (x) { return '<span class="tag ' + cls + '">' + esc(x) + "</span>"; }).join("") + "</div>"; }
