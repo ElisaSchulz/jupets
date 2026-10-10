@@ -320,6 +320,176 @@ create policy "admin gerencia config" on public.admin_config
   for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- =====================================================================
+--  Diário da hospedagem (admin.html → "Diário"; tutor → diario.html).
+--  diario_registros: o que aconteceu com o pet (comeu, passeou, xixi...).
+--  diario_links: um link por tutor e por estadia. O tutor nunca lê as tabelas:
+--  só chama diario_publico(codigo), que devolve aquele diário e mais nada.
+--  O link para de funcionar 7 dias depois da saída, ou na hora se for revogado.
+--  PIN (4 últimos dígitos do telefone do tutor): liga/desliga em admin_config,
+--  chave "diario", valor {"pin": true}.
+-- =====================================================================
+create table if not exists public.diario_links (
+  id            uuid primary key default gen_random_uuid(),
+  criado_em     timestamptz not null default now(),
+  tutor_id      uuid not null references public.tutores(id) on delete cascade,
+  codigo        text not null unique check (char_length(codigo) = 64),
+  revogado_em   timestamptz,
+  tentativas    int not null default 0,              -- PIN errado seguidas
+  bloqueado_ate timestamptz                          -- 5 PINs errados = 15 min bloqueado
+);
+
+alter table public.estadias add column if not exists diario_link_id uuid references public.diario_links(id) on delete set null;
+
+create table if not exists public.diario_registros (
+  id         uuid primary key default gen_random_uuid(),
+  criado_em  timestamptz not null default now(),
+  estadia_id uuid not null references public.estadias(id) on delete cascade,
+  em         timestamptz not null default now(),
+  tipo       text not null check (tipo ~ '^[a-z_]{2,20}$'),   -- comida, agua, passeio, xixi, coco, remedio, humor, nota...
+  valor      text check (char_length(valor) <= 300),
+  obs        text check (char_length(obs) <= 500)
+);
+
+create index if not exists diario_registros_estadia_idx on public.diario_registros (estadia_id, em desc);
+create index if not exists estadias_diario_link_idx on public.estadias (diario_link_id);
+
+alter table public.diario_links     enable row level security;
+alter table public.diario_registros enable row level security;
+grant select, insert, update, delete on public.diario_links, public.diario_registros to authenticated;
+
+drop policy if exists "admin gerencia links do diário" on public.diario_links;
+create policy "admin gerencia links do diário" on public.diario_links
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
+
+drop policy if exists "admin gerencia diário" on public.diario_registros;
+create policy "admin gerencia diário" on public.diario_registros
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
+
+-- Link do diário de uma estadia (admin). Reaproveita o link ativo do mesmo tutor,
+-- então irmãos hospedados juntos ficam no mesmo link. p_novo = true revoga o
+-- link atual e cria outro (o antigo para de funcionar na hora).
+create or replace function public.diario_link(p_estadia uuid, p_novo boolean default false)
+returns text
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  hoje   date := (now() at time zone 'America/Sao_Paulo')::date;
+  tid    uuid;
+  meu    uuid;
+  lid    uuid;
+  lcod   text;
+  velho  uuid;
+begin
+  if not public.is_admin() then
+    raise exception 'Sem permissão.';
+  end if;
+  select p.tutor_id, e.diario_link_id into tid, meu
+    from public.estadias e join public.pets p on p.id = e.pet_id
+   where e.id = p_estadia;
+  if tid is null then
+    raise exception 'Estadia não encontrada.';
+  end if;
+
+  select l.id, l.codigo into lid, lcod
+    from public.diario_links l
+   where l.revogado_em is null and l.tutor_id = tid
+     and l.id in (select e.diario_link_id from public.estadias e join public.pets p on p.id = e.pet_id
+                   where p.tutor_id = tid and (e.id = p_estadia or e.saida is null or e.saida >= hoje))
+   order by coalesce(l.id = meu, false) desc, l.criado_em desc
+   limit 1;
+
+  if lid is not null and p_novo then
+    update public.diario_links set revogado_em = now() where id = lid;
+    velho := lid; lid := null;
+  end if;
+
+  if lid is null then
+    insert into public.diario_links (tutor_id, codigo)
+    values (tid, replace(gen_random_uuid()::text || gen_random_uuid()::text, '-', ''))
+    returning id, codigo into lid, lcod;
+  end if;
+
+  update public.estadias e set diario_link_id = lid
+    from public.pets p
+   where p.id = e.pet_id and p.tutor_id = tid
+     and (e.id = p_estadia
+          or e.diario_link_id = velho
+          or (e.servico = 'Hospedagem' and e.diario_link_id is null and (e.saida is null or e.saida >= hoje)));
+
+  return lcod;
+end;
+$$;
+
+revoke all on function public.diario_link(uuid, boolean) from public;
+grant execute on function public.diario_link(uuid, boolean) to authenticated;
+
+-- O que o tutor vê (diario.html). Devolve só nome do pet, datas e registros.
+-- Respostas: {"erro":"invalido"|"expirado"|"bloqueado"|"pin"}, {"pin":true} (falta o PIN)
+-- ou {"pets":[...]}.
+create or replace function public.diario_publico(p_codigo text, p_pin text default null)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  hoje   date := (now() at time zone 'America/Sao_Paulo')::date;
+  lk     public.diario_links;
+  pede   boolean;
+  tel    text;
+begin
+  if p_codigo is null or char_length(p_codigo) <> 64 then
+    return '{"erro":"invalido"}';
+  end if;
+  select * into lk from public.diario_links where codigo = p_codigo and revogado_em is null;
+  if not found then
+    return '{"erro":"invalido"}';
+  end if;
+  if not exists (select 1 from public.estadias e
+                  where e.diario_link_id = lk.id and (e.saida is null or e.saida + 7 >= hoje)) then
+    return '{"erro":"expirado"}';
+  end if;
+
+  select coalesce((valor->>'pin')::boolean, false) into pede from public.admin_config where chave = 'diario';
+  if coalesce(pede, false) then
+    if lk.bloqueado_ate > now() then
+      return '{"pin":true,"erro":"bloqueado"}';
+    end if;
+    if coalesce(p_pin, '') = '' then
+      return '{"pin":true}';
+    end if;
+    select right(regexp_replace(telefone, '\D', '', 'g'), 4) into tel from public.tutores where id = lk.tutor_id;
+    if p_pin is distinct from tel then
+      update public.diario_links set
+        tentativas    = case when tentativas + 1 >= 5 then 0 else tentativas + 1 end,
+        bloqueado_ate = case when tentativas + 1 >= 5 then now() + interval '15 minutes' else bloqueado_ate end
+       where id = lk.id;
+      return '{"pin":true,"erro":"pin"}';
+    end if;
+    if lk.tentativas > 0 then
+      update public.diario_links set tentativas = 0 where id = lk.id;
+    end if;
+  end if;
+
+  return jsonb_build_object('agora', now(), 'pets', coalesce((
+    select jsonb_agg(jsonb_build_object(
+             'nome', p.nome, 'sexo', p.sexo, 'entrada', e.entrada, 'saida', e.saida,
+             'registros', coalesce((
+               select jsonb_agg(jsonb_build_object('em', r.em, 'tipo', r.tipo, 'valor', r.valor, 'obs', r.obs) order by r.em desc)
+                 from (select * from public.diario_registros
+                        where estadia_id = e.id order by em desc limit 500) r), '[]'::jsonb))
+           order by e.entrada, p.ordem)
+      from public.estadias e join public.pets p on p.id = e.pet_id
+     where e.diario_link_id = lk.id), '[]'::jsonb));
+end;
+$$;
+
+revoke all on function public.diario_publico(text, text) from public;
+grant execute on function public.diario_publico(text, text) to anon, authenticated;
+
+-- =====================================================================
 --  Admins cadastrados. Cada e-mail precisa também de um usuário em
 --  Authentication → Users (Add user → Create new user, com "Auto Confirm User").
 -- =====================================================================

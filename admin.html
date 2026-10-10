@@ -500,6 +500,30 @@
   .bsec .obs-in { width: 100%; box-sizing: border-box; margin-top: 8px; font: inherit; font-size: 16px; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r-sm); padding: 10px 12px; }
   .foto-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .foto-row input[type=file] { font-size: 14px; max-width: 100%; width: auto; border: 0; background: none; padding: 0; box-shadow: none; }
+  /* ---------- diário da hospedagem ---------- */
+  .hosp-diario { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 12px 0 0; font-size: 14px; color: var(--ink-soft); }
+  .hosp-diario b { color: var(--ink); }
+  #vDiario { max-width: 640px; margin: 0 auto; }
+  .dl-link { margin: 0 0 26px; }
+  .dl-link .url { width: 100%; box-sizing: border-box; font: inherit; font-size: 14px; color: var(--ink-soft); background: var(--surface);
+    border: 1.5px solid var(--line); border-radius: var(--r-sm); padding: 10px 12px; margin: 10px 0 12px; }
+  .dl-link .acts { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .dl-link .nota { font-size: 13.5px; color: var(--ink-soft); margin: 12px 0 0; }
+  .dl-link .pin { display: flex; gap: 10px; align-items: flex-start; font-size: 14.5px; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); cursor: pointer; }
+  .dl-link .pin input { width: 19px; height: 19px; accent-color: var(--rose); flex: none; margin-top: 2px; }
+  .dl-tipos { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+  .dl-tipos .opt span { padding: 8px 13px; font-size: 14.5px; }
+  .dl-pets { display: grid; gap: 8px; max-height: 46vh; overflow-y: auto; margin-bottom: 14px; }
+  .dl-pet { background: #fff; border: 1.5px solid var(--line); border-radius: var(--r-sm); padding: 10px 12px; }
+  .dl-pet.off { opacity: .55; }
+  .dl-pet .nm { display: flex; align-items: center; gap: 10px; font-weight: 800; cursor: pointer; }
+  .dl-pet .nm input { width: 20px; height: 20px; accent-color: var(--rose); flex: none; }
+  .dl-pet .nm small { font-weight: 600; color: var(--ink-soft); }
+  .dl-pet .opts { gap: 6px; margin: 8px 0 0 30px; }
+  .dl-pet .opt span { padding: 6px 11px; font-size: 13.5px; }
+  .dl-todos { display: flex; gap: 6px; margin: -6px 0 10px; font-size: 14px; }
+  .dl-toast { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 50; background: var(--ink); color: #fff; font-weight: 700; font-size: 14.5px;
+    padding: 11px 18px; border-radius: 999px; box-shadow: var(--shadow); max-width: calc(100vw - 32px); text-align: center; }
   @media (max-width: 820px) {
     .bol-grid { grid-template-columns: minmax(0, 1fr); }
     .bol-prev { position: static; }
@@ -516,6 +540,7 @@
 <link rel="stylesheet" href="form.css" />
 <link rel="stylesheet" href="ficha.css" />
 <link rel="stylesheet" href="boletim.css" />
+<link rel="stylesheet" href="diario.css" />
 </head>
 <body>
 
@@ -565,10 +590,11 @@
     <div id="vHoje" hidden>
       <div class="eyebrow" id="hojeData">Hoje</div>
       <h1>Hóspedes agora <span id="hospCount" class="muted"></span></h1>
-      <p class="sub">Quem está com você e o que cada um precisa. Toque em <b>Boletim do dia</b> para montar a imagem pro tutor.</p>
+      <p class="sub">Quem está com você e o que cada um precisa. Na hospedagem, use <b>Registrar no diário</b> (vale pra vários de uma vez); na creche, o <b>Boletim do dia</b>.</p>
       <div class="msg-err" id="hojeErr"></div>
       <div class="toolbar">
-        <button type="button" class="btn btn-primary btn-sm" id="addHosp">+ Adicionar hóspede</button>
+        <button type="button" class="btn btn-primary btn-sm" id="dlLote">📔 Registrar no diário</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="addHosp">+ Adicionar hóspede</button>
         <button type="button" class="btn btn-ghost btn-sm" id="reloadHoje">Atualizar</button>
       </div>
       <div class="hosp-list" id="hospList"></div>
@@ -583,6 +609,21 @@
       </div>
       <div id="rotMeds"></div>
       <div id="rotina"></div>
+    </div>
+
+    <!-- Diário da estadia -->
+    <div id="vDiario" hidden>
+      <div class="detail-bar"><button type="button" class="link-btn" id="dlBack">← Voltar</button></div>
+      <div class="eyebrow">Diário da estadia</div>
+      <h1 id="dlTitle">Diário</h1>
+      <p class="sub" id="dlSub"></p>
+      <div class="msg-err" id="dlErr"></div>
+      <div class="adm-card dl-link" id="dlLink"></div>
+      <div class="sec-head" style="margin-top:0">
+        <h2 class="h2">Registros</h2><span class="sp"></span>
+        <button type="button" class="btn btn-primary btn-sm" id="dlAdd">+ Registrar</button>
+      </div>
+      <div id="dlTl"></div>
     </div>
 
     <!-- Boletim do dia -->
@@ -687,6 +728,24 @@
   </form>
 </dialog>
 
+<!-- Registrar no diário (um ou vários pets) -->
+<dialog class="dlg" id="dlgDiario">
+  <form id="dlForm" novalidate>
+    <h3 id="dlDlgTitle">Registrar no diário</h3>
+    <div class="dl-tipos opts" id="dlTipos"></div>
+    <div class="dl-todos" id="dlTodos"><button type="button" class="link-btn" data-todos="1">Marcar todos</button><button type="button" class="link-btn" data-todos="0">Desmarcar todos</button></div>
+    <div class="dl-pets" id="dlPets"></div>
+    <div class="fld"><label for="dlObs" id="dlObsLbl">Observação <span class="muted">(opcional, vai pra todos marcados)</span></label>
+      <textarea id="dlObs" maxlength="500" placeholder="ex.: comeram no quintal, todo mundo animado"></textarea></div>
+    <div class="msg-err" id="dlFormErr"></div>
+    <div class="dlg-actions">
+      <span class="sp"></span>
+      <button type="button" class="link-btn" id="dlCancel">Agora não</button>
+      <button type="submit" class="btn btn-primary btn-sm" id="dlSave">Registrar</button>
+    </div>
+  </form>
+</dialog>
+
 <!-- Trocar senha -->
 <dialog class="dlg" id="dlgSenha">
   <form id="senhaForm" novalidate>
@@ -707,6 +766,7 @@
 <script src="ficha.js"></script>
 <script src="form.js"></script>
 <script src="boletim.js"></script>
+<script src="diario.js"></script>
 <script>
 /* Mesmo projeto do cadastro.html */
 const SUPABASE_URL = "https://xeccdccundlhtisaegiy.supabase.co";
@@ -751,13 +811,13 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
     }).then(function (r) {
       if (r.status === 401) { logout(); throw new Error("Sua sessão expirou. Entre de novo."); }
       if (!r.ok) return r.text().then(function (t) { throw new Error(t || ("HTTP " + r.status)); });
-      return r.status === 204 ? null : r.json();
+      return r.text().then(function (t) { return t ? JSON.parse(t) : null; });   // return=minimal vem sem corpo
     });
   }
 
   /* ---------- telas ---------- */
   function show(view) {
-    ["vLogin", "vList", "vDetail", "vEdit", "vHoje", "vBoletim", "vInsta"].forEach(function (v) { $(v).hidden = v !== view; });
+    ["vLogin", "vList", "vDetail", "vEdit", "vHoje", "vBoletim", "vDiario", "vInsta"].forEach(function (v) { $(v).hidden = v !== view; });
     $("whoAmI").hidden = view === "vLogin";
     $("tabs").hidden = view !== "vHoje" && view !== "vList" && view !== "vInsta";
     $("tabHoje").classList.toggle("on", view === "vHoje");
@@ -784,7 +844,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
 
   function logout() {
     var tok = session && session.access_token;
-    saveSession(null); rows = []; estadias = []; boletim = null;
+    saveSession(null); rows = []; estadias = []; boletim = null; dlRegsHoje = []; dv = null;
     if (tok) fetch(API + "/auth/v1/logout", { method: "POST", headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + tok } }).catch(function () {});
     if (location.hash) history.replaceState(null, "", location.pathname);
     show("vLogin");
@@ -866,6 +926,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
     if ((m = h.match(/^#editar\/(.+)$/))) openEdit(m[1]);
     else if ((m = h.match(/^#ficha\/(.+)$/))) openDetail(m[1]);
     else if ((m = h.match(/^#boletim\/(.+)$/))) openBoletim(m[1]);
+    else if ((m = h.match(/^#diario\/(.+)$/))) openDiario(m[1]);
     else if (h === "#cadastros") { document.title = "Fichas dos pets · Ju Pets"; show("vList"); }
     else if (h === "#instagram") { document.title = "Instagram · Ju Pets"; renderInsta(); show("vInsta"); }
     else { document.title = "Hoje · Ju Pets"; renderHoje(); show("vHoje"); }
@@ -955,18 +1016,24 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
     return idx;
   }
   function erroTabela(e) {
-    if (/estadias|admin_config|PGRST205|42P01/.test(e.message)) return "Falta criar as tabelas novas: rode o arquivo supabase/schema.sql de novo no SQL Editor do Supabase.";
+    if (/estadias|admin_config|diario|PGRST202|PGRST205|42P01|42703/.test(e.message)) return "Falta criar as tabelas novas: rode o arquivo supabase/schema.sql de novo no SQL Editor do Supabase.";
     return e.message.indexOf("sessão") >= 0 ? e.message : "";
   }
 
   function loadHoje() {
     return Promise.all([
       api("estadias?select=*&or=(saida.is.null,saida.gte." + hoje() + ")&order=entrada.asc,criado_em.asc"),
-      api("admin_config?select=valor&chave=eq.rotina")
+      api("admin_config?select=valor&chave=eq.rotina"),
+      // diário: se as tabelas ainda não existirem, o resto da tela funciona igual
+      api("diario_registros?select=id,estadia_id,em,tipo&em=gte." + encodeURIComponent(inicioHoje()) + "&order=em.desc&limit=2000").catch(function () { return []; }),
+      api("admin_config?select=valor&chave=eq.diario").catch(function () { return []; })
     ]).then(function (r) {
       estadias = r[0] || []; estadiasErro = "";
       var v = r[1] && r[1][0] && r[1][0].valor;
       rotinaCfg = v && Array.isArray(v.itens) ? v.itens : null;
+      dlRegsHoje = (r[2] || []).concat(lerFila().filter(function (x) { return x.em >= inicioHoje(); }));
+      dlCfg = { pin: !!(r[3] && r[3][0] && r[3][0].valor && r[3][0].valor.pin) };
+      enviarFila();
     }).catch(function (e) {
       console.error(e);
       estadias = [];
@@ -1024,6 +1091,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
       '<div class="hosp-head"><span class="av">' + (e.servico === "Creche" ? "🎾" : "🏡") + '</span><div class="main"><div class="nm">' + esc(p.nome) + "</div>" +
         '<div class="who">' + esc([p.raca, p.peso_kg ? String(p.peso_kg).replace(".", ",") + " kg" : "", "tutor: " + t.nome].filter(Boolean).join(" · ")) + "</div></div>" + pill + "</div>" +
       '<div class="hosp-dates">' + esc(datas) + "</div>" +
+      (e.servico === "Hospedagem" ? diarioLinha(e) : "") +
       (al.length ? '<div class="alerts">' + al.map(function (a) { return '<div class="alert"><b>' + esc(a[0]) + ":</b> " + esc(a[1]) + "</div>"; }).join("") + "</div>" : "") +
       '<dl class="hosp-info">' +
         linha("🍽", "Alimentação", esc(p.alimentacao)) +
@@ -1039,7 +1107,9 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
           linha("🏥", "Hospital 24h", esc(p.hospitais.join(" · "))) +
         "</dl></details>" +
       '<div class="hosp-actions">' +
-        '<a class="btn btn-primary" href="#boletim/' + esc(e.id) + '">Boletim do dia</a>' +
+        (e.servico === "Hospedagem"
+          ? '<a class="btn btn-primary" href="#diario/' + esc(e.id) + '">Diário</a><a class="btn btn-ghost" href="#boletim/' + esc(e.id) + '">Boletim</a>'
+          : '<a class="btn btn-primary" href="#boletim/' + esc(e.id) + '">Boletim do dia</a>') +
         (wa ? '<a class="btn btn-wa" href="' + esc(wa) + '" target="_blank" rel="noopener">WhatsApp</a>' : "") +
         '<a class="btn btn-ghost" href="#ficha/' + esc(t.id) + '">Ficha</a>' +
         '<button type="button" class="btn btn-ghost" data-edit="' + esc(e.id) + '">Editar estadia</button>' +
@@ -1161,6 +1231,9 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
       var k = it.getAttribute("data-k"), done = feitos(), i = done.indexOf(k);
       if (i >= 0) done.splice(i, 1); else done.push(k);
       setFeitos(done); renderHoje();
+      // marcou um item da rotina (ex.: "Jantar") → já abre o registro em lote no diário
+      var tk = i < 0 && JuDiario.tipoDaRotina(k.split("|").slice(1).join("|"));
+      if (tk && hospedesDiario().length) openDiarioDlg(tk);
       return;
     }
     if (ev.target.closest(".x")) { ev.target.closest(".row").remove(); return; }
@@ -1184,6 +1257,266 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
         .catch(function (e) { console.error(e); err("rotErr", erroTabela(e) || "Não consegui salvar agora. Tente de novo."); a.disabled = false; a.textContent = "Salvar"; });
     }
   });
+
+  /* ---------- diário da hospedagem ----------
+     Registros no Supabase (diario_registros). Sem internet, os registros ficam numa fila
+     neste aparelho e sobem sozinhos quando a conexão volta. */
+  var dlRegsHoje = [], dlCfg = { pin: false }, dl = null, dv = null, toastT = null;
+  var FILA = "jupets-diario-fila";
+  function inicioHoje() { var d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()).toISOString(); }
+  function uuid() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    var b = crypto.getRandomValues(new Uint8Array(16)), h = "";
+    b[6] = (b[6] & 15) | 64; b[8] = (b[8] & 63) | 128;
+    for (var i = 0; i < 16; i++) h += (b[i] < 16 ? "0" : "") + b[i].toString(16) + (i === 3 || i === 5 || i === 7 || i === 9 ? "-" : "");
+    return h;
+  }
+  function toast(msg) {
+    var t = $("dlToast");
+    if (!t) { t = document.createElement("div"); t.id = "dlToast"; t.className = "dl-toast"; t.setAttribute("role", "status"); document.body.appendChild(t); }
+    t.textContent = msg; t.hidden = false;
+    clearTimeout(toastT); toastT = setTimeout(function () { t.hidden = true; }, 3500);
+  }
+  function lerFila() { try { return JSON.parse(localStorage.getItem(FILA) || "[]"); } catch (e) { return []; } }
+  function gravarFila(a) { try { a.length ? localStorage.setItem(FILA, JSON.stringify(a)) : localStorage.removeItem(FILA); } catch (e) {} }
+  /* id gerado aqui + ignore-duplicates: reenviar a fila nunca duplica um registro */
+  function postRegs(regs) {
+    return api("diario_registros?on_conflict=id", { method: "POST", headers: { Prefer: "resolution=ignore-duplicates,return=minimal" }, body: JSON.stringify(regs) });
+  }
+  function enviarFila() {
+    var f = lerFila();
+    if (!f.length || !session) return Promise.resolve();
+    return postRegs(f).then(function () {
+      var ids = f.map(function (r) { return r.id; });
+      gravarFila(lerFila().filter(function (r) { return ids.indexOf(r.id) < 0; }));
+      toast("Registros guardados no celular foram enviados ✓");
+    }).catch(function (e) { console.error(e); });
+  }
+  window.addEventListener("online", enviarFila);
+  function guardarLocal(regs) {
+    var ini = inicioHoje();
+    regs.forEach(function (r) {
+      if (r.em >= ini) dlRegsHoje.push(r);
+      if (dv && dv.regs && r.estadia_id === dv.est.id) dv.regs.push(r);
+    });
+  }
+  /* "ok" = enviado, "fila" = guardado no aparelho até a internet voltar */
+  function enviarRegistros(regs) {
+    return postRegs(regs).then(function () { guardarLocal(regs); return "ok"; }).catch(function (e) {
+      if (e instanceof TypeError || navigator.onLine === false) {
+        gravarFila(lerFila().concat(regs)); guardarLocal(regs);
+        return "fila";
+      }
+      throw e;
+    });
+  }
+
+  function diarioLinha(e) {
+    var res = JuDiario.resumoDia(dlRegsHoje.filter(function (r) { return r.estadia_id === e.id; }), hoje());
+    return '<div class="hosp-diario"><span>📔 <b>Diário de hoje:</b></span>' + (res.length
+      ? '<span class="dl-resumo">' + res.map(function (x) { return '<span title="' + esc(x.t) + '">' + x.ic + (x.n > 1 ? " " + x.n : "") + "</span>"; }).join("") + "</span>"
+      : "<span>nada registrado ainda</span>") + "</div>";
+  }
+
+  /* ----- janela: registrar (vários pets, ou um só com soEst) ----- */
+  function hospedesDiario(soEst) {
+    var H = hoje(), idx = petIndex();
+    return estadias.filter(function (e) { return soEst ? e.id === soEst : e.servico === "Hospedagem" && e.entrada <= H; })
+      .map(function (e) { var i = idx[e.pet_id]; return i ? { e: e, pet: i.pet, tutor: i.tutor } : null; })
+      .filter(Boolean)
+      .sort(function (a, b) { return a.pet.nome.localeCompare(b.pet.nome, "pt-BR"); });
+  }
+  function openDiarioDlg(tipoK, soEst) {
+    var hs = hospedesDiario(soEst);
+    if (!hs.length) { toast("Ninguém na hospedagem agora."); return; }
+    dl = { hs: hs, soEst: soEst || null, tipo: null, sel: {} };
+    $("dlDlgTitle").textContent = soEst ? "Registrar · " + hs[0].pet.nome : "Registrar no diário";
+    $("dlTipos").innerHTML = JuDiario.TIPOS.map(function (t) {
+      return '<label class="opt"><input type="radio" name="dlTipo" value="' + esc(t.k) + '" /><span>' + t.ic + " " + esc(t.t) + "</span></label>";
+    }).join("");
+    $("dlObs").value = ""; err("dlFormErr", "");
+    escolherTipo(tipoK);
+    var d = $("dlgDiario");
+    if (d.showModal) d.showModal(); else d.setAttribute("open", "");
+  }
+  function closeDiarioDlg() { var d = $("dlgDiario"); if (d.close) d.close(); else d.removeAttribute("open"); }
+  function escolherTipo(k) {
+    var t = k ? JuDiario.tipo(k) : null;
+    dl.tipo = t; dl.sel = {};
+    var r = k && $("dlTipos").querySelector('input[value="' + k + '"]');
+    if (r) r.checked = true;
+    dl.hs.forEach(function (h) {
+      var on = !t ? false : dl.soEst ? true : t.texto ? false : t.soMed ? !!h.pet.medicamento : !!t.padrao;
+      dl.sel[h.e.id] = { on: on, valor: t && !t.texto ? (t.padrao || (t.op.length === 1 ? t.op[0] : null)) : null };
+    });
+    $("dlObsLbl").innerHTML = t && t.texto ? "Recado" : 'Observação <span class="muted">(opcional, vai pra todos marcados)</span>';
+    $("dlObs").placeholder = t && t.texto ? "ex.: Thor fez amizade com a Mel e passou a tarde brincando com ela" : "ex.: comeram no quintal, todo mundo animado";
+    renderDlPets();
+  }
+  function renderDlPets() {
+    var t = dl.tipo;
+    $("dlTodos").hidden = !t || !!dl.soEst;
+    if (!t) { $("dlPets").innerHTML = '<div class="muted" style="font-size:14.5px;padding:4px 2px">Escolha acima o que você quer registrar.</div>'; contarDl(); return; }
+    $("dlPets").innerHTML = dl.hs.map(function (h) {
+      var s = dl.sel[h.e.id], id = h.e.id;
+      return '<div class="dl-pet' + (s.on ? "" : " off") + '"><label class="nm"><input type="checkbox" data-on="' + esc(id) + '"' + (s.on ? " checked" : "") + " />" +
+        "<span>" + esc(h.pet.nome) + (t.soMed && h.pet.medicamento ? " <small>· " + esc(h.pet.medicamento) + "</small>" : "") + "</span></label>" +
+        (t.op.length > 1 ? '<div class="opts">' + t.op.map(function (o) {
+          return '<label class="opt"><input type="radio" name="dlv-' + esc(id) + '" data-est="' + esc(id) + '" value="' + esc(o) + '"' + (s.valor === o ? " checked" : "") + " /><span>" + esc(o) + "</span></label>";
+        }).join("") + "</div>" : "") + "</div>";
+    }).join("");
+    contarDl();
+  }
+  function contarDl() {
+    var n = dl.tipo ? dl.hs.filter(function (h) { return dl.sel[h.e.id].on; }).length : 0;
+    $("dlSave").textContent = n > 1 ? "Registrar para " + n : "Registrar";
+  }
+  $("dlTipos").addEventListener("change", function (ev) { if (ev.target.name === "dlTipo") escolherTipo(ev.target.value); });
+  $("dlPets").addEventListener("change", function (ev) {
+    var i = ev.target, est = i.getAttribute("data-on") || i.getAttribute("data-est");
+    if (!est || !dl.sel[est]) return;
+    if (i.getAttribute("data-on")) dl.sel[est].on = i.checked;
+    else { dl.sel[est].valor = i.value; dl.sel[est].on = true; }
+    renderDlPets();
+  });
+  $("dlTodos").addEventListener("click", function (ev) {
+    var b = ev.target.closest("[data-todos]");
+    if (!b) return;
+    dl.hs.forEach(function (h) { dl.sel[h.e.id].on = b.getAttribute("data-todos") === "1"; });
+    renderDlPets();
+  });
+  $("dlCancel").addEventListener("click", closeDiarioDlg);
+  $("dlLote").addEventListener("click", function () { openDiarioDlg(null); });
+  $("dlForm").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var t = dl && dl.tipo, obs = $("dlObs").value.trim();
+    if (!t) return err("dlFormErr", "Escolha o que você quer registrar.");
+    var marcados = dl.hs.filter(function (h) { return dl.sel[h.e.id].on; });
+    if (!marcados.length) return err("dlFormErr", "Marque pelo menos um pet.");
+    if (t.texto && !obs) return err("dlFormErr", "Escreva o recado.");
+    var sem = marcados.filter(function (h) { return !t.texto && !dl.sel[h.e.id].valor; });
+    if (sem.length) return err("dlFormErr", "Escolha uma opção para " + sem.map(function (h) { return h.pet.nome; }).join(", ") + ".");
+    var em = new Date().toISOString();
+    var regs = marcados.map(function (h) {
+      return { id: uuid(), estadia_id: h.e.id, em: em, tipo: t.k, valor: t.texto ? null : dl.sel[h.e.id].valor, obs: obs || null };
+    });
+    var b = $("dlSave");
+    b.disabled = true; b.textContent = "Registrando…"; err("dlFormErr", "");
+    enviarRegistros(regs).then(function (r) {
+      closeDiarioDlg();
+      toast(r === "fila" ? "Sem internet: guardei no celular e envio quando a conexão voltar."
+        : regs.length > 1 ? "Registrado para " + regs.length + " pets ✓" : "Registrado ✓");
+      if (!$("vHoje").hidden) renderHoje();
+      if (!$("vDiario").hidden) renderDv();
+    }).catch(function (e) {
+      console.error(e);
+      err("dlFormErr", erroTabela(e) || "Não consegui registrar agora. Tente de novo.");
+    }).finally(function () { b.disabled = false; contarDl(); });
+  });
+
+  /* ----- tela: diário de uma estadia (link pro tutor + registros) ----- */
+  function linkUrl(c) { return location.href.split("#")[0].replace(/[^\/]*$/, "") + "diario.html#" + c; }
+  function openDiario(estId) {
+    var e = estadias.filter(function (x) { return x.id === estId; })[0], info = e && petIndex()[e.pet_id];
+    if (!info) { location.hash = "#hoje"; return; }
+    var mesmo = dv && dv.est.id === estId;
+    dv = { est: e, info: info, regs: mesmo ? dv.regs : null, codigo: mesmo ? dv.codigo : null };
+    $("dlTitle").textContent = info.pet.nome;
+    $("dlSub").textContent = "Entrou " + br(e.entrada) + (e.saida ? " · sai " + br(e.saida) : " · sem data de saída") + " · tutor: " + info.tutor.nome;
+    document.title = "Diário · " + info.pet.nome + " · Ju Pets";
+    err("dlErr", "");
+    renderDv(); show("vDiario");
+    Promise.all([
+      api("diario_registros?select=*&estadia_id=eq." + encodeURIComponent(estId) + "&order=em.desc&limit=500"),
+      e.diario_link_id ? api("diario_links?select=codigo,revogado_em&id=eq." + encodeURIComponent(e.diario_link_id)) : null
+    ]).then(function (r) {
+      if (!dv || dv.est.id !== estId) return;
+      var l = r[1] && r[1][0];
+      dv.regs = (r[0] || []).concat(lerFila().filter(function (x) { return x.estadia_id === estId; }));
+      dv.codigo = l && !l.revogado_em ? l.codigo : null;
+      renderDv();
+    }).catch(function (x) {
+      console.error(x);
+      err("dlErr", erroTabela(x) || "Não consegui carregar o diário. Tente de novo.");
+    });
+  }
+  function nomesNoLink() {
+    var idx = petIndex();
+    return estadias.filter(function (x) { return dv.est.diario_link_id ? x.diario_link_id === dv.est.diario_link_id : x.id === dv.est.id; })
+      .map(function (x) { var i = idx[x.pet_id]; return i ? i.pet.nome : ""; }).filter(Boolean);
+  }
+  function renderDv() {
+    if (!dv) return;
+    var c = dv.codigo, url = c ? linkUrl(c) : "", tutor = dv.info.tutor, html;
+    if (!c) {
+      html = "<b>Link para o tutor</b>" +
+        '<p class="nota" style="margin:6px 0 14px">O tutor acompanha os registros por um link só dele, sem instalar nada.</p>' +
+        '<div class="acts"><button type="button" class="btn btn-primary btn-sm" data-l="criar"' + (dv.regs ? "" : " disabled") + ">Criar link</button></div>";
+    } else {
+      var nomes = nomesNoLink(), primeiro = String(tutor.nome || "").split(" ")[0];
+      var msg = "Oi, " + primeiro + "! Por aqui você acompanha o dia de " + (nomes.length > 1 ? nomes.slice(0, -1).join(", ") + " e " + nomes[nomes.length - 1] : nomes[0] || dv.info.pet.nome) +
+        " na Ju Pets, atualizado ao longo do dia 🐾\n" + url + (dlCfg.pin ? "\nPara abrir, use os 4 últimos números do seu telefone." : "");
+      var wa = waLink(tutor.telefone);
+      html = "<b>Link para o tutor</b>" + (nomes.length > 1 ? ' <span class="muted">(' + esc(nomes.join(", ")) + ")</span>" : "") +
+        '<input class="url" readonly value="' + esc(url) + '" aria-label="Link do diário" />' +
+        '<div class="acts"><button type="button" class="btn btn-primary btn-sm" data-l="copiar">Copiar link</button>' +
+        (wa ? '<a class="btn btn-wa btn-sm" href="' + esc(wa + "?text=" + encodeURIComponent(msg)) + '" target="_blank" rel="noopener">Mandar no WhatsApp</a>' : "") +
+        '<a class="btn btn-ghost btn-sm" href="' + esc(url) + '" target="_blank" rel="noopener">Ver como o tutor</a></div>' +
+        '<p class="nota">O link funciona até 7 dias depois da saída. Se ele for parar com quem não devia, ' +
+        '<button type="button" class="link-btn danger" data-l="novo" style="padding:0;font-size:inherit">gere um novo link</button>: o antigo para de funcionar na hora.</p>';
+    }
+    html += '<label class="pin"><input type="checkbox" id="dlPin"' + (dlCfg.pin ? " checked" : "") + " />" +
+      "<span>Pedir PIN ao abrir: os 4 últimos números do telefone do tutor. <span class=\"muted\">Vale para todos os diários.</span></span></label>";
+    $("dlLink").innerHTML = html;
+    $("dlTl").innerHTML = dv.regs ? JuDiario.linhaDoTempo(dv.regs, { apagar: true, vazio: "Nenhum registro ainda. Toque em + Registrar." })
+      : '<div class="empty">Carregando…</div>';
+  }
+  function gerarLink(novo) {
+    return api("rpc/diario_link", { method: "POST", body: JSON.stringify({ p_estadia: dv.est.id, p_novo: !!novo }) }).then(function (c) {
+      var estId = dv.est.id;
+      return loadHoje().then(function () {
+        var e = estadias.filter(function (x) { return x.id === estId; })[0];
+        if (dv && dv.est.id === estId) { if (e) dv.est = e; dv.codigo = c; renderDv(); }
+      });
+    });
+  }
+  $("dlLink").addEventListener("click", function (ev) {
+    var b = ev.target.closest("[data-l]");
+    if (!b || !dv) return;
+    var a = b.getAttribute("data-l");
+    if (a === "copiar") {
+      var url = linkUrl(dv.codigo), inp = $("dlLink").querySelector(".url");
+      (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).catch(function () {
+        inp.select(); document.execCommand("copy");
+      }).then(function () { toast("Link copiado ✓"); });
+      return;
+    }
+    if (a === "novo" && !confirm("Gerar um link novo? O link atual para de funcionar na hora, e você vai precisar mandar o novo pro tutor.")) return;
+    b.disabled = true;
+    gerarLink(a === "novo").then(function () { toast(a === "novo" ? "Link novo criado. O antigo não funciona mais." : "Link criado ✓"); })
+      .catch(function (e) { console.error(e); b.disabled = false; err("dlErr", erroTabela(e) || "Não consegui criar o link agora. Tente de novo."); });
+  });
+  $("dlLink").addEventListener("change", function (ev) {
+    if (ev.target.id !== "dlPin") return;
+    var on = ev.target.checked;
+    api("admin_config", { method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+      body: JSON.stringify({ chave: "diario", valor: { pin: on }, atualizado_em: new Date().toISOString() }) })
+      .then(function () { dlCfg.pin = on; renderDv(); toast(on ? "PIN ligado para todos os diários." : "PIN desligado."); })
+      .catch(function (e) { console.error(e); ev.target.checked = !on; err("dlErr", erroTabela(e) || "Não consegui salvar agora. Tente de novo."); });
+  });
+  $("dlTl").addEventListener("click", function (ev) {
+    var b = ev.target.closest("[data-apagar]");
+    if (!b || !dv || !confirm("Apagar este registro? O tutor deixa de ver.")) return;
+    var id = b.getAttribute("data-apagar");
+    gravarFila(lerFila().filter(function (r) { return r.id !== id; }));
+    api("diario_registros?id=eq." + encodeURIComponent(id), { method: "DELETE", headers: { Prefer: "return=minimal" } }).then(function () {
+      function fora(r) { return r.id !== id; }
+      dv.regs = dv.regs.filter(fora); dlRegsHoje = dlRegsHoje.filter(fora);
+      renderDv();
+    }).catch(function (e) { console.error(e); err("dlErr", "Não consegui apagar agora. Tente de novo."); });
+  });
+  $("dlAdd").addEventListener("click", function () { if (dv) openDiarioDlg(null, dv.est.id); });
+  $("dlBack").addEventListener("click", function () { location.hash = "#hoje"; });
 
   /* ---------- boletim do dia ---------- */
   var boletim = null, bolBlob = null, bolVer = 0, bolTimer = null;
