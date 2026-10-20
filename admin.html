@@ -577,9 +577,8 @@
       <h1>Artes do Instagram</h1>
       <p class="sub">Escolha um modelo, troque o texto e a foto e baixe a imagem pronta pra postar.</p>
       <div class="msg-err" id="igErr"></div>
-      <section class="ig-sec"><h2 class="h2">Posts prontos <small>ideias do guia · toque pra ajustar e baixar</small></h2>
-        <div class="toolbar" style="margin:8px 0 0"><button type="button" class="btn btn-ghost btn-sm" id="igTodas">⬇ Baixar todos</button></div>
-        <div class="ig-cards" id="igIdeias"></div></section>
+      <section class="ig-sec"><h2 class="h2">Stories pros destaques <small>1080 × 1920 · toque pra ajustar e baixar</small></h2>
+        <div id="igDestaques"></div></section>
       <section class="ig-sec"><h2 class="h2">Modelos de post <small>1080 × 1350</small></h2><div class="ig-cards" id="igPosts"></div></section>
       <section class="ig-sec"><h2 class="h2">Stories <small>1080 × 1920</small></h2><div class="ig-cards" id="igStories"></div></section>
       <section class="ig-sec"><h2 class="h2">Stickers <small>fundo transparente · adicione no story pela galeria</small></h2><div class="ig-cards" id="igStickers"></div></section>
@@ -1725,9 +1724,9 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
   function renderInsta() {
     if (igPronto) return;
     igPronto = true;
+    igDestaques();
     var M = JuInsta.MODELOS, P = JuInsta.PRONTOS;
     [
-      ["igIdeias", JuInsta.IDEIAS, "editar"],
       ["igPosts", M.filter(function (m) { return m.tam.h === 1350; }), "editar"],
       ["igStories", M.filter(function (m) { return m.tam.h === 1920; }), "editar"],
       ["igStickers", P.filter(function (p) { return p.transp; }), "baixar"],
@@ -1752,17 +1751,30 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
       .finally(function () { b.disabled = false; go.textContent = "⬇ PNG"; });
   });
 
-  /* baixa as ideias prontas uma a uma, com o texto que estiver salvo em cada uma */
-  $("igTodas").addEventListener("click", function () {
-    var b = this, lista = JuInsta.IDEIAS, i = 0;
-    if (b.disabled) return;
+  /* stories prontos, um bloco por destaque, cada um com "Baixar todos" */
+  function igDestaques() {
+    $("igDestaques").innerHTML = JuInsta.DESTAQUES.map(function (g, gi) {
+      return '<div class="ig-dest"><div class="ig-dest-h"><b>' + esc(g.nome) + "</b>" +
+        '<button type="button" class="link-btn" data-todos="' + gi + '">⬇ Baixar os ' + g.itens.length + "</button></div>" +
+        '<div class="ig-cards">' + g.itens.map(function (it) { return igCard(it, "editar"); }).join("") + "</div></div>";
+    }).join("");
+    JuInsta.IDEIAS.forEach(function (it) {
+      JuInsta.miniatura($("igDestaques").querySelector('[data-id="' + it.id + '"] .igk-thumb'), it, it.html(igDados(it)));
+    });
+  }
+  /* baixa os stories de um destaque um a um, com o texto que estiver salvo em cada um */
+  $("igDestaques").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-todos]");
+    if (!b || b.disabled) return;
+    e.stopPropagation();
+    var lista = JuInsta.DESTAQUES[+b.getAttribute("data-todos")].itens, rot = b.textContent, i = 0;
     b.disabled = true; err("igErr", "");
     (function prox() {
-      if (i >= lista.length) { b.disabled = false; b.textContent = "⬇ Baixar todos"; return; }
+      if (i >= lista.length) { b.disabled = false; b.textContent = rot; return; }
       var m = lista[i++];
       b.textContent = "Gerando " + i + " de " + lista.length + "…";
       JuInsta.png(m, m.html(igDados(m))).then(function (blob) { JuBoletim.baixar(blob, JuInsta.nomeArquivo(m)); })
-        .catch(function (e) { console.error(e); err("igErr", "Não consegui gerar " + m.nome + ". Tente pelo editor."); })
+        .catch(function (er) { console.error(er); err("igErr", "Não consegui gerar " + m.nome + ". Tente pelo editor."); })
         .then(function () { setTimeout(prox, 400); });
     })();
   });

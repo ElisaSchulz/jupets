@@ -109,6 +109,16 @@
 .ks-depo .who { margin-top: auto; font-size: 40px; color: var(--ink-soft); }
 .ks-depo .who b { color: var(--ink); }
 
+/* stories de texto e de foto com legenda (mesmo desenho dos posts, maiores) */
+.ks-info .igk-badge { font-size: 34px; padding: 20px 36px; }
+.ks-info h1 { font-size: 146px; margin-top: auto; }
+.ks-info p { font-size: 60px; margin-top: 60px; }
+.ks-info .sig { font-size: 64px; }
+.ks-legenda { padding-bottom: 220px; }
+.ks-legenda .igk-badge { font-size: 34px; padding: 20px 36px; }
+.ks-legenda h1 { font-size: 120px; }
+.ks-legenda p { font-size: 48px; }
+
 /* capa de destaque (o Instagram recorta o círculo do meio) */
 .ks-capa { background: var(--cream); align-items: center; justify-content: center; }
 .ks-capa .disc { width: 480px; height: 480px; border-radius: 50%; background: var(--rose); color: #fff; display: flex; align-items: center; justify-content: center;
@@ -150,6 +160,10 @@
 .ig-card .ig-nm small { display: block; color: var(--ink-soft); font-weight: 700; font-size: 12px; }
 .ig-card .ig-go { font-weight: 900; font-size: 13px; color: var(--rose-deep); white-space: nowrap; }
 
+.ig-dest { margin-top: 16px; }
+.ig-dest-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding-bottom: 6px; border-bottom: 1px dashed var(--line); }
+.ig-dest-h b { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-size: 19px; }
+.ig-dest .ig-cards { margin-top: 10px; }
 #vIgEdit { max-width: 980px; margin: 0 auto; }
 .ige-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; margin-top: 18px; }
 .ige-prev { position: sticky; top: 90px; }
@@ -171,6 +185,7 @@
 .ige-file { position: relative; overflow: hidden; }
 .ige-file input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 .ige-form select { width: 100%; font: inherit; font-size: 16px; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r-sm); padding: 11px 12px; }
+@media (max-width: 560px) { .ig-card .ig-body { flex-wrap: wrap; gap: 4px; } .ig-card .ig-nm { flex-basis: 100%; } }
 @media (max-width: 760px) {
   .ige-grid { grid-template-columns: minmax(0, 1fr); }
   .ige-prev { position: static; order: -1; }
