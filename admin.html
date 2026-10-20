@@ -475,14 +475,6 @@
   .dlg .fld { min-width: 0; }
   .fld input[type=date] { min-width: 0; -webkit-appearance: none; appearance: none; min-height: 50px; }
 
-  /* ---------- instagram ---------- */
-  .ig-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-  .ig { background: #fff; border: 1.5px solid var(--line); border-radius: var(--r-md); overflow: hidden; display: flex; flex-direction: column; }
-  .ig img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; background: var(--shell); }
-  .ig .ig-body { padding: 12px 14px 14px; display: grid; gap: 8px; flex: 1; }
-  .ig .ig-nm { font-weight: 800; }
-  .ig .ig-tx { font-size: 14px; color: var(--ink-soft); white-space: pre-line; }
-  .ig .btn { justify-content: center; text-decoration: none; margin-top: auto; }
 
   /* ---------- boletim ---------- */
   #vBoletim { max-width: 900px; margin: 0 auto; }
@@ -541,6 +533,7 @@
 <link rel="stylesheet" href="ficha.css" />
 <link rel="stylesheet" href="boletim.css" />
 <link rel="stylesheet" href="diario.css" />
+<link rel="stylesheet" href="insta.css" />
 </head>
 <body>
 
@@ -578,12 +571,35 @@
       <a href="#instagram" id="tabIg">Instagram</a>
     </nav>
 
-    <!-- Instagram: materiais prontos pra postar -->
+    <!-- Instagram: modelos do kit pra editar e baixar -->
     <div id="vInsta" hidden>
       <div class="eyebrow">Para o seu Instagram</div>
-      <h1>Recursos do Instagram</h1>
-      <p class="sub">Artes e modelos prontos. Toque em <b>Baixar</b> e poste direto do celular.</p>
-      <div class="ig-grid" id="igList"></div>
+      <h1>Artes do Instagram</h1>
+      <p class="sub">Escolha um modelo, troque o texto e a foto e baixe a imagem pronta pra postar.</p>
+      <div class="msg-err" id="igErr"></div>
+      <section class="ig-sec"><h2 class="h2">Posts do feed <small>1080 × 1350</small></h2><div class="ig-cards" id="igPosts"></div></section>
+      <section class="ig-sec"><h2 class="h2">Stories <small>1080 × 1920</small></h2><div class="ig-cards" id="igStories"></div></section>
+      <section class="ig-sec"><h2 class="h2">Stickers <small>fundo transparente · adicione no story pela galeria</small></h2><div class="ig-cards" id="igStickers"></div></section>
+      <section class="ig-sec"><h2 class="h2">Capas de destaque <small>o Instagram recorta o círculo do meio</small></h2><div class="ig-cards" id="igCapas"></div></section>
+    </div>
+
+    <!-- Instagram: editar um modelo -->
+    <div id="vIgEdit" hidden>
+      <div class="detail-bar"><button type="button" class="link-btn" id="igBack">← Voltar</button></div>
+      <div class="eyebrow" id="igeTipo">Post</div>
+      <h1 id="igeTitle">Editar arte</h1>
+      <div class="ige-grid">
+        <form class="adm-card ige-form" id="igeForm" novalidate></form>
+        <div class="ige-prev">
+          <div id="igePrev"></div>
+          <div class="ige-actions">
+            <button type="button" class="btn btn-primary btn-sm" id="igeShare">Compartilhar</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="igeDl">Baixar PNG</button>
+          </div>
+          <p class="center muted" style="font-size:13.5px;margin:12px 0 0" id="igeDica"></p>
+          <div class="center"><button type="button" class="link-btn" id="igeReset">Voltar ao texto original</button></div>
+        </div>
+      </div>
     </div>
 
     <!-- Hoje: hóspedes + rotina -->
@@ -767,6 +783,7 @@
 <script src="form.js"></script>
 <script src="boletim.js"></script>
 <script src="diario.js"></script>
+<script src="insta.js"></script>
 <script>
 /* Mesmo projeto do cadastro.html */
 const SUPABASE_URL = "https://xeccdccundlhtisaegiy.supabase.co";
@@ -817,7 +834,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
 
   /* ---------- telas ---------- */
   function show(view) {
-    ["vLogin", "vList", "vDetail", "vEdit", "vHoje", "vBoletim", "vDiario", "vInsta"].forEach(function (v) { $(v).hidden = v !== view; });
+    ["vLogin", "vList", "vDetail", "vEdit", "vHoje", "vBoletim", "vDiario", "vInsta", "vIgEdit"].forEach(function (v) { $(v).hidden = v !== view; });
     $("whoAmI").hidden = view === "vLogin";
     $("tabs").hidden = view !== "vHoje" && view !== "vList" && view !== "vInsta";
     $("tabHoje").classList.toggle("on", view === "vHoje");
@@ -928,6 +945,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
     else if ((m = h.match(/^#boletim\/(.+)$/))) openBoletim(m[1]);
     else if ((m = h.match(/^#diario\/(.+)$/))) openDiario(m[1]);
     else if (h === "#cadastros") { document.title = "Fichas dos pets · Ju Pets"; show("vList"); }
+    else if ((m = h.match(/^#instagram\/(.+)$/))) openIgEdit(m[1]);
     else if (h === "#instagram") { document.title = "Instagram · Ju Pets"; renderInsta(); show("vInsta"); }
     else { document.title = "Hoje · Ju Pets"; renderHoje(); show("vHoje"); }
   }
@@ -1681,19 +1699,170 @@ const SUPABASE_ANON_KEY = "sb_publishable_CwsfP4zHuRLhyYPYSHN2Rg_2qjhpTgy";
   });
 
   /* ---------- instagram ----------
-     Para adicionar um recurso: coloque a imagem em images/instagram/ e acrescente uma linha aqui.
-     { img: "images/instagram/arquivo.png", nome: "Título", texto: "legenda ou dica (opcional)" } */
-  var RECURSOS_INSTA = [];
-  function renderInsta() {
-    if (!RECURSOS_INSTA.length) { $("igList").innerHTML = '<div class="empty">Em breve: as artes para o Instagram vão aparecer aqui. 📸</div>'; return; }
-    $("igList").innerHTML = RECURSOS_INSTA.map(function (r) {
-      var arq = r.img.split("/").pop();
-      return '<div class="ig"><a href="' + esc(r.img) + '" target="_blank" rel="noopener"><img src="' + esc(r.img) + '" alt="' + esc(r.nome) + '" loading="lazy" /></a>' +
-        '<div class="ig-body"><div class="ig-nm">' + esc(r.nome) + "</div>" +
-        (r.texto ? '<div class="ig-tx">' + esc(r.texto) + "</div>" : "") +
-        '<a class="btn btn-primary btn-sm" href="' + esc(r.img) + '" download="' + esc(arq) + '">Baixar</a></div></div>';
-    }).join("");
+     Os modelos, stickers e capas ficam em insta.js (JuInsta). O que foi digitado em cada modelo
+     fica guardado neste navegador (menos fotos do celular, que são pesadas). */
+  var IG_KEY = "jupets-insta", ig = null, igPronto = false;
+  function igSalvos() { try { return JSON.parse(localStorage.getItem(IG_KEY) || "{}"); } catch (e) { return {}; } }
+  function igGuardar() {
+    var t = igSalvos(), d = Object.assign({}, ig.d);
+    if (d.foto && /^data:/.test(d.foto.src)) delete d.foto;
+    t[ig.m.id] = d;
+    try { localStorage.setItem(IG_KEY, JSON.stringify(t)); } catch (e) {}
   }
+  function igDados(m) {
+    var d = Object.assign({}, m.padrao, igSalvos()[m.id] || {});
+    if (d.foto) d.foto = Object.assign({ z: 1, x: 0.5, y: 0.5 }, d.foto);
+    return d;
+  }
+  function igCard(it, acao) {
+    return '<button type="button" class="ig-card" data-id="' + esc(it.id) + '" data-acao="' + acao + '"><div class="igk-thumb' + (it.transp ? " checker" : "") +
+      '"></div><div class="ig-body"><div class="ig-nm">' + esc(it.nome) + (it.nota ? "<small>" + esc(it.nota) + "</small>" : "") +
+      '</div><span class="ig-go">' + (acao === "editar" ? "Editar →" : "⬇ PNG") + "</span></div></button>";
+  }
+  function renderInsta() {
+    if (igPronto) return;
+    igPronto = true;
+    var M = JuInsta.MODELOS, P = JuInsta.PRONTOS;
+    [
+      ["igPosts", M.filter(function (m) { return m.tam.h === 1350; }), "editar"],
+      ["igStories", M.filter(function (m) { return m.tam.h === 1920; }), "editar"],
+      ["igStickers", P.filter(function (p) { return p.transp; }), "baixar"],
+      ["igCapas", P.filter(function (p) { return p.grupo === "capas"; }), "baixar"]
+    ].forEach(function (g) {
+      $(g[0]).innerHTML = g[1].map(function (it) { return igCard(it, g[2]); }).join("");
+      g[1].forEach(function (it) {
+        var box = $(g[0]).querySelector('[data-id="' + it.id + '"] .igk-thumb');
+        JuInsta.miniatura(box, it, g[2] === "editar" ? it.html(igDados(it)) : it.html);
+      });
+    });
+  }
+  $("vInsta").addEventListener("click", function (e) {
+    var b = e.target.closest(".ig-card");
+    if (!b || b.disabled) return;
+    var id = b.getAttribute("data-id");
+    if (b.getAttribute("data-acao") === "editar") { location.hash = "instagram/" + id; return; }
+    var it = JuInsta.PRONTOS.filter(function (p) { return p.id === id; })[0], go = b.querySelector(".ig-go");
+    b.disabled = true; go.textContent = "Gerando…"; err("igErr", "");
+    JuInsta.png(it, it.html).then(function (blob) { JuBoletim.baixar(blob, JuInsta.nomeArquivo(it)); })
+      .catch(function (e) { console.error(e); err("igErr", "Não consegui gerar a imagem. Tente de novo."); })
+      .finally(function () { b.disabled = false; go.textContent = "⬇ PNG"; });
+  });
+
+  /* editor de um modelo */
+  function openIgEdit(id) {
+    var m = JuInsta.modelo(id);
+    if (!m) { location.hash = "instagram"; return; }
+    ig = { m: m, d: igDados(m) };
+    igPronto = false;   // na volta, a lista redesenha com o texto novo
+    document.title = m.nome + " · Instagram · Ju Pets";
+    $("igeTipo").textContent = (m.tam.h === 1350 ? "Post do feed" : "Story") + " · " + m.tam.w + " × " + m.tam.h;
+    $("igeTitle").textContent = m.nome;
+    var temFoto = m.campos.some(function (c) { return c.tipo === "foto"; });
+    $("igeDica").textContent = temFoto ? "Arraste a foto na prévia pra enquadrar." : "";
+    document.querySelector(".ige-prev").classList.toggle("foto", temFoto);
+    $("igeForm").innerHTML = m.campos.map(igCampo).join("");
+    show("vIgEdit");
+    igPrev();
+  }
+  function igCampo(c) {
+    var v = ig.d[c.k], id = "ige_" + c.k, dica = c.dica ? '<p class="hint">' + esc(c.dica) + "</p>" : "";
+    if (c.tipo === "foto") {
+      return '<div class="ige-foto"><label style="font-weight:700;font-size:15px">' + esc(c.rot) + "</label>" +
+        '<div class="row"><span class="btn btn-primary btn-sm ige-file">📷 Foto do celular<input type="file" accept="image/*" id="igeArq" /></span>' +
+        '<button type="button" class="btn btn-ghost btn-sm" id="igeGalBtn">Fotos do site</button></div>' +
+        '<div class="ige-galeria" id="igeGal" hidden></div>' +
+        '<div class="fld" style="margin:14px 0 6px"><label for="igeZoom">Zoom</label><input type="range" id="igeZoom" min="1" max="3" step="0.01" value="' + ((v && v.z) || 1) + '" /></div></div>';
+    }
+    if (c.tipo === "cor") {
+      return '<div class="fld"><label for="' + id + '">' + esc(c.rot) + '</label><select id="' + id + '" data-k="' + c.k + '">' +
+        JuInsta.CORES.map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === v ? " selected" : "") + ">" + o[1] + "</option>"; }).join("") + "</select></div>";
+    }
+    var campo = c.tipo === "area"
+      ? '<textarea id="' + id + '" data-k="' + c.k + '" rows="3">' + esc(v) + "</textarea>"
+      : '<input type="text" id="' + id + '" data-k="' + c.k + '" value="' + esc(v) + '" />';
+    return '<div class="fld"><label for="' + id + '">' + esc(c.rot) + "</label>" + campo + dica + "</div>";
+  }
+  function igPrev() {
+    var box = $("igePrev");
+    box.classList.toggle("story", ig.m.tam.h === 1920);
+    JuInsta.miniatura(box, ig.m, ig.m.html(ig.d));
+  }
+  var igTimer;
+  $("igeForm").addEventListener("input", function (e) {
+    var k = e.target.getAttribute("data-k");
+    if (k) {
+      ig.d[k] = e.target.value;
+      clearTimeout(igTimer); igTimer = setTimeout(function () { igPrev(); igGuardar(); }, 120);
+    } else if (e.target.id === "igeZoom") {
+      ig.d.foto = Object.assign({}, ig.d.foto, { z: +e.target.value }); igFoto();
+    }
+  });
+  $("igeForm").addEventListener("change", function (e) {
+    if (e.target.id !== "igeArq" || !e.target.files[0]) return;
+    JuInsta.lerFoto(e.target.files[0]).then(function (src) {
+      ig.d.foto = { src: src, z: 1, x: 0.5, y: 0.5 }; $("igeZoom").value = 1; igPrev();
+    }).catch(function (er) { alert(er.message); });
+    e.target.value = "";
+  });
+  $("igeForm").addEventListener("click", function (e) {
+    if (e.target.id === "igeGalBtn") {
+      var g = $("igeGal");
+      if (!g.innerHTML) g.innerHTML = JuInsta.FOTOS.map(function (f) { return '<button type="button" data-src="' + f + '"><img src="' + f + '" alt="" loading="lazy" /></button>'; }).join("");
+      g.hidden = !g.hidden;
+      return;
+    }
+    var b = e.target.closest("[data-src]");
+    if (!b) return;
+    ig.d.foto = { src: b.getAttribute("data-src"), z: 1, x: 0.5, y: 0.5 }; $("igeZoom").value = 1;
+    [].forEach.call($("igeGal").children, function (x) { x.classList.toggle("on", x === b); });
+    igPrev(); igGuardar();
+  });
+  /* zoom e arrastar mexem só na foto, sem redesenhar a arte */
+  function igFoto() {
+    var img = $("igePrev").querySelector(".igk-ph > img");
+    if (!img) return;
+    img.setAttribute("data-z", ig.d.foto.z); img.setAttribute("data-x", ig.d.foto.x); img.setAttribute("data-y", ig.d.foto.y);
+    JuInsta.enquadrar(img.closest(".igk"));
+    clearTimeout(igTimer); igTimer = setTimeout(igGuardar, 300);
+  }
+  var arr = null;
+  $("igePrev").addEventListener("pointerdown", function (e) {
+    var ph = $("igePrev").querySelector(".igk-ph");   // arrastar em qualquer ponto da prévia mexe a foto
+    if (!ph || !ig.d.foto) return;
+    var img = ph.querySelector("img");
+    arr = { id: e.pointerId, x: e.clientX, y: e.clientY, fx: ig.d.foto.x, fy: ig.d.foto.y, ph: ph,
+      k: $("igePrev").clientWidth / ig.m.tam.w, ow: img.offsetWidth - ph.offsetWidth, oh: img.offsetHeight - ph.offsetHeight };
+    ph.setPointerCapture(e.pointerId); e.preventDefault();
+  });
+  $("igePrev").addEventListener("pointermove", function (e) {
+    if (!arr || e.pointerId !== arr.id) return;
+    var dx = (e.clientX - arr.x) / arr.k, dy = (e.clientY - arr.y) / arr.k;
+    var lim = function (v) { return Math.max(0, Math.min(1, v)); };
+    ig.d.foto = Object.assign({}, ig.d.foto, {
+      x: arr.ow > 0 ? lim(arr.fx - dx / arr.ow) : 0.5,
+      y: arr.oh > 0 ? lim(arr.fy - dy / arr.oh) : 0.5
+    });
+    igFoto();
+  });
+  ["pointerup", "pointercancel"].forEach(function (t) {
+    $("igePrev").addEventListener(t, function (e) { if (arr && e.pointerId === arr.id) arr = null; });
+  });
+  $("igBack").addEventListener("click", function () { location.hash = "instagram"; });
+  $("igeReset").addEventListener("click", function () {
+    if (!confirm("Voltar este modelo ao texto e à foto originais?")) return;
+    var t = igSalvos(); delete t[ig.m.id];
+    try { localStorage.setItem(IG_KEY, JSON.stringify(t)); } catch (e) {}
+    openIgEdit(ig.m.id);
+  });
+  function igGerar(btn, rotulo, fn) {
+    if (btn.disabled) return;
+    btn.disabled = true; btn.textContent = "Gerando…";
+    JuInsta.png(ig.m, ig.m.html(ig.d)).then(function (blob) { return fn(blob, JuInsta.nomeArquivo(ig.m)); })
+      .catch(function (e) { console.error(e); alert("Não consegui gerar a imagem. Tente de novo."); })
+      .finally(function () { btn.disabled = false; btn.textContent = rotulo; });
+  }
+  $("igeDl").addEventListener("click", function () { igGerar(this, "Baixar PNG", JuBoletim.baixar); });
+  $("igeShare").addEventListener("click", function () { igGerar(this, "Compartilhar", JuBoletim.compartilhar); });
 
   /* ---------- início ---------- */
   function start() {
