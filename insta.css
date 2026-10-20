@@ -1,0 +1,179 @@
+/* Artes do Instagram (admin.html, aba Instagram) — kit do Claude Design.
+   Tudo desenhado no tamanho final (post 1080×1350, story 1080×1920, stickers transparentes);
+   a prévia só encolhe com transform, e o PNG é uma "foto" do mesmo HTML. */
+
+/* ---------- moldura ---------- */
+.igk { --rose-soft: #F6DDDE; --honey-soft: #F7E7CC; --sage-soft: #E2E6D6;
+  position: relative; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column;
+  font-family: "Nunito Sans", system-ui, sans-serif; color: var(--ink); line-height: 1.2; text-align: left;
+  -webkit-font-smoothing: antialiased; background: var(--surface); }
+.igk * { box-sizing: border-box; }
+.igk h1 { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 800; line-height: 1.02; letter-spacing: -0.02em; margin: 0; }
+.igk p { margin: 0; }
+.igk-pad { padding: 96px 92px 100px; }
+.igk-spad { padding: 110px 92px 130px; }
+
+/* logo (círculo com pata + "Ju petsitter · limeira") */
+.igk-logo { display: flex; align-items: center; gap: 20px; flex: none; text-align: left; }
+.igk-logo .mk { width: 76px; height: 76px; border-radius: 50%; background: var(--rose); color: #fff;
+  display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 0 5px rgba(255,255,255,0.22); }
+.igk-logo .mk svg { width: 44px; height: 44px; display: block; }
+.igk-logo .wm { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 800; font-size: 44px;
+  letter-spacing: -0.02em; line-height: 1; color: var(--ink); }
+.igk-logo .wm small { display: block; font-family: "Nunito Sans", system-ui, sans-serif; font-size: 19px; font-weight: 800;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-soft); margin-top: 6px; }
+.igk-logo.dark .wm { color: #fff; text-shadow: 0 2px 22px rgba(30,16,14,0.5); }
+.igk-logo.dark .wm small { color: rgba(255,255,255,0.72); }
+.igk-logo.dark .mk { background: #fff; color: var(--rose); box-shadow: inset 0 0 0 5px rgba(215,95,106,0.18); }
+
+/* foto enquadrável: o <img> é posicionado em px pelo insta.js (zoom + arrastar) */
+.igk-ph { position: relative; overflow: hidden; background: var(--shell); }
+.igk-ph > img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; display: block; max-width: none; }
+.igk-full { position: absolute; inset: 0; }
+
+.igk-badge { display: inline-block; padding: 18px 32px; border-radius: 999px; font-weight: 900; font-size: 30px;
+  letter-spacing: 0.06em; text-transform: uppercase; line-height: 1; white-space: nowrap; }
+.igk-top { display: flex; align-items: center; justify-content: space-between; position: relative; }
+.igk em { font-style: normal; color: var(--rose); }
+.igk.c-rosa em, .igk.c-salvia em, .kp-foto em, .ks-foto em { color: var(--honey-soft); }
+.igk.c-mel em, .kp-visitas em { color: var(--rose-deep); }
+
+/* cores de fundo (posts e stories de cor chapada) */
+.igk.c-rosa { background: var(--rose); color: #fff; }
+.igk.c-salvia { background: var(--sage); color: #fff; }
+.igk.c-mel { background: var(--honey); color: #3b2608; }
+.igk.c-mel .igk-logo .wm { color: #3b2608; text-shadow: none; }
+.igk.c-mel .igk-logo .wm small { color: rgba(59,38,8,0.7); }
+
+/* ---------- posts 1080×1350 ---------- */
+.kp-vaga .igk-badge { background: rgba(255,255,255,0.2); color: inherit; }
+.kp-vaga.c-mel .igk-badge { background: rgba(255,255,255,0.5); }
+.kp-vaga .mo { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 800; font-size: 46px; margin-top: auto; opacity: 0.92; }
+.kp-vaga h1 { font-size: 128px; margin-top: 18px; }
+.kp-vaga .ft { margin-top: 44px; padding-top: 36px; border-top: 3px solid rgba(255,255,255,0.3); font-size: 38px; font-weight: 800;
+  display: flex; justify-content: space-between; gap: 30px; }
+.kp-vaga.c-mel .ft { border-top-color: rgba(59,38,8,0.25); }
+.kp-vaga .ft span:last-child { text-align: right; }
+
+.kp-visitas { background: var(--honey); color: #3b2608; }
+.kp-visitas .igk-ph { flex: 1; min-height: 0; }
+.kp-visitas .lg { position: absolute; top: 60px; left: 70px; }
+.kp-visitas .bx { padding: 60px 80px 80px; }
+.kp-visitas .igk-badge { background: rgba(255,255,255,0.5); color: #3b2608; }
+.kp-visitas h1 { font-size: 96px; margin-top: 30px; }
+.kp-visitas p { font-size: 38px; font-weight: 800; margin-top: 20px; }
+
+.kp-foto { background: var(--ink); color: #fff; }
+.kp-foto .scr { position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(40,26,24,0.45) 0%, rgba(40,26,24,0) 22%, rgba(40,26,24,0) 50%, rgba(30,18,16,0.85) 100%); }
+.kp-foto .igk-badge { background: rgba(255,255,255,0.94); color: var(--rose-deep); }
+.kp-foto .cpt { margin-top: auto; position: relative; }
+.kp-foto h1 { font-size: 104px; }
+.kp-foto p { font-size: 40px; margin-top: 20px; line-height: 1.3; opacity: 0.94; }
+
+.kp-duvida .igk-badge { background: var(--rose-soft); color: var(--rose-deep); align-self: flex-start; }
+.kp-duvida h1 { font-size: 112px; margin-top: 60px; }
+.kp-duvida h1 em { color: var(--rose); }
+.kp-duvida p { font-size: 44px; line-height: 1.36; color: var(--ink-soft); margin-top: 40px; }
+.kp-duvida .by { margin-top: auto; display: flex; align-items: center; justify-content: space-between; }
+.kp-duvida .sig { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 700; font-size: 60px; color: var(--rose); }
+
+/* ---------- stories 1080×1920 ---------- */
+.ks-foto { background: var(--ink); }
+.ks-foto .scr { position: absolute; inset: 0; opacity: 0.7;
+  background: linear-gradient(180deg, rgba(40,26,24,0.55) 0%, rgba(40,26,24,0.05) 16%, rgba(35,22,20,0) 30%, rgba(30,18,16,0.45) 48%, rgba(26,15,13,0.74) 64%, rgba(20,12,11,0.9) 80%, rgba(16,9,8,0.97) 100%); }
+.ks-foto .igk-spad { position: relative; }
+.ks-pin { position: absolute; left: 92px; right: 92px; bottom: 260px; background: #fff; color: var(--ink); border-radius: 48px; padding: 52px 60px; }
+.ks-pin .t { font-weight: 900; font-size: 34px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sage-ink); }
+.ks-pin .b { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 800; font-size: 84px; margin-top: 10px; line-height: 1.02; letter-spacing: -0.02em; }
+.ks-pin.mel { background: var(--honey); color: #3b2608; }
+.ks-pin.mel .t { color: #3b2608; font-family: "Bricolage Grotesque", system-ui, sans-serif; text-transform: none; letter-spacing: 0; font-size: 66px; font-weight: 800; }
+.ks-pin ul { list-style: none; margin: 24px 0 0; padding: 0; font-size: 44px; font-weight: 800; }
+.ks-pin li { margin-top: 14px; }
+.rot-l { transform: rotate(-4deg); }
+.rot-r { transform: rotate(4deg); }
+
+.ks-vaga { align-items: center; justify-content: center; text-align: center; }
+.ks-vaga .lg { position: absolute; top: 110px; left: 92px; }
+.ks-vaga .big { display: inline-block; background: rgba(255,255,255,0.2); border-radius: 999px; padding: 22px 40px; font-weight: 900;
+  font-size: 34px; letter-spacing: 0.16em; text-transform: uppercase; }
+.ks-vaga.c-mel .big { background: rgba(255,255,255,0.5); }
+.ks-vaga h1 { font-size: 150px; margin: 60px 0 30px; }
+.ks-vaga p { font-size: 50px; opacity: 0.94; }
+.ks-vaga .lnk { position: absolute; bottom: 200px; left: 0; right: 0; text-align: center; }
+.ks-vaga .lnk span { display: inline-block; background: #fff; color: var(--rose-deep); padding: 30px 52px; border-radius: 999px; font-weight: 900; font-size: 40px; }
+
+.ks-depo .q { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 800; color: var(--rose); font-size: 300px; line-height: 0.6; margin-top: 220px; }
+.ks-depo blockquote { margin: 40px 0 0; font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 700; font-size: 92px; line-height: 1.14; letter-spacing: -0.02em; }
+.ks-depo .stars { color: var(--honey); font-size: 64px; letter-spacing: 10px; margin-top: 50px; }
+.ks-depo .who { margin-top: auto; font-size: 40px; color: var(--ink-soft); }
+.ks-depo .who b { color: var(--ink); }
+
+/* capa de destaque (o Instagram recorta o círculo do meio) */
+.ks-capa { background: var(--cream); align-items: center; justify-content: center; }
+.ks-capa .disc { width: 480px; height: 480px; border-radius: 50%; background: var(--rose); color: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: 230px; line-height: 1; box-shadow: inset 0 0 0 14px rgba(255,255,255,0.18), 0 50px 90px -40px rgba(181,67,79,0.55); }
+.ks-capa .lbl { position: absolute; bottom: 150px; left: 0; right: 0; text-align: center; font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-weight: 800; font-size: 120px; line-height: 1.05; color: var(--ink); letter-spacing: -0.01em; }
+
+/* ---------- stickers (fundo transparente) ---------- */
+.igk.stk { background: transparent; align-items: center; justify-content: center; }
+.stk-pill { display: inline-block; border-radius: 999px; padding: 44px 76px; font-weight: 900; font-size: 76px; line-height: 1; white-space: nowrap; border: 10px solid #fff; }
+.stk-circle { width: 520px; height: 520px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-align: center; border: 14px solid #fff; }
+.stk-circle .em { font-size: 170px; line-height: 1; display: block; }
+.stk-circle small { display: block; font-weight: 900; font-size: 50px; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 18px; line-height: 1.15; }
+.stk-logo { width: 560px; height: 560px; border-radius: 50%; background: var(--rose); color: #fff; display: flex; align-items: center; justify-content: center; text-align: center; border: 14px solid #fff; }
+.stk-logo svg { width: 150px; height: 150px; display: inline-block; vertical-align: top; }
+.stk-logo .wm { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 800; font-size: 120px; line-height: 1; margin-top: 14px; }
+.stk-logo small { display: block; font-weight: 900; font-size: 36px; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 12px; opacity: 0.9; }
+.s-rose { background: var(--rose); color: #fff; }
+.s-honey { background: var(--honey); color: #3b2608; }
+.s-sage { background: var(--sage); color: #fff; }
+.s-cream { background: var(--surface); color: var(--rose-deep); }
+.s-white { background: #fff; color: var(--rose-deep); border-color: var(--rose); }
+
+/* ---------- tela do admin ---------- */
+.igk-thumb { position: relative; overflow: hidden; width: 100%; background: var(--shell); }
+.igk-thumb.checker { background: repeating-conic-gradient(#f1e6e0 0 25%, #fff 0 50%) 0 0 / 20px 20px; }
+.igk-thumb > .igk { position: absolute; left: 0; top: 0; transform-origin: top left; }
+.igk-shot { position: fixed; left: -20000px; top: 0; }
+
+.ig-sec { margin-top: 34px; }
+.ig-sec:first-of-type { margin-top: 18px; }
+.ig-sec .h2 small { font-family: "Nunito Sans", system-ui, sans-serif; font-size: 14px; font-weight: 700; color: var(--ink-soft); letter-spacing: 0; margin-left: 8px; }
+.ig-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; margin-top: 12px; align-items: start; }
+.ig-card { background: #fff; border: 1.5px solid var(--line); border-radius: var(--r-md); overflow: hidden; display: flex; flex-direction: column;
+  font: inherit; color: inherit; text-align: left; padding: 0; cursor: pointer; }
+.ig-card:hover { border-color: var(--rose); }
+.ig-card .ig-body { padding: 10px 12px 12px; display: flex; align-items: center; gap: 8px; }
+.ig-card .ig-nm { font-weight: 800; font-size: 14.5px; line-height: 1.25; flex: 1; min-width: 0; }
+.ig-card .ig-nm small { display: block; color: var(--ink-soft); font-weight: 700; font-size: 12px; }
+.ig-card .ig-go { font-weight: 900; font-size: 13px; color: var(--rose-deep); white-space: nowrap; }
+
+#vIgEdit { max-width: 980px; margin: 0 auto; }
+.ige-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; margin-top: 18px; }
+.ige-prev { position: sticky; top: 90px; }
+.ige-prev .igk-thumb { border-radius: 14px; box-shadow: var(--shadow); }
+.ige-prev .igk-thumb.story { max-width: 330px; margin: 0 auto; }
+.ige-prev .igk-thumb { user-select: none; -webkit-user-select: none; }
+.ige-prev.foto .igk-thumb { cursor: grab; touch-action: none; }
+.ige-prev.foto .igk-thumb:active { cursor: grabbing; }
+.ige-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+.ige-form .fld input[type=text] { width: 100%; }
+.ige-form .hint { font-size: 13.5px; color: var(--ink-soft); margin: -2px 0 0; }
+.ige-foto { padding: 14px 0 6px; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); margin-bottom: 16px; }
+.ige-foto .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+.ige-foto input[type=range] { width: 100%; accent-color: var(--rose); }
+.ige-galeria { display: grid; grid-template-columns: repeat(auto-fill, minmax(74px, 1fr)); gap: 6px; margin-top: 10px; max-height: 300px; overflow-y: auto; padding: 2px; }
+.ige-galeria button { padding: 0; border: 2px solid transparent; border-radius: 10px; overflow: hidden; cursor: pointer; background: var(--shell); aspect-ratio: 3 / 4; }
+.ige-galeria button.on { border-color: var(--rose); }
+.ige-galeria img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ige-file { position: relative; overflow: hidden; }
+.ige-file input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.ige-form select { width: 100%; font: inherit; font-size: 16px; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r-sm); padding: 11px 12px; }
+@media (max-width: 760px) {
+  .ige-grid { grid-template-columns: minmax(0, 1fr); }
+  .ige-prev { position: static; order: -1; }
+  .ige-prev .igk-thumb { max-width: 360px; margin: 0 auto; }
+  .ige-prev .igk-thumb.story { max-width: 260px; }
+}
