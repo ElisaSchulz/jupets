@@ -141,7 +141,7 @@
 .ig-sec { margin-top: 34px; }
 .ig-sec:first-of-type { margin-top: 18px; }
 .ig-sec .h2 small { font-family: "Nunito Sans", system-ui, sans-serif; font-size: 14px; font-weight: 700; color: var(--ink-soft); letter-spacing: 0; margin-left: 8px; }
-.ig-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; margin-top: 12px; align-items: start; }
+.ig-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 12px; align-items: start; }
 .ig-card { background: #fff; border: 1.5px solid var(--line); border-radius: var(--r-md); overflow: hidden; display: flex; flex-direction: column;
   font: inherit; color: inherit; text-align: left; padding: 0; cursor: pointer; }
 .ig-card:hover { border-color: var(--rose); }

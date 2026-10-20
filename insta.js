@@ -100,6 +100,45 @@
       } }
   ];
 
+  /* ---------- ideias prontas (do guia de destaques e posts) ----------
+     Cada ideia é um modelo acima com outro texto e outra foto; abre no editor como qualquer modelo. */
+  var IDEIAS = [
+    ["ideia-apresentacao", "Apresentação", "post-foto", { foto: { src: "images/julia-charlote-juca-bento.jpeg", y: 0.35 }, badge: "Prazer!",
+      titulo: "Oi, eu sou a Júlia 🐾", texto: "Adestradora e mãe da Charlote, do Juca e do Bento. Cuido do seu pet em Limeira." }],
+    ["ideia-sem-gaiolas", "Sem gaiolas", "post-duvida", { badge: "🌿 Sem gaiolas", titulo: "Aqui é *casa*, não canil",
+      texto: "Os cães ficam soltos e à vontade, como em família. Por isso a adaptação antes da hospedagem é obrigatória." }],
+    ["ideia-passo-1", "Como funciona 1/4", "post-duvida", { badge: "🏡 Como funciona · 1/4", titulo: "*Conversa* inicial",
+      texto: "Você me chama no WhatsApp e conta tudo sobre o seu cão: rotina, comportamento, necessidades e as datas." }],
+    ["ideia-passo-2", "Como funciona 2/4", "post-duvida", { badge: "🏡 Como funciona · 2/4", titulo: "Dia de *adaptação*",
+      texto: "Seu cão passa de 2 a 4 horas comigo pra eu ver como ele se sente com a casa e com os outros cães." }],
+    ["ideia-passo-3", "Como funciona 3/4", "post-duvida", { badge: "🏡 Como funciona · 3/4", titulo: "Reserva *confirmada*",
+      texto: "Deu tudo certo na adaptação? A gente define as datas e os horários de check-in e check-out." }],
+    ["ideia-passo-4", "Como funciona 4/4", "post-duvida", { badge: "🏡 Como funciona · 4/4", titulo: "Hora da *hospedagem*",
+      texto: "Seu cão aproveita um lar de verdade e você recebe fotos e vídeos várias vezes ao dia." }],
+    ["ideia-dia", "Um dia na hospedagem", "post-foto", { foto: { src: "images/g-turma-chao.jpeg" }, badge: "Um dia aqui",
+      titulo: "Passeio, brincadeira e soneca 😴", texto: "Caça-petisco, enriquecimento e muito carinho. E fotos pro tutor o dia todo." }],
+    ["ideia-gatos", "Visitas para gatos", "post-visitas", { foto: { src: "images/gato-janela.jpeg", y: 0.4 }, badge: "🐱 Visitas para gatos",
+      titulo: "Seu gato não precisa sair de casa", texto: "Comida, água fresca, caixinha limpa e brincadeira · de 40 min a 1h" }],
+    ["ideia-cao-grande", "Cão grande", "post-visitas", { foto: { src: "images/home-pastor-golden.jpeg", y: 0.35 }, badge: "🏠 Visitas domiciliares",
+      titulo: "Cão grande? Eu vou até ele", texto: "Passeio, comida e carinho sem sair da rotina · a partir de R$ 50" }],
+    ["ideia-hospede", "Hóspede da semana", "post-foto", { foto: { src: "images/g-salsicha-patio.jpeg" }, badge: "Hóspede da semana",
+      titulo: "Chegou visita nova! 🐾", texto: "Já fez amizade com a turma e escolheu o cantinho favorito dele aqui em casa." }],
+    ["ideia-buzz", "Depoimento do Buzz", "post-duvida", { badge: "💬 Depoimento", titulo: "“Recomendo de *olhos fechados*”",
+      texto: "O Buzz é cego e diabético e nunca tinha ficado longe de casa. Hoje ele chora de felicidade quando vem pra cá.", assin: "— tutora do Buzz" }],
+    ["ideia-mala", "Checklist da malinha", "post-duvida", { badge: "🎒 Checklist", titulo: "O que levar na *malinha*",
+      texto: "✓ Ração separada por refeição\n✓ Remédios com os horários\n✓ Brinquedo ou cobertor favorito\n✓ Carteira de vacina" }],
+    ["ideia-vacinas", "Vacinas em dia", "post-duvida", { badge: "💉 Requisitos", titulo: "Por que peço as *vacinas* em dia?",
+      texto: "V8 ou V10, antirrábica e vermífugo atualizados protegem o seu cão e todos os amigos dele aqui em casa." }],
+    ["ideia-festas", "Vagas para as festas", "post-vaga", { mes: "Natal e Ano Novo", titulo: "Vagas pras festas de fim de ano" }],
+    ["ideia-adestramento", "Dica de adestradora", "post-duvida", { badge: "🎓 Dica de adestradora", titulo: "Ensinando o *senta*",
+      texto: "Petisco na mão, leve acima do focinho. Sentou? Diga “senta” e recompense na hora. Treinos curtos, várias vezes ao dia." }],
+    ["ideia-bastidores", "Caminhas limpas", "post-foto", { foto: { src: "images/g-cama-trio.jpeg" }, badge: "Bastidores",
+      titulo: "Caminhas limpinhas ✨", texto: "Tudo lavado e cheiroso pra receber os próximos hóspedes." }]
+  ].map(function (i) {
+    var m = MODELOS.filter(function (x) { return x.id === i[2]; })[0];
+    return Object.assign({}, m, { id: i[0], nome: i[1], nota: m.nome, padrao: Object.assign({}, m.padrao, i[3]) });
+  });
+
   /* ---------- prontos pra baixar (sem edição) ---------- */
   var PILL = { w: 1200, h: 360 }, CIRC = { w: 640, h: 640 };
   function pill(c, rot, t) { return '<div class="igk stk"><span class="stk-pill ' + c + (rot ? " " + rot : "") + '">' + esc(t) + "</span></div>"; }
@@ -232,8 +271,8 @@
   }
 
   window.JuInsta = {
-    MODELOS: MODELOS, PRONTOS: PRONTOS, FOTOS: FOTOS, CORES: CORES,
-    modelo: function (id) { return MODELOS.filter(function (m) { return m.id === id; })[0]; },
+    MODELOS: MODELOS, IDEIAS: IDEIAS, PRONTOS: PRONTOS, FOTOS: FOTOS, CORES: CORES,
+    modelo: function (id) { return MODELOS.concat(IDEIAS).filter(function (m) { return m.id === id; })[0]; },
     miniatura: miniatura, enquadrar: enquadrar, png: png, nomeArquivo: nomeArquivo, lerFoto: lerFoto
   };
 })();
