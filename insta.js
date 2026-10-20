@@ -92,6 +92,22 @@
         return '<div class="igk igk-spad ks-depo">' + logo(false) + '<div class="q">“</div><blockquote>' + rico(d.citacao) +
           '</blockquote><div class="stars">★★★★★</div><div class="who"><b>' + esc(d.nome) + "</b>" + (d.detalhe ? " · " + esc(d.detalhe) : "") + "</div></div>";
       } },
+    { id: "story-info", nome: "Dica / dúvida", nota: "Story · areia", tam: STORY,
+      campos: [{ k: "badge", rot: "Etiqueta" }, { k: "titulo", rot: "Título", tipo: "area", dica: "Ponha *entre asteriscos* a palavra que fica rosa." },
+        { k: "texto", rot: "Texto", tipo: "area" }, { k: "assin", rot: "Assinatura" }],
+      padrao: { badge: "❓ Dúvidas", titulo: "Por que a *adaptação* é obrigatória?",
+        texto: "Seu cão passa de 2 a 4 horas comigo pra eu ver como ele se sente com a casa e com os outros cães.", assin: "— Júlia" },
+      html: function (d) {
+        return '<div class="igk igk-spad kp-duvida ks-info"><span class="igk-badge">' + esc(d.badge) + "</span><h1>" + rico(d.titulo) + "</h1><p>" + rico(d.texto) +
+          '</p><div class="by">' + logo(false) + '<span class="sig">' + esc(d.assin) + "</span></div></div>";
+      } },
+    { id: "story-legenda", nome: "Foto com legenda", nota: "Story · foto", tam: STORY,
+      campos: [{ k: "foto", rot: "Foto", tipo: "foto" }, { k: "badge", rot: "Etiqueta" }, { k: "titulo", rot: "Título", tipo: "area" }, { k: "texto", rot: "Texto", tipo: "area" }],
+      padrao: { foto: { src: "images/g-camas.jpeg" }, badge: "Bastidores", titulo: "Soneca da tarde 😴", texto: "A turma toda já achou o cantinho favorito aqui em casa." },
+      html: function (d) {
+        return '<div class="igk igk-spad kp-foto ks-legenda">' + foto(d, "igk-full") + '<div class="scr"></div><div class="igk-top">' + logo(true) +
+          '<span class="igk-badge">' + esc(d.badge) + '</span></div><div class="cpt"><h1>' + rico(d.titulo) + "</h1><p>" + rico(d.texto) + "</p></div></div>";
+      } },
     { id: "capa", nome: "Capa de destaque", nota: "Story · capa", tam: STORY,
       campos: [{ k: "emoji", rot: "Emoji" }, { k: "nome", rot: "Nome do destaque" }],
       padrao: { emoji: "🏡", nome: "Sobre a Ju" },
@@ -99,6 +115,78 @@
         return '<div class="igk ks-capa"><div class="disc">' + esc(d.emoji) + '</div><div class="lbl">' + esc(d.nome) + "</div></div>";
       } }
   ];
+
+  /* ---------- stories prontos pros destaques ----------
+     Cada um é um modelo acima com outro texto e outra foto, agrupado pelo destaque onde vai ficar.
+     Abre no editor como qualquer modelo. [id, nome, modelo, texto/foto] */
+  var DESTAQUES = [
+    ["🏡 Sobre a Ju", [
+      ["d-sobre-1", "Oi, eu sou a Júlia", "story-legenda", { foto: { src: "images/julia-charlote-juca-bento.jpeg", y: 0.3 }, badge: "Sobre a Ju",
+        titulo: "Oi, eu sou a Júlia 🐾", texto: "Moro em Limeira com a Charlote, o Juca e o Bento, e cuido do seu pet como se fosse meu." }],
+      ["d-sobre-2", "Adestradora", "story-info", { badge: "🎓 Adestradora", titulo: "Formada em *adestramento*",
+        texto: "Fiz o curso de comandos básicos no Adestramento Millennium, em Limeira. Isso me ajuda a ler o comportamento de cada cão e a cuidar bem da rotina do grupo." }],
+      ["d-sobre-3", "Sem gaiolas", "story-legenda", { foto: { src: "images/g-quintal.jpeg" }, badge: "Aqui em casa",
+        titulo: "Sem gaiolas 🌿", texto: "Os cães ficam soltos e à vontade, com caminhas, quintal e companhia o dia todo." }]
+    ]],
+    ["🛏️ Hospedagem", [
+      ["d-hosp-1", "Como funciona 1/4", "story-info", { badge: "🏡 Como funciona · 1/4", titulo: "*Conversa* inicial",
+        texto: "Você me chama no WhatsApp e conta tudo sobre o seu cão: rotina, comportamento, necessidades e as datas." }],
+      ["d-hosp-2", "Como funciona 2/4", "story-info", { badge: "🏡 Como funciona · 2/4", titulo: "Dia de *adaptação*",
+        texto: "Seu cão passa de 2 a 4 horas comigo pra eu ver como ele se sente com a casa e com os outros cães. É obrigatória." }],
+      ["d-hosp-3", "Como funciona 3/4", "story-info", { badge: "🏡 Como funciona · 3/4", titulo: "Reserva *confirmada*",
+        texto: "Deu tudo certo na adaptação? A gente define as datas e os horários de check-in e check-out." }],
+      ["d-hosp-4", "Como funciona 4/4", "story-info", { badge: "🏡 Como funciona · 4/4", titulo: "Hora da *hospedagem*",
+        texto: "Seu cão aproveita um lar de verdade e você recebe fotos e vídeos várias vezes ao dia." }],
+      ["d-hosp-5", "O que tem na estadia", "story-visita", { foto: { src: "images/g-turma-grade.jpeg" }, titulo: "🏡 Na hospedagem tem",
+        itens: "Passeios todos os dias\nBrincadeiras sob medida\nEnriquecimento ambiental\nFotos e vídeos pra você" }]
+    ]],
+    ["🏠 Visitas", [
+      ["d-vis-1", "Cuido na sua casa", "story-legenda", { foto: { src: "images/gato-prateleira.jpeg", y: 0.4 }, badge: "Visitas domiciliares",
+        titulo: "Cuido do seu pet na sua casa", texto: "Cães, gatos, pássaros e roedores, em Limeira. Cada visita dura de 40 min a 1h." }],
+      ["d-vis-2", "Em cada visita", "story-visita", { foto: { src: "images/gato-caixote.jpeg" }, titulo: "🏠 Em cada visita",
+        itens: "Comida e água fresca\nCaixinha ou cantinho limpo\nRemédios no horário\nPasseio ou brincadeira\nFotos e vídeos pra você" }],
+      ["d-vis-3", "Cão grande", "story-info", { badge: "🐶 Cão grande", titulo: "Cão grande? *Visita* em casa",
+        texto: "A hospedagem é só pra cães de pequeno e médio porte. Os grandes recebem os cuidados em casa, sem sair da rotina." }]
+    ]],
+    ["💰 Valores", [
+      ["d-val-1", "Quanto custa", "story-info", { badge: "💰 Valores", titulo: "Quanto *custa*?",
+        texto: "🏡 Hospedagem: desde R$ 90/dia\n🏠 Visitas: desde R$ 50 cada\n\nO valor depende do porte, das necessidades e do seu bairro." }],
+      ["d-val-2", "Check-out", "story-info", { badge: "🕖 Check-out", titulo: "Saída até as *19h*",
+        texto: "Depois disso, R$ 5 por hora. A partir das 22h entra mais uma diária. Tudo combinado antes." }]
+    ]],
+    ["🐶 Hóspedes", [
+      ["d-hosp-checkin", "Check-in", "story-checkin", { foto: { src: "images/g-spitz-turma.jpeg" } }],
+      ["d-hosp-checkout", "Check-out", "story-checkin", { foto: { src: "images/home-dupla-cama.jpeg" }, etiq: "💛 Check-out", titulo: "Voltou pra casa feliz!" }],
+      ["d-hosp-turma", "A turma", "story-legenda", { foto: { src: "images/g-trio-lacos.jpeg" }, badge: "Hóspedes",
+        titulo: "Uma turma de amigos 🐾", texto: "Cada um no seu ritmo, com carinho e atenção de perto." }]
+    ]],
+    ["💬 Depoimentos", [
+      ["d-depo-buzz", "Buzz", "story-depoimento", { citacao: "Hoje, quando ele percebe que vai pra casa da Júlia, choraminga de felicidade.", nome: "Cristiane", detalhe: "tutora do Buzz" }],
+      ["d-depo-zara", "Zara", "story-depoimento", { citacao: "A Zara se sente em casa. Volta alegre e sempre cansada, o que é um ótimo sinal.", nome: "Édson", detalhe: "tutor da Zara" }],
+      ["d-depo-pici", "Pici", "story-depoimento", { citacao: "Deu o remédio, a comida, passeou. Já indiquei a uma amiga!", nome: "Mariana", detalhe: "tutora da Pici" }]
+    ]],
+    ["📅 Vagas", [
+      ["d-vagas-1", "Como reservar", "story-info", { badge: "📅 Como reservar", titulo: "Primeiro, a *adaptação*",
+        texto: "Me chama no WhatsApp pra marcar o encontro de adaptação. Deu tudo certo? A gente confirma as datas." }],
+      ["d-vagas-2", "Vagas de fim de ano", "story-vaga", { etiq: "Vagas abertas", titulo: "Natal e Ano Novo", texto: "Agende a adaptação com antecedência", link: "💬 Me chama no WhatsApp" }]
+    ]],
+    ["❓ Dúvidas", [
+      ["d-duv-vacinas", "Vacinas", "story-info", { badge: "❓ Dúvidas", titulo: "Quais *vacinas* precisa?",
+        texto: "V8 ou V10, antirrábica e vermífugo em dia. Isso protege o seu cão e todos os amigos dele aqui em casa." }],
+      ["d-duv-porte", "Porte", "story-info", { badge: "❓ Dúvidas", titulo: "Que *porte* você recebe?",
+        texto: "Na hospedagem, cães de pequeno e médio porte. Nas visitas, cães de qualquer porte, gatos, pássaros e roedores." }],
+      ["d-duv-vet", "Veterinário", "story-info", { badge: "❓ Dúvidas", titulo: "E se precisar de *veterinário*?",
+        texto: "Te aviso na hora. Se eu não conseguir falar com você, levo ao veterinário. As despesas ficam com o tutor." }],
+      ["d-duv-mala", "O que levar", "story-info", { badge: "❓ Dúvidas", titulo: "O que levar na *malinha*?",
+        texto: "✓ Ração separada por refeição\n✓ Remédios com os horários\n✓ Brinquedo ou cobertor favorito\n✓ Carteira de vacina" }]
+    ]]
+  ].map(function (g) {
+    return { nome: g[0], itens: g[1].map(function (i) {
+      var m = MODELOS.filter(function (x) { return x.id === i[2]; })[0];
+      return Object.assign({}, m, { id: i[0], nome: i[1], nota: m.nome, padrao: Object.assign({}, m.padrao, i[3]) });
+    }) };
+  });
+  var IDEIAS = [].concat.apply([], DESTAQUES.map(function (g) { return g.itens; }));
 
   /* ---------- prontos pra baixar (sem edição) ---------- */
   var PILL = { w: 1200, h: 360 }, CIRC = { w: 640, h: 640 };
@@ -232,8 +320,8 @@
   }
 
   window.JuInsta = {
-    MODELOS: MODELOS, PRONTOS: PRONTOS, FOTOS: FOTOS, CORES: CORES,
-    modelo: function (id) { return MODELOS.filter(function (m) { return m.id === id; })[0]; },
+    MODELOS: MODELOS, DESTAQUES: DESTAQUES, IDEIAS: IDEIAS, PRONTOS: PRONTOS, FOTOS: FOTOS, CORES: CORES,
+    modelo: function (id) { return MODELOS.concat(IDEIAS).filter(function (m) { return m.id === id; })[0]; },
     miniatura: miniatura, enquadrar: enquadrar, png: png, nomeArquivo: nomeArquivo, lerFoto: lerFoto
   };
 })();
