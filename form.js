@@ -1,6 +1,8 @@
 /* Formulário do cadastro do pet — usado em cadastro.html (cliente) e admin.html (edição pela Júlia).
    JuForm.criar(formEl, opcoes) monta os campos dentro de formEl e devolve { validar, coletar }.
    opcoes.dados    = { tutor, pets } pra já vir preenchido (edição)
+   rascunho() / restaurar(r): foto crua de tudo o que está na tela (inclusive o que ainda não
+                     foi respondido), pra guardar no celular e trazer de volta depois.
    opcoes.admin    = true: validação só do que o banco exige (cadastros antigos podem ter
                      campos em branco, CPF "000" etc.) e sem máscara de CPF/telefone.
    Depende de ficha.js (JuFicha.OPCOES e JuFicha.esc). */
@@ -299,13 +301,49 @@
       form.querySelector("[data-t-emerg]").checked = !!t.autoriza_emergencia;
     }
 
+    /* ---------- rascunho (foto crua dos campos, pra guardar no celular) ---------- */
+    function campos(scope) { return scope.querySelectorAll("input, textarea"); }
+    function lerCampos(scope) {
+      return Array.prototype.map.call(campos(scope), function (i) {
+        return i.type === "radio" || i.type === "checkbox" ? i.checked : i.value;
+      });
+    }
+    function porCampos(scope, vals) {
+      campos(scope).forEach(function (i, n) {
+        var v = vals[n];
+        if (v == null) return;
+        if (i.type === "radio" || i.type === "checkbox") i.checked = v === true;
+        else if (typeof v === "string") i.value = v;
+      });
+    }
+    function rascunho() {
+      return {
+        tutor: lerCampos(box.querySelector(".card")),
+        autorizacoes: lerCampos(box.querySelector(".card:last-child")),
+        pets: Array.prototype.map.call(petsBox.querySelectorAll(".pet-card"), lerCampos)
+      };
+    }
+    function restaurar(r) {
+      if (!r || !Array.isArray(r.pets) || !r.pets.length) return false;
+      porCampos(box.querySelector(".card"), r.tutor || []);
+      porCampos(box.querySelector(".card:last-child"), r.autorizacoes || []);
+      petsBox.innerHTML = "";
+      r.pets.slice(0, MAX_PETS).forEach(function (vals) {
+        var el = petCard();
+        porCampos(el, vals || []);
+        syncPet(el);
+      });
+      renumber();
+      return true;
+    }
+
     if (opcoes.dados) {
       preencherTutor(opcoes.dados.tutor || {});
       (opcoes.dados.pets || []).forEach(function (p) { petCard(p); });
     }
     if (!petsBox.querySelector(".pet-card")) petCard();
 
-    return { validar: validate, coletar: collect };
+    return { validar: validate, coletar: collect, rascunho: rascunho, restaurar: restaurar };
   }
 
   window.JuForm = { criar: criar };

@@ -351,6 +351,10 @@
 <style>
   /* ============ CADASTRO — formulário ============ */
   .cad-head { max-width: 680px; margin: 0 auto; }
+  .draft-note { display: none; max-width: 680px; margin: 0 auto 22px; background: var(--rose-soft); color: var(--rose-deep); border-radius: var(--r-md); padding: 14px 18px; font-weight: 700; font-size: 15px; }
+  .draft-note.show { display: block; }
+  .wa-ficha { display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; background: #25d366; color: #fff !important; text-decoration: none; border-radius: 999px; padding: 10px 18px; font-weight: 800; }
+  .draft-note button { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; }
   /* ============ FICHA ============ */
   #fichaWrap { display: none; max-width: 860px; margin: 0 auto; }
   #fichaWrap.show { display: block; }
@@ -404,6 +408,8 @@
       <h1 class="sec-title">Conta pra mim sobre o seu pet 🐾</h1>
       <p class="sec-intro">Preencha antes da primeira hospedagem ou visita. Assim eu já conheço a rotina, a saúde e as manias de cada um, e cuido do jeitinho que eles estão acostumados. Tem mais de um pet? Dá pra cadastrar todos de uma vez.</p>
     </div>
+
+    <div class="draft-note no-print" id="draftNote">Trouxe de volta o que você já tinha preenchido neste aparelho. Confira e envie quando puder. <button type="button" id="draftReset">Começar do zero</button></div>
 
     <form id="cadForm" class="cad-form no-print" novalidate>
       <!-- campos montados pelo form.js -->
@@ -472,10 +478,69 @@ const WHATSAPP = "5519981583108";
 
   var cad = JuForm.criar(form);
 
+  /* ---------- rascunho: guarda as respostas neste aparelho até o envio dar certo ---------- */
+  var DRAFT_KEY = "jupets-cadastro-rascunho", DRAFT_DIAS = 30;
+  var draftNote = document.getElementById("draftNote"), draftTimer = null;
+  function temAlgo(r) {
+    return [].concat(r.tutor, r.autorizacoes, [].concat.apply([], r.pets)).some(function (v) { return v === true || (typeof v === "string" && v.trim()); });
+  }
+  function salvarRascunho() {
+    var r = cad.rascunho();
+    if (!temAlgo(r)) { apagarRascunho(); return; }
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ v: 1, em: Date.now(), dados: r })); } catch (e) {}
+  }
+  function apagarRascunho() { try { localStorage.removeItem(DRAFT_KEY); } catch (e) {} }
+  function agendarRascunho() { clearTimeout(draftTimer); draftTimer = setTimeout(salvarRascunho, 400); }
+  try {
+    var guardado = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+    if (guardado && guardado.v === 1 && Date.now() - guardado.em < DRAFT_DIAS * 864e5) {
+      if (cad.restaurar(guardado.dados)) draftNote.classList.add("show");
+    } else if (guardado) apagarRascunho();
+  } catch (e) { apagarRascunho(); }
+  form.addEventListener("input", agendarRascunho);
+  form.addEventListener("change", agendarRascunho);
+  form.addEventListener("click", function (e) { if (e.target.closest(".pet-rm, .add-pet")) agendarRascunho(); });
+  window.addEventListener("pagehide", salvarRascunho);
+  document.getElementById("draftReset").addEventListener("click", function () {
+    apagarRascunho();
+    location.reload();
+  });
+
   /* ---------- envio ---------- */
   var errBox = document.getElementById("formError"), sendBtn = document.getElementById("sendBtn");
   function showError(html) { errBox.innerHTML = html; errBox.classList.add("show"); }
   var waHelp = ' Se preferir, <a href="https://wa.me/' + WHATSAPP + '" target="_blank" rel="noopener">me chama no WhatsApp</a>.';
+
+  /* ---------- ficha em texto, pra mandar pelo WhatsApp se o envio falhar ---------- */
+  function simNao(b) { return b ? "Sim" : "Não"; }
+  function fichaTexto(d) {
+    var t = d.tutor, L = ["*Ficha cadastral (o envio pelo site falhou)*", "",
+      "*Tutor:* " + t.nome, "CPF: " + t.cpf, "Telefone: " + t.telefone, "Endereço: " + t.endereco,
+      "Contato de emergência: " + t.contato_emergencia,
+      "Autoriza fotos nas redes: " + simNao(t.autoriza_fotos),
+      "Autoriza atendimento de emergência: " + simNao(t.autoriza_emergencia)];
+    d.pets.forEach(function (p) {
+      var nasc = p.nascimento ? p.nascimento.split("-").reverse().join("/") : "";
+      L.push("", "*Pet: " + p.nome + "*",
+        "Sexo: " + p.sexo + " · Castrado: " + simNao(p.castrado));
+      if (nasc) L.push("Nascimento: " + nasc);
+      if (p.idade_aproximada) L.push("Idade aproximada: " + p.idade_aproximada);
+      if (p.raca) L.push("Raça: " + p.raca);
+      if (p.ultimo_cio) L.push("Último cio: " + p.ultimo_cio);
+      L.push("Peso: " + String(p.peso_kg).replace(".", ",") + " kg",
+        "Veterinário: " + (p.veterinario || "Não informado"),
+        "Hospital 24h: " + p.hospitais.join(", "),
+        "Doença crônica: " + (p.doenca_cronica || "Não"),
+        "Alergia: " + (p.alergia || "Não"),
+        "Antipulgas em dia: " + simNao(p.antipulgas_em_dia),
+        "Medicamento contínuo: " + (p.medicamento || "Não"),
+        "Alimentação: " + p.alimentacao,
+        "Pode comer: " + (p.pode_comer.join(", ") || "Nada além da ração"),
+        "No passeio: " + p.reacoes.join(", "));
+      if (p.info_adicional) L.push("Informações adicionais: " + p.info_adicional);
+    });
+    return L.join("\n");
+  }
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -504,10 +569,16 @@ const WHATSAPP = "5519981583108";
         return body;
       });
     }).then(function (id) {
+      clearTimeout(draftTimer); apagarRascunho();
+      window.removeEventListener("pagehide", salvarRascunho);
+      draftNote.classList.remove("show");
       renderFicha(data, String(id || ""), new Date());
     }).catch(function (err) {
       console.error(err);
-      showError("Não consegui enviar agora. Confira sua internet e tente de novo." + waHelp);
+      salvarRascunho();
+      var waFicha = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(fichaTexto(data));
+      showError("Não consegui enviar agora. Suas respostas ficaram guardadas neste aparelho: pode tentar de novo daqui a pouco, mesmo se fechar a página. Se preferir, mande a ficha pelo WhatsApp:" +
+        '<br><a class="wa-ficha" href="' + waFicha + '" target="_blank" rel="noopener">Mandar a ficha pelo WhatsApp</a>');
     }).finally(function () {
       sendBtn.disabled = false; sendBtn.textContent = "Enviar cadastro";
     });
